@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EXTANTRA - EXT MARKET | Premium Art & Accessories</title>
+    <meta name="description" content="EXTANTRA - Premium handcrafted art prints, woodblock t-shirts, custom accessories. Worldwide shipping from Florida.">
+    <meta name="keywords" content="art prints, woodblock t-shirts, custom zippo, flask, stickers, handmade">
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://js.stripe.com/v3/"></script>
+    <script src="https://cdn.jsdelivr.net/npm/js-cookie@3.0.5/dist/js.cookie.min.js"></script>
+</head>
+<body>
+    <!-- Loading Overlay -->
+    <div id="loading-overlay" class="loading-overlay">
+        <div class="loading-spinner"></div>
+        <div class="loading-text">Loading...</div>
+    </div>
+
+    <div class="main-container">
+        <!-- Header with Navigation -->
+        <header class="header-section">
+            <div class="header-content">
+                <button class="menu-toggle" id="menu-toggle" aria-label="Toggle menu">☰</button>
+                <div class="site-title" onclick="showPage('home')">EXTANTRA</div>
+                <button class="cart-button" onclick="openCart()" aria-label="Shopping cart">
+                    <span class="cart-icon">🛒</span>
+                    <span class="cart-count" id="cart-count">0</span>
+                </button>
+            </div>
+            <nav class="main-nav" id="main-nav">
+                <a href="#" onclick="showPage('home')" class="nav-link active">Home</a>
+                <a href="#" onclick="showPage('products')" class="nav-link">Products</a>
+                <a href="#" onclick="showPage('contact')" class="nav-link">Contact</a>
+                <a href="#" onclick="showPage('terms')" class="nav-link">Terms</a>
+                <a href="#" onclick="showPage('privacy')" class="nav-link">Privacy</a>
+            </nav>
+        </header>
+
+        <!-- Home Page -->
+        <div id="home-page" class="page active">
+            <!-- Announcement Section -->
+            <div class="section announcement">
+                <div class="deal-text">25% OFF</div>
+                <div class="deal-subtitle">ZIPPO + FLASK SET</div>
+                <div class="deal-description">Limited Time Offer - Save $15</div>
+            </div>
+
+            <!-- Product Navigation -->
+            <div class="section product-nav">
+                <div class="nav-container">
+                    <div class="product-icon" onclick="scrollToSection('prints')">
+                        <div class="icon-symbol">🖼</div>
+                        <div class="icon-label">PRINTS</div>
+                    </div>
+                    <div class="product-icon" onclick="scrollToSection('shirts')">
+                        <div class="icon-symbol">👕</div>
+                        <div class="icon-label">SHIRTS</div>
+                    </div>
+                    <div class="product-icon" onclick="scrollToSection('accessories')">
+                        <div class="icon-symbol">🔥</div>
+                        <div class="icon-label">ZIPPO</div>
+                    </div>
+                    <div class="product-icon" onclick="scrollToSection('accessories')">
+                        <div class="icon-symbol">🍺</div>
+                        <div class="icon-label">FLASK</div>
+                    </div>
+                    <div class="product-icon" onclick="scrollToSection('stickers')">
+                        <div class="icon-symbol">📋</div>
+                        <div class="icon-label">STICKERS</div>
+                    </div>
+                    <div class="product-icon" onclick="scrollToSection('jewelry')">
+                        <div class="icon-symbol">💍</div>
+                        <div class="icon-label">JEWELRY</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- About Section -->
+            <div class="section about-section">
+                <div class="about-title">About EXTANTRA</div>
+                <div class="about-text">
+                    Welcome to EXTANTRA, where art meets craftsmanship. We specialize in unique, handcrafted pieces that blend artistic expression with functional design.
+                </div>
+                <div class="about-text">
+                    From custom prints to handmade woodblock t-shirts, every piece is created with attention to detail and artistic integrity. Our collection spans various mediums and accessories, each telling its own story.
+                </div>
+                <div class="about-text">
+                    Quality craftsmanship, unique designs, and customer satisfaction drive everything we create. Shipping worldwide from Leesburg, Florida.
+                </div>
+            </div>
+
+            <!-- Art Prints Section -->
+            <div id="prints" class="section product-section">
+                <div class="section-title">Art Prints</div>
+                <div class="product-grid">
+                    <div class="product-item" onclick="showProductDetail('paper-print')">
+                        <div class="product-image-placeholder">📄</div>
+                        <div class="product-name">Paper Print</div>
+                        <div class="product-price">$15 - $45</div>
+                    </div>
+                    <div class="product-item" onclick="showProductDetail('canvas-print')">
+                        <div class="product-image-placeholder">🎨</div>
+                        <div class="product-name">Canvas Print</div>
+                        <div class="product-price">$35 - $85</div>
+                    </div>
+                    <div class="product-item" onclick="showProductDetail('woodblock-print')">
+                        <div class="product-image-placeholder">🪵</div>
+                        <div class="product-name">Woodblock Print</div>
+                        <div class="product-price">$25 - $65</div>
+                    </div>
+                    <div class="product-item" onclick="showProductDetail('metal-print')">
+                        <div class="product-image-placeholder">⚡</div>
+                        <div class="product-name">Metal Print</div>
+                        <div class="product-price">$45 - $120</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- T-Shirts Section -->
+            <div id="shirts" class="section product-section">
+                <div class="section-title">Handmade Woodblock T-Shirts</div>
+                <div class="product-grid single-product">
+                    <div class="product-item" onclick="showProductDetail('woodblock-tshirt')">
+                        <div class="product-image-placeholder">👕</div>
+                        <div class="product-name">Woodblock T-Shirt</div>
+                        <div class="product-price">$35</div>
+                        <div class="product-colors">Black • White</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Accessories Section -->
+            <div id="accessories" class="section product-section">
+                <div class="section-title">Accessories</div>
+                <div class="product-grid">
+                    <div class="product-item" onclick="showProductDetail('custom-zippo')">
+                        <div class="product-image-placeholder">🔥</div>
+                        <div class="product-name">Custom Zippo</div>
+                        <div class="product-price">$25 - $35</div>
+                    </div>
+                    <div class="product-item" onclick="showProductDetail('hip-flask')">
+                        <div class="product-image-placeholder">🍺</div>
+                        <div class="product-name">Hip Flask</div>
+                        <div class="product-price">$30 - $45</div>
+                    </div>
+                    <div class="product-item featured" onclick="showProductDetail('zippo-flask-set')">
+                        <div class="product-badge">25% OFF</div>
+                        <div class="product-image-placeholder">🎁</div>
+                        <div class="product-name">Zippo + Flask Set</div>
+                        <div class="product-price">
+                            <span class="original-price">$60</span>
+                            <span class="sale-price">$45</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Stickers Section -->
+            <div id="stickers" class="section product-section">
+                <div class="section-title">Sticker Packs</div>
+                <div class="product-grid">
+                    <div class="product-item" onclick="showProductDetail('mini-pack')">
+                        <div class="product-image-placeholder">📋</div>
+                        <div class="product-name">Mini Pack (5)</div>
+                        <div class="product-price">$8</div>
+                    </div>
+                    <div class="product-item" onclick="showProductDetail('standard-pack')">
+                        <div class="product-image-placeholder">📋</div>
+                        <div class="product-name">Standard Pack (10)</div>
+                        <div class="product-price">$15</div>
+                    </div>
+                    <div class="product-item" onclick="showProductDetail('mega-pack')">
+                        <div class="product-image-placeholder">📋</div>
+                        <div class="product-name">Mega Pack (20)</div>
+                        <div class="product-price">$25</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Jewelry Section -->
+            <div id="jewelry" class="section jewelry-section">
+                <div class="section-title">Jewelry Collection</div>
+                <div class="coming-soon">
+                    <div class="coming-soon-text">Jewelry currently unavailable - coming soon!</div>
+                    <div class="email-signup">
+                        <div class="signup-title">Get notified when jewelry arrives:</div>
+                        <form class="signup-form" id="jewelry-signup-form">
+                            <input type="email" id="jewelry-email" placeholder="Enter your email" required>
+                            <button type="submit">Notify Me</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Products Page -->
+        <div id="products-page" class="page">
+            <div class="section">
+                <div class="page-title">All Products</div>
+                <div id="products-grid" class="products-full-grid">
+                    <!-- Products will be loaded here -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Contact Page -->
+        <div id="contact-page" class="page">
+            <div class="section">
+                <div class="page-title">Contact Us</div>
+                <div class="contact-info">
+                    <div class="contact-item">
+                        <strong>Email:</strong> pqueue001@gmail.com
+                    </div>
+                    <div class="contact-item">
+                        <strong>Business:</strong> EXTANTRA
+                    </div>
+                    <div class="contact-item">
+                        <strong>Shipping From:</strong> Leesburg, FL 33748
+                    </div>
+                </div>
+                <form class="contact-form" id="contact-form">
+                    <div class="form-group">
+                        <label for="contact-name">Name</label>
+                        <input type="text" id="contact-name" name="name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="contact-email">Email</label>
+                        <input type="email" id="contact-email" name="email" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="contact-subject">Subject</label>
+                        <input type="text" id="contact-subject" name="subject" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="contact-message">Message</label>
+                        <textarea id="contact-message" name="message" rows="5" required></textarea>
+                    </div>
+                    <button type="submit" class="submit-btn">Send Message</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Terms Page -->
+        <div id="terms-page" class="page">
+            <div class="section">
+                <div class="page-title">Terms of Service</div>
+                <div class="legal-content">
+                    <h3>1. No Returns Policy</h3>
+                    <p>All sales are final. EXTANTRA does not accept returns or provide refunds for any products purchased.</p>
+                    
+                    <h3>2. Product Information</h3>
+                    <p>We strive to provide accurate product descriptions and images. Colors may vary slightly due to monitor settings.</p>
+                    
+                    <h3>3. Shipping</h3>
+                    <p>Products ship from Leesburg, FL 33748. Shipping costs are calculated at checkout based on destination.</p>
+                    
+                    <h3>4. Payment</h3>
+                    <p>We accept secure payments through Stripe. All transactions are processed securely.</p>
+                    
+                    <h3>5. Contact</h3>
+                    <p>For questions, contact us at pqueue001@gmail.com</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Privacy Page -->
+        <div id="privacy-page" class="page">
+            <div class="section">
+                <div class="page-title">Privacy Policy</div>
+                <div class="legal-content">
+                    <h3>Information We Collect</h3>
+                    <p>We collect information you provide when making purchases, including name, email, and shipping address.</p>
+                    
+                    <h3>How We Use Information</h3>
+                    <p>Information is used to process orders, send confirmations, and provide customer service.</p>
+                    
+                    <h3>Data Security</h3>
+                    <p>We use secure payment processing through Stripe and protect your personal information.</p>
+                    
+                    <h3>Cookies</h3>
+                    <p>We use cookies to maintain your shopping cart and improve your experience.</p>
+                    
+                    <h3>Contact</h3>
+                    <p>Questions about privacy? Email pqueue001@gmail.com</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Cart Modal -->
+    <div id="cart-modal" class="modal cart-modal">
+        <div class="modal-content cart-content">
+            <div class="modal-header">
+                <h2>Shopping Cart</h2>
+                <button class="close-btn" onclick="closeCart()">&times;</button>
+            </div>
+            <div id="cart-items" class="cart-items">
+                <div class="empty-cart">Your cart is empty</div>
+            </div>
+            <div id="cart-total" class="cart-total" style="display: none;">
+                <div class="subtotal-row">
+                    <span>Subtotal:</span>
+                    <span>$<span id="subtotal-amount">0.00</span></span>
+                </div>
+                <div class="tax-row">
+                    <span>Tax:</span>
+                    <span>$<span id="tax-amount">0.00</span></span>
+                </div>
+                <div class="shipping-row">
+                    <span>Shipping:</span>
+                    <span id="shipping-amount">Calculated at checkout</span>
+                </div>
+                <div class="total-row">
+                    <span>Total:</span>
+                    <span>$<span id="total-amount">0.00</span></span>
+                </div>
+                <button class="checkout-btn" onclick="proceedToCheckout()">Proceed to Checkout</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Product Detail Modal -->
+    <div id="product-modal" class="modal product-modal">
+        <div class="modal-content product-content">
+            <div class="modal-header">
+                <button class="close-btn" onclick="closeProductModal()">&times;</button>
+            </div>
+            <div id="product-detail-content">
+                <!-- Product details will be loaded here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Checkout Modal -->
+    <div id="checkout-modal" class="modal checkout-modal">
+        <div class="modal-content checkout-content">
+            <div class="modal-header">
+                <h2>Checkout</h2>
+                <button class="close-btn" onclick="closeCheckout()">&times;</button>
+            </div>
+            <div class="checkout-steps">
+                <div class="step active" data-step="1">1. Shipping</div>
+                <div class="step" data-step="2">2. Payment</div>
+                <div class="step" data-step="3">3. Confirm</div>
+            </div>
+            <div id="checkout-content">
+                <!-- Checkout forms will be loaded here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Success Modal -->
+    <div id="success-modal" class="modal success-modal">
+        <div class="modal-content success-content">
+            <div class="success-icon">✓</div>
+            <h2>Order Confirmed!</h2>
+            <p>Thank you for your purchase. You'll receive a confirmation email shortly.</p>
+            <div id="order-number"></div>
+            <button class="continue-btn" onclick="closeSuccessModal()">Continue Shopping</button>
+        </div>
+    </div>
+
+    <!-- Error Modal -->
+    <div id="error-modal" class="modal error-modal">
+        <div class="modal-content error-content">
+            <div class="error-icon">⚠</div>
+            <h2>Error</h2>
+            <p id="error-message">Something went wrong. Please try again.</p>
+            <button class="error-btn" onclick="closeErrorModal()">OK</button>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="products.js"></script>
+    <script src="cart.js"></script>
+    <script src="checkout.js"></script>
+    <script src="main.js"></script>
+</body>
+</html>
