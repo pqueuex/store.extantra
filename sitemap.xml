@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
+    
+    <!-- Home Page -->
+    <url>
+        <loc>https://store.extantra.net/</loc>
+        <lastmod>2025-06-20</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>1.0</priority>
+        <image:image>
+            <image:loc>https://store.extantra.net/images/extantralogo.webp</image:loc>
+            <image:caption>EXTANTRA Logo - Premium Gaming and Music Themed Zippo Lighters</image:caption>
+        </image:image>
+    </url>
+    
+    <!-- Lighters Collection Page -->
+    <url>
+        <loc>https://store.extantra.net/lighters.html</loc>
+        <lastmod>2025-06-20</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.9</priority>
+        <image:image>
+            <image:loc>https://store.extantra.net/images/001_silent_hill_2_zippo_lighter_1.webp</image:loc>
+            <image:caption>Silent Hill 2 Zippo Lighter - Premium Gaming Themed Collectible</image:caption>
+        </image:image>
+    </url>
+    
+    <!-- Product Pages -->
+    <url>
+        <loc>https://store.extantra.net/product.html?id=1</loc>
+        <lastmod>2025-06-20</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.8</priority>
+        <image:image>
+            <image:loc>https://store.extantra.net/images/001_silent_hill_2_zippo_lighter_1.webp</image:loc>
+            <image:caption>Silent Hill 2 Zippo Flip Lighter - Horror Gaming Collectible</image:caption>
+        </image:image>
+    </url>
+    
+    <url>
+        <loc>https://store.extantra.net/product.html?id=2</loc>
+        <lastmod>2025-06-20</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.8</priority>
+        <image:image>
+            <image:loc>https://store.extantra.net/images/002_aphex_twin_zippo_lighter_1.webp</image:loc>
+            <image:caption>Aphex Twin Logo Zippo Flip Lighter - Electronic Music Collectible</image:caption>
+        </image:image>
+    </url>
+    
+    <url>
+        <loc>https://store.extantra.net/product.html?id=3</loc>
+        <lastmod>2025-06-20</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.8</priority>
+        <image:image>
+            <image:loc>https://store.extantra.net/images/003_silent_hill_3_zippo_lighter_1.webp</image:loc>
+            <image:caption>Silent Hill 3 Zippo Flip Lighter - Horror Gaming Collectible</image:caption>
+        </image:image>
+    </url>
+    
+    <url>
+        <loc>https://store.extantra.net/product.html?id=4</loc>
+        <lastmod>2025-06-20</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.8</priority>
+        <image:image>
+            <image:loc>https://store.extantra.net/images/004_elder_scrolls_skyrim_zippo_lighter_1.webp</image:loc>
+            <image:caption>Elder Scrolls Skyrim Zippo Lighter - Fantasy Gaming Collectible</image:caption>
+        </image:image>
+    </url>
+    
+    <url>
+        <loc>https://store.extantra.net/product.html?id=5</loc>
+        <lastmod>2025-06-20</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.8</priority>
+        <image:image>
+            <image:loc>https://store.extantra.net/images/005_elder_scrolls_oblivion_zippo_lighter_1.webp</image:loc>
+            <image:caption>Elder Scrolls Oblivion Zippo Lighter - Fantasy Gaming Collectible</image:caption>
+        </image:image>
+    </url>
+    
+    <url>
+        <loc>https://store.extantra.net/product.html?id=7</loc>
+        <lastmod>2025-06-20</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.8</priority>
+        <image:image>
+            <image:loc>https://store.extantra.net/images/007_need_head_blown_off_zippo_lighter_1.webp</image:loc>
+            <image:caption>Need Head Blown Off Zippo Lighter - Unique Design Collectible</image:caption>
+        </image:image>
+    </url>
+    
+    <!-- About Page -->
+    <url>
+        <loc>https://store.extantra.net/about.html</loc>
+        <lastmod>2025-06-20</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.6</priority>
+    </url>
+    
+    <!-- Checkout Page -->
+    <url>
+        <loc>https://store.extantra.net/checkout.html</loc>
+        <lastmod>2025-06-20</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.5</priority>
+    </url>
+    
+    <!-- Policy Page -->
+    <url>
+        <loc>https://store.extantra.net/policy.html</loc>
+        <lastmod>2025-06-20</lastmod>
+        <changefreq>yearly</changefreq>
+        <priority>0.3</priority>
+    </url>
+    
+</urlset>

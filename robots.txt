@@ -1,0 +1,28 @@
+User-agent: *
+Allow: /
+
+# Important pages for crawling
+Allow: /index.html
+Allow: /lighters.html
+Allow: /about.html
+Allow: /product.html
+Allow: /checkout.html
+Allow: /success.html
+Allow: /policy.html
+
+# Allow images
+Allow: /images/
+
+# Allow stylesheets
+Allow: /styles.css
+
+# Disallow server files
+Disallow: /server.js
+Disallow: /package.json
+Disallow: /production-*
+Disallow: /deploy.sh
+Disallow: /.env
+Disallow: /node_modules/
+
+# Sitemap location
+Sitemap: https://store.extantra.net/sitemap.xml

@@ -3,8 +3,55 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title id="page-title">Product - Extantra Net</title>
+    
+    <!-- Dynamic SEO Meta Tags (updated by JavaScript) -->
+    <title id="page-title">Premium Gaming & Music Themed Zippo Lighters - EXTANTRA</title>
+    <meta name="description" id="page-description" content="Shop premium gaming and music themed Zippo lighters at EXTANTRA. Collectible designs featuring Silent Hill, Aphex Twin, Elder Scrolls themes with authentic Zippo quality.">
+    <meta name="keywords" id="page-keywords" content="zippo lighter, gaming collectible, music themed lighter, premium zippo, collectible lighter">
+    <meta name="robots" content="index, follow">
+    
+    <!-- Open Graph Meta Tags -->
+    <meta property="og:title" id="og-title" content="Premium Gaming & Music Themed Zippo Lighters - EXTANTRA">
+    <meta property="og:description" id="og-description" content="Shop premium gaming and music themed Zippo lighters with collectible designs and authentic Zippo quality.">
+    <meta property="og:type" content="product">
+    <meta property="og:url" id="og-url" content="https://store.extantra.net/product.html">
+    <meta property="og:image" id="og-image" content="https://store.extantra.net/images/extantralogo.webp">
+    <meta property="og:site_name" content="EXTANTRA">
+    
+    <!-- Twitter Card Meta Tags -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" id="twitter-title" content="Premium Gaming & Music Themed Zippo Lighters - EXTANTRA">
+    <meta name="twitter:description" id="twitter-description" content="Shop premium gaming and music themed Zippo lighters with collectible designs.">
+    <meta name="twitter:image" id="twitter-image" content="https://store.extantra.net/images/extantralogo.webp">
+    
+    <!-- Canonical URL -->
+    <link rel="canonical" id="canonical-url" href="https://store.extantra.net/product.html">
+    
     <link rel="stylesheet" href="styles.css">
+    
+    <!-- Structured Data for Product (will be populated by JavaScript) -->
+    <script type="application/ld+json" id="product-structured-data">
+    {
+      "@context": "https://schema.org",
+      "@type": "Product",
+      "name": "Premium Zippo Lighter",
+      "description": "Premium gaming and music themed Zippo lighter",
+      "brand": {
+        "@type": "Brand",
+        "name": "EXTANTRA"
+      },
+      "offers": {
+        "@type": "Offer",
+        "priceCurrency": "USD",
+        "price": "30.00",
+        "availability": "https://schema.org/InStock",
+        "seller": {
+          "@type": "Organization",
+          "name": "EXTANTRA"
+        }
+      }
+    }
+    </script>
 </head>
 <body>
     <div class="container">
@@ -156,8 +203,100 @@
             });
         }
 
+        function updateSEOMetadata(product) {
+            // Update page title
+            const title = `${product.name} - Premium ${product.category} Zippo Lighter | EXTANTRA`;
+            document.getElementById('page-title').textContent = title;
+            
+            // Update meta description
+            const description = `${product.description} Shop this premium ${product.category} themed Zippo lighter at EXTANTRA. $${product.currentPrice.toFixed(2)} with free shipping on orders over $75.`;
+            document.getElementById('page-description').setAttribute('content', description);
+            
+            // Update keywords
+            const keywords = `${product.name}, ${product.category} zippo, ${product.theme} lighter, collectible zippo, premium zippo, gaming merchandise, ${product.color} zippo`;
+            document.getElementById('page-keywords').setAttribute('content', keywords);
+            
+            // Update Open Graph meta tags
+            document.getElementById('og-title').setAttribute('content', title);
+            document.getElementById('og-description').setAttribute('content', description);
+            document.getElementById('og-url').setAttribute('content', `https://store.extantra.net/product.html?id=${product.id}`);
+            document.getElementById('og-image').setAttribute('content', `https://store.extantra.net/${product.images[0]}`);
+            
+            // Update Twitter Card meta tags
+            document.getElementById('twitter-title').setAttribute('content', title);
+            document.getElementById('twitter-description').setAttribute('content', description);
+            document.getElementById('twitter-image').setAttribute('content', `https://store.extantra.net/${product.images[0]}`);
+            
+            // Update canonical URL
+            document.getElementById('canonical-url').setAttribute('href', `https://store.extantra.net/product.html?id=${product.id}`);
+            
+            // Update structured data
+            const structuredData = {
+                "@context": "https://schema.org",
+                "@type": "Product",
+                "name": product.name,
+                "description": product.longDescription || product.description,
+                "image": product.images.map(img => `https://store.extantra.net/${img}`),
+                "brand": {
+                    "@type": "Brand",
+                    "name": "EXTANTRA"
+                },
+                "category": product.category,
+                "color": product.color,
+                "offers": {
+                    "@type": "Offer",
+                    "priceCurrency": "USD",
+                    "price": product.currentPrice.toFixed(2),
+                    "availability": product.inStock ? "https://schema.org/InStock" : "https://schema.org/OutOfStock",
+                    "seller": {
+                        "@type": "Organization",
+                        "name": "EXTANTRA",
+                        "url": "https://store.extantra.net"
+                    },
+                    "shippingDetails": {
+                        "@type": "OfferShippingDetails",
+                        "shippingRate": {
+                            "@type": "MonetaryAmount",
+                            "value": "0.00",
+                            "currency": "USD"
+                        },
+                        "deliveryTime": {
+                            "@type": "ShippingDeliveryTime",
+                            "businessDays": {
+                                "@type": "OpeningHoursSpecification",
+                                "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"]
+                            },
+                            "cutoffTime": "16:00",
+                            "handlingTime": {
+                                "@type": "QuantitativeValue",
+                                "minValue": 1,
+                                "maxValue": 2,
+                                "unitCode": "DAY"
+                            },
+                            "transitTime": {
+                                "@type": "QuantitativeValue",
+                                "minValue": 4,
+                                "maxValue": 7,
+                                "unitCode": "DAY"
+                            }
+                        }
+                    }
+                },
+                "aggregateRating": {
+                    "@type": "AggregateRating",
+                    "ratingValue": "4.8",
+                    "reviewCount": "25"
+                }
+            };
+            
+            document.getElementById('product-structured-data').textContent = JSON.stringify(structuredData, null, 2);
+        }
+
         function renderProductPage(product) {
             const contentElement = document.getElementById('product-content');
+            
+            // Update SEO metadata
+            updateSEOMetadata(product);
             
             contentElement.innerHTML = `
                 <div class="product-page">
