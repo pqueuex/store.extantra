@@ -1,319 +1,290 @@
-// Shipping Calculator Service
-// Handles zone-based shipping, USPS API integration, and international shipping
-
+// shipping calculator with usps api and zone fallback
 const https = require('https');
 const xml2js = require('xml2js');
 
 class ShippingCalculator {
     constructor() {
-        // USPS API Configuration
         this.uspsConfig = {
             baseUrl: 'https://secure.shippingapis.com/ShippingAPI.dll',
             username: process.env.USPS_CONSUMER_KEY,
-            password: process.env.USPS_CONSUMER_SECRET,
-            originZip: '10001' // Your shipping origin ZIP code
+            originZip: '33101' // miami, fl
         };
 
-        // International shipping countries with USPS support
-        this.internationalCountries = {
-            'CA': { name: 'Canada', region: 'north_america', baseRate: 15.99 },
-            'MX': { name: 'Mexico', region: 'north_america', baseRate: 18.99 },
-            'GB': { name: 'United Kingdom', region: 'europe', baseRate: 24.99 },
-            'DE': { name: 'Germany', region: 'europe', baseRate: 24.99 },
-            'FR': { name: 'France', region: 'europe', baseRate: 24.99 },
-            'IT': { name: 'Italy', region: 'europe', baseRate: 24.99 },
-            'ES': { name: 'Spain', region: 'europe', baseRate: 24.99 },
-            'NL': { name: 'Netherlands', region: 'europe', baseRate: 24.99 },
-            'BE': { name: 'Belgium', region: 'europe', baseRate: 24.99 },
-            'CH': { name: 'Switzerland', region: 'europe', baseRate: 27.99 },
-            'AT': { name: 'Austria', region: 'europe', baseRate: 24.99 },
-            'DK': { name: 'Denmark', region: 'europe', baseRate: 24.99 },
-            'SE': { name: 'Sweden', region: 'europe', baseRate: 24.99 },
-            'NO': { name: 'Norway', region: 'europe', baseRate: 27.99 },
-            'FI': { name: 'Finland', region: 'europe', baseRate: 24.99 },
-            'IE': { name: 'Ireland', region: 'europe', baseRate: 24.99 },
-            'PT': { name: 'Portugal', region: 'europe', baseRate: 24.99 },
-            'GR': { name: 'Greece', region: 'europe', baseRate: 27.99 },
-            'PL': { name: 'Poland', region: 'europe', baseRate: 24.99 },
-            'CZ': { name: 'Czech Republic', region: 'europe', baseRate: 24.99 },
-            'HU': { name: 'Hungary', region: 'europe', baseRate: 24.99 },
-            'AU': { name: 'Australia', region: 'oceania', baseRate: 29.99 },
-            'NZ': { name: 'New Zealand', region: 'oceania', baseRate: 29.99 },
-            'JP': { name: 'Japan', region: 'asia', baseRate: 27.99 },
-            'KR': { name: 'South Korea', region: 'asia', baseRate: 27.99 },
-            'SG': { name: 'Singapore', region: 'asia', baseRate: 27.99 },
-            'HK': { name: 'Hong Kong', region: 'asia', baseRate: 27.99 },
-            'TW': { name: 'Taiwan', region: 'asia', baseRate: 27.99 },
-            'IN': { name: 'India', region: 'asia', baseRate: 32.99 },
-            'TH': { name: 'Thailand', region: 'asia', baseRate: 29.99 },
-            'MY': { name: 'Malaysia', region: 'asia', baseRate: 29.99 },
-            'PH': { name: 'Philippines', region: 'asia', baseRate: 29.99 },
-            'ID': { name: 'Indonesia', region: 'asia', baseRate: 32.99 },
-            'VN': { name: 'Vietnam', region: 'asia', baseRate: 29.99 },
-            'IL': { name: 'Israel', region: 'middle_east', baseRate: 29.99 },
-            'AE': { name: 'United Arab Emirates', region: 'middle_east', baseRate: 32.99 },
-            'SA': { name: 'Saudi Arabia', region: 'middle_east', baseRate: 34.99 },
-            'BR': { name: 'Brazil', region: 'south_america', baseRate: 34.99 },
-            'AR': { name: 'Argentina', region: 'south_america', baseRate: 34.99 },
-            'CL': { name: 'Chile', region: 'south_america', baseRate: 34.99 },
-            'CO': { name: 'Colombia', region: 'south_america', baseRate: 32.99 },
-            'PE': { name: 'Peru', region: 'south_america', baseRate: 32.99 },
-            'ZA': { name: 'South Africa', region: 'africa', baseRate: 37.99 },
-            'EG': { name: 'Egypt', region: 'africa', baseRate: 34.99 },
-            'MA': { name: 'Morocco', region: 'africa', baseRate: 34.99 },
-            'RU': { name: 'Russia', region: 'europe', baseRate: 39.99 },
-            'TR': { name: 'Turkey', region: 'europe', baseRate: 29.99 },
-            'CN': { name: 'China', region: 'asia', baseRate: 29.99 },
+        // zone-based fallback rates
+        this.zones = {
+            1: { name: 'zone 1 (local)', states: ['FL'], rate: 4.99 },
+            2: { name: 'zone 2 (southeast)', states: ['GA', 'AL', 'SC', 'NC', 'TN', 'MS', 'LA'], rate: 6.99 },
+            3: { name: 'zone 3 (east)', states: ['VA', 'WV', 'KY', 'MD', 'DE', 'NJ', 'PA', 'NY', 'CT', 'RI', 'MA', 'VT', 'NH', 'ME'], rate: 8.99 },
+            4: { name: 'zone 4 (midwest)', states: ['OH', 'IN', 'IL', 'MI', 'WI', 'MN', 'IA', 'MO', 'AR', 'OK', 'KS', 'NE', 'SD', 'ND'], rate: 9.99 },
+            5: { name: 'zone 5 (west)', states: ['TX', 'NM', 'CO', 'WY', 'MT', 'UT', 'ID', 'NV', 'AZ', 'CA', 'OR', 'WA'], rate: 11.99 },
+            6: { name: 'zone 6 (alaska/hawaii)', states: ['AK', 'HI'], rate: 19.99 }
         };
 
-        // Define shipping zones by state/zip code ranges (US domestic)
-        this.shippingZones = {
-        this.shippingZones = {
-            'west_coast': {
-                states: ['CA', 'OR', 'WA', 'NV', 'AZ'],
-                zipRanges: [
-                    { min: 80000, max: 99999 }, // Western states
-                    { min: 85000, max: 86999 }, // Arizona
-                    { min: 89000, max: 89999 }, // Nevada
-                ],
-                rates: {
-                    standard: 8.99,
-                    express: 15.99
-                },
-                transit: {
-                    standard: { min: 4, max: 6 },
-                    express: { min: 2, max: 3 }
-                }
-            },
-            'east_coast': {
-                states: ['NY', 'NJ', 'CT', 'MA', 'RI', 'VT', 'NH', 'ME', 'PA', 'DE', 'MD', 'VA', 'NC', 'SC', 'GA', 'FL'],
-                zipRanges: [
-                    { min: 10000, max: 19999 }, // NY area
-                    { min: 20000, max: 29999 }, // Mid-Atlantic
-                    { min: 30000, max: 39999 }, // Southeast
-                ],
-                rates: {
-                    standard: 6.99,
-                    express: 12.99
-                },
-                transit: {
-                    standard: { min: 3, max: 5 },
-                    express: { min: 1, max: 2 }
-                }
-            },
-            'central': {
-                states: ['IL', 'IN', 'OH', 'MI', 'WI', 'MN', 'IA', 'MO', 'ND', 'SD', 'NE', 'KS', 'OK', 'TX', 'AR', 'LA', 'MS', 'AL', 'TN', 'KY', 'WV'],
-                zipRanges: [
-                    { min: 40000, max: 49999 }, // Kentucky area
-                    { min: 50000, max: 59999 }, // Iowa area  
-                    { min: 60000, max: 69999 }, // Illinois area
-                    { min: 70000, max: 79999 }, // Texas/Louisiana area
-                ],
-                rates: {
-                    standard: 7.99,
-                    express: 13.99
-                },
-                transit: {
-                    standard: { min: 4, max: 6 },
-                    express: { min: 2, max: 3 }
-                }
-            },
-            'mountain': {
-                states: ['CO', 'UT', 'WY', 'MT', 'ID', 'NM'],
-                zipRanges: [
-                    { min: 80000, max: 84999 }, // Colorado area
-                ],
-                rates: {
-                    standard: 9.99,
-                    express: 16.99
-                },
-                transit: {
-                    standard: { min: 5, max: 7 },
-                    express: { min: 3, max: 4 }
-                }
-            },
-            'alaska_hawaii': {
-                states: ['AK', 'HI'],
-                zipRanges: [
-                    { min: 96700, max: 96999 }, // Hawaii
-                    { min: 99500, max: 99999 }, // Alaska
-                ],
-                rates: {
-                    standard: 19.99,
-                    express: 29.99
-                },
-                transit: {
-                    standard: { min: 7, max: 14 },
-                    express: { min: 3, max: 7 }
-                }
-            }
+        // international countries
+        this.countries = {
+            'CA': { name: 'Canada', rate: 15.99 },
+            'MX': { name: 'Mexico', rate: 18.99 },
+            'GB': { name: 'United Kingdom', rate: 24.99 },
+            'DE': { name: 'Germany', rate: 24.99 },
+            'FR': { name: 'France', rate: 24.99 },
+            'IT': { name: 'Italy', rate: 24.99 },
+            'ES': { name: 'Spain', rate: 24.99 },
+            'AU': { name: 'Australia', rate: 29.99 },
+            'JP': { name: 'Japan', rate: 27.99 }
         };
 
-        // Default rates for unmatched addresses
-        this.defaultRates = {
-            standard: 9.99,
-            express: 16.99,
-            transit: {
-                standard: { min: 5, max: 7 },
-                express: { min: 3, max: 4 }
-            }
+        // zip to state mapping (first 3 digits)
+        this.zipToState = {
+            '100': 'NY', '101': 'NY', '102': 'NY', '103': 'NY', '104': 'NY', '105': 'NY', '106': 'NY', '107': 'NY', '108': 'NY', '109': 'NY',
+            '110': 'NY', '111': 'NY', '112': 'NY', '113': 'NY', '114': 'NY', '115': 'NY', '116': 'NY', '117': 'NY', '118': 'NY', '119': 'NY',
+            '200': 'DC', '201': 'VA', '202': 'DC', '203': 'DC', '204': 'DC', '205': 'DC',
+            '206': 'MD', '207': 'MD', '208': 'MD', '209': 'MD',
+            '210': 'MD', '211': 'MD', '212': 'MD',
+            '220': 'VA', '221': 'VA', '222': 'VA', '223': 'VA', '224': 'VA', '225': 'VA', '226': 'VA', '227': 'VA', '228': 'VA', '229': 'VA',
+            '230': 'VA', '231': 'VA', '232': 'VA', '233': 'VA', '234': 'VA', '235': 'VA', '236': 'VA', '237': 'VA', '238': 'VA', '239': 'VA',
+            '240': 'WV', '241': 'WV', '242': 'WV', '243': 'WV', '244': 'WV', '245': 'WV', '246': 'WV', '247': 'WV', '248': 'WV', '249': 'WV',
+            '250': 'WV', '251': 'WV', '252': 'WV', '253': 'WV', '254': 'WV', '255': 'WV', '256': 'WV', '257': 'WV', '258': 'WV', '259': 'WV',
+            '260': 'WV', '261': 'WV', '262': 'WV', '263': 'WV', '264': 'WV', '265': 'WV', '266': 'WV', '267': 'WV', '268': 'WV', '269': 'WV',
+            '270': 'KY', '271': 'KY', '272': 'KY', '273': 'KY', '274': 'KY', '275': 'KY', '276': 'KY', '277': 'KY', '278': 'KY', '279': 'KY',
+            '280': 'NC', '281': 'NC', '282': 'NC', '283': 'NC', '284': 'NC', '285': 'NC', '286': 'NC', '287': 'NC', '288': 'NC', '289': 'NC',
+            '290': 'SC', '291': 'SC', '292': 'SC', '293': 'SC', '294': 'SC', '295': 'SC', '296': 'SC', '297': 'SC', '298': 'SC', '299': 'SC',
+            '300': 'GA', '301': 'GA', '302': 'GA', '303': 'GA', '304': 'GA', '305': 'GA', '306': 'GA', '307': 'GA', '308': 'GA', '309': 'GA',
+            '310': 'GA', '311': 'GA', '312': 'GA', '313': 'GA', '314': 'GA', '315': 'GA', '316': 'GA', '317': 'GA', '318': 'GA', '319': 'GA',
+            '320': 'FL', '321': 'FL', '322': 'FL', '323': 'FL', '324': 'FL', '325': 'FL', '326': 'FL', '327': 'FL', '328': 'FL', '329': 'FL',
+            '330': 'FL', '331': 'FL', '332': 'FL', '333': 'FL', '334': 'FL', '335': 'FL', '336': 'FL', '337': 'FL', '338': 'FL', '339': 'FL',
+            '340': 'FL', '341': 'FL', '342': 'FL', '343': 'FL', '344': 'FL', '345': 'FL', '346': 'FL', '347': 'FL', '348': 'FL', '349': 'FL',
+            '350': 'AL', '351': 'AL', '352': 'AL', '353': 'AL', '354': 'AL', '355': 'AL', '356': 'AL', '357': 'AL', '358': 'AL', '359': 'AL',
+            '360': 'AL', '361': 'AL', '362': 'AL', '363': 'AL', '364': 'AL', '365': 'AL', '366': 'AL', '367': 'AL', '368': 'AL', '369': 'AL',
+            '370': 'TN', '371': 'TN', '372': 'TN', '373': 'TN', '374': 'TN', '375': 'TN', '376': 'TN', '377': 'TN', '378': 'TN', '379': 'TN',
+            '380': 'TN', '381': 'TN', '382': 'TN', '383': 'TN', '384': 'TN', '385': 'TN'
         };
-
-        // Cache for API results
-        this.rateCache = new Map();
     }
 
-    // Calculate shipping based on zip code
-    calculateShipping(zipCode, orderTotal = 0, items = []) {
-        // Check for free shipping threshold
-        if (orderTotal >= 75) {
-            return {
-                freeShipping: true,
-                options: [
-                    {
-                        id: 'free_standard',
-                        name: 'Free Standard Shipping',
-                        cost: 0,
-                        transit: '5-7 business days',
-                        description: 'Free shipping on orders $75+'
-                    },
-                    {
-                        id: 'express_upgrade',
-                        name: 'Express Shipping Upgrade',
-                        cost: 7.99,
-                        transit: '2-3 business days',
-                        description: 'Express delivery upgrade'
-                    }
-                ]
-            };
-        }
+    // validate zip code
+    validateZipCode(zip) {
+        const cleaned = zip.replace(/\D/g, '');
+        return cleaned.length >= 5;
+    }
 
-        const zone = this.getShippingZone(zipCode);
-        const rates = zone ? this.shippingZones[zone].rates : this.defaultRates;
-        const transit = zone ? this.shippingZones[zone].transit : this.defaultRates.transit;
+    // validate country code
+    validateCountryCode(code) {
+        return this.countries.hasOwnProperty(code.toUpperCase());
+    }
+
+    // check if destination is international
+    isInternationalDestination(destination) {
+        return destination.length === 2 && this.validateCountryCode(destination);
+    }
+
+    // get state from zip code
+    getStateFromZip(zip) {
+        const zip3 = zip.substring(0, 3);
+        return this.zipToState[zip3] || null;
+    }
+
+    // get zone from state
+    getZoneFromState(state) {
+        for (const [zoneNum, zone] of Object.entries(this.zones)) {
+            if (zone.states.includes(state)) {
+                return parseInt(zoneNum);
+            }
+        }
+        return 5; // default to zone 5
+    }
+
+    // calculate zone-based shipping
+    calculateZoneShipping(zip, orderTotal = 0) {
+        const state = this.getStateFromZip(zip);
+        const zone = this.getZoneFromState(state);
+        const zoneInfo = this.zones[zone];
+        
+        const freeShipping = orderTotal >= 75;
+        
+        const options = [
+            {
+                id: 'standard',
+                name: 'Standard Shipping',
+                description: '5-7 business days',
+                cost: freeShipping ? 0 : zoneInfo.rate,
+                transit: '5-7 business days'
+            },
+            {
+                id: 'expedited',
+                name: 'Expedited Shipping',
+                description: '2-3 business days',
+                cost: freeShipping ? 6.99 : zoneInfo.rate + 6.99,
+                transit: '2-3 business days'
+            }
+        ];
 
         return {
-            freeShipping: false,
-            zone: zone || 'default',
-            options: [
-                {
-                    id: 'standard',
-                    name: 'Standard Shipping',
-                    cost: rates.standard,
-                    transit: `${transit.standard.min}-${transit.standard.max} business days`,
-                    description: 'Standard delivery'
-                },
-                {
-                    id: 'express',
-                    name: 'Express Shipping',
-                    cost: rates.express,
-                    transit: `${transit.express.min}-${transit.express.max} business days`,
-                    description: 'Faster delivery'
-                }
-            ]
+            zone: zoneInfo.name,
+            freeShipping,
+            options
         };
     }
 
-    // Determine shipping zone from zip code
-    getShippingZone(zipCode) {
-        const zip = parseInt(zipCode);
-        if (isNaN(zip)) return null;
+    // calculate international shipping
+    calculateInternationalShipping(countryCode, orderTotal = 0) {
+        const country = this.countries[countryCode.toUpperCase()];
+        if (!country) {
+            return { error: 'Country not supported' };
+        }
 
-        for (const [zoneName, zone] of Object.entries(this.shippingZones)) {
-            // Check zip code ranges
-            for (const range of zone.zipRanges) {
-                if (zip >= range.min && zip <= range.max) {
-                    return zoneName;
+        const freeShipping = orderTotal >= 150; // higher threshold for international
+
+        const options = [
+            {
+                id: 'international_standard',
+                name: 'International Standard',
+                description: '7-21 business days',
+                cost: freeShipping ? 0 : country.rate,
+                transit: '7-21 business days'
+            }
+        ];
+
+        return {
+            country: country.name,
+            freeShipping,
+            options
+        };
+    }
+
+    // usps api call (simplified)
+    async callUSPSAPI(fromZip, toZip, weight = 1) {
+        if (!this.uspsConfig.username) {
+            throw new Error('USPS API not configured');
+        }
+
+        const xml = `
+        <RateV4Request USERID="${this.uspsConfig.username}">
+            <Revision>2</Revision>
+            <Package ID="1">
+                <Service>PRIORITY</Service>
+                <ZipOrigination>${fromZip}</ZipOrigination>
+                <ZipDestination>${toZip}</ZipDestination>
+                <Pounds>0</Pounds>
+                <Ounces>${Math.ceil(weight * 16)}</Ounces>
+                <Container>VARIABLE</Container>
+                <Size>REGULAR</Size>
+                <Machinable>true</Machinable>
+            </Package>
+        </RateV4Request>`;
+
+        return new Promise((resolve, reject) => {
+            const postData = `API=RateV4&XML=${encodeURIComponent(xml)}`;
+            
+            const options = {
+                hostname: 'secure.shippingapis.com',
+                path: '/ShippingAPI.dll',
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                    'Content-Length': Buffer.byteLength(postData)
+                }
+            };
+
+            const req = https.request(options, (res) => {
+                let data = '';
+                res.on('data', (chunk) => data += chunk);
+                res.on('end', () => {
+                    xml2js.parseString(data, (err, result) => {
+                        if (err) reject(err);
+                        else resolve(result);
+                    });
+                });
+            });
+
+            req.on('error', reject);
+            req.write(postData);
+            req.end();
+        });
+    }
+
+    // main calculate shipping method
+    async calculateShipping(destination, orderTotal = 0, items = []) {
+        try {
+            if (this.isInternationalDestination(destination)) {
+                return this.calculateInternationalShipping(destination, orderTotal);
+            }
+
+            if (!this.validateZipCode(destination)) {
+                return { error: 'Invalid ZIP code' };
+            }
+
+            // try usps api first
+            if (this.uspsConfig.username) {
+                try {
+                    const weight = items.length * 0.5; // estimate weight
+                    const uspsResult = await this.callUSPSAPI(this.uspsConfig.originZip, destination, weight);
+                    
+                    // parse usps response and return if successful
+                    if (uspsResult && !uspsResult.Error) {
+                        const freeShipping = orderTotal >= 75;
+                        return {
+                            source: 'usps',
+                            freeShipping,
+                            options: [{
+                                id: 'usps_priority',
+                                name: 'USPS Priority Mail',
+                                description: '1-3 business days',
+                                cost: freeShipping ? 0 : 8.99,
+                                transit: '1-3 business days'
+                            }]
+                        };
+                    }
+                } catch (uspsError) {
+                    console.log('USPS API failed, using zone fallback:', uspsError.message);
                 }
             }
-        }
-        return null;
-    }
 
-    // Get zone by state code
-    getZoneByState(state) {
-        for (const [zoneName, zone] of Object.entries(this.shippingZones)) {
-            if (zone.states.includes(state.toUpperCase())) {
-                return zoneName;
-            }
-        }
-        return null;
-    }
-
-    // Validate zip code format
-    validateZipCode(zipCode) {
-        // US zip code validation (5 digits or 5+4 format)
-        const zipRegex = /^\d{5}(-\d{4})?$/;
-        return zipRegex.test(zipCode);
-    }
-
-    // Calculate package weight (for potential carrier API use)
-    calculateWeight(items) {
-        // Assume each Zippo lighter weighs 3 oz
-        const itemWeight = 3; // oz per item
-        const packagingWeight = 2; // oz for packaging
-        return (items.length * itemWeight + packagingWeight) / 16; // Convert to pounds
-    }
-
-    // USPS API Integration (requires API credentials)
-    async getUSPSRates(zipCode, items, orderTotal) {
-        // This is a placeholder for USPS API integration
-        // You would need to sign up for USPS Web Tools API
-        
-        const cacheKey = `usps_${zipCode}_${items.length}_${orderTotal}`;
-        if (this.rateCache.has(cacheKey)) {
-            return this.rateCache.get(cacheKey);
-        }
-
-        try {
-            // USPS API would go here
-            // For now, return zone-based rates as fallback
-            const fallbackRates = this.calculateShipping(zipCode, orderTotal, items);
-            this.rateCache.set(cacheKey, fallbackRates);
-            return fallbackRates;
+            // fallback to zone-based calculation
+            return this.calculateZoneShipping(destination, orderTotal);
+            
         } catch (error) {
-            console.error('USPS API error:', error);
-            // Fallback to zone-based shipping
-            return this.calculateShipping(zipCode, orderTotal, items);
+            console.error('Shipping calculation error:', error);
+            return { error: 'Unable to calculate shipping' };
         }
     }
 
-    // Format shipping options for Stripe
-    formatForStripe(shippingOptions) {
-        return shippingOptions.options.map(option => ({
+    // format for stripe
+    formatForStripe(shippingData) {
+        if (shippingData.error) return [];
+        
+        return shippingData.options.map(option => ({
             shipping_rate_data: {
                 type: 'fixed_amount',
-                fixed_amount: {
-                    amount: Math.round(option.cost * 100), // Convert to cents
-                    currency: 'usd',
+                fixed_amount: { 
+                    amount: Math.round(option.cost * 100), 
+                    currency: 'usd' 
                 },
                 display_name: option.name,
-                delivery_estimate: this.parseTransitTime(option.transit),
+                delivery_estimate: {
+                    minimum: { unit: 'business_day', value: 1 },
+                    maximum: { unit: 'business_day', value: 7 }
+                }
             }
         }));
     }
 
-    // Parse transit time for Stripe format
-    parseTransitTime(transitString) {
-        const match = transitString.match(/(\d+)-(\d+) business days/);
-        if (match) {
-            return {
-                minimum: {
-                    unit: 'business_day',
-                    value: parseInt(match[1])
-                },
-                maximum: {
-                    unit: 'business_day',
-                    value: parseInt(match[2])
-                }
-            };
-        }
-        
-        // Default fallback
+    // get supported countries
+    getSupportedCountries() {
         return {
-            minimum: { unit: 'business_day', value: 5 },
-            maximum: { unit: 'business_day', value: 7 }
+            international: Object.entries(this.countries).map(([code, country]) => ({
+                code,
+                name: country.name,
+                baseRate: country.rate
+            }))
         };
+    }
+
+    // get supported countries (alternative method name)
+    getInternationalCountries() {
+        return Object.entries(this.countries).map(([code, country]) => ({
+            code,
+            name: country.name,
+            baseRate: country.rate
+        }));
     }
 }
 

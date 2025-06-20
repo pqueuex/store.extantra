@@ -1,25 +1,32 @@
-# macOS system files
-.DS_Store
-.DS_Store?
+# dependencies
+node_modules/
+package-lock.json
+
+# environment
+.env*
+
+# logs
+*.log
+
+# system files
+.DS_Store*
 ._*
 .Spotlight-V100
 .Trashes
 ehthumbs.db
 Thumbs.db
 
-# Logs
-*.log
-npm-debug.log*
+# development files
+debug.html
+test*.html
+shipping-test.html
+*-guide.md
+*-summary.md
+test-functionality.md
+security-audit-report.md
 
-# Environment variables
-.env
-.env.local
-.env.production
-
-# IDE files
+# editor
 .vscode/
 .idea/
-
-# Temporary files
 *.tmp
 *.temp

@@ -3,93 +3,83 @@ const cors = require('cors');
 const path = require('path');
 const helmet = require('helmet');
 const rateLimit = require('express-rate-limit');
-const ShippingCalculator = require('./shipping-calculator-enhanced');
+const ShippingCalculator = require('./shipping-calculator');
 
-// Load environment variables
 require('dotenv').config();
-
-// Use environment variable for Stripe secret key
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
-
-// Initialize shipping calculator
 const shippingCalculator = new ShippingCalculator();
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// Security middleware with working CSP configuration
+// security middleware
 app.use(helmet({
     contentSecurityPolicy: {
         directives: {
             defaultSrc: ["'self'"],
-            scriptSrc: ["'self'", "'unsafe-inline'", "'unsafe-eval'"], // Required for cart functionality
-            scriptSrcAttr: ["'unsafe-inline'"], // Allow inline event handlers (onclick, etc.)
-            styleSrc: ["'self'", "'unsafe-inline'"], // Required for inline styles
-            imgSrc: ["'self'", "data:", "https:", "blob:"], // Allow images from various sources
+            scriptSrc: ["'self'", "'unsafe-inline'", "'unsafe-eval'"],
+            scriptSrcAttr: ["'unsafe-inline'"],
+            styleSrc: ["'self'", "'unsafe-inline'"],
+            imgSrc: ["'self'", "data:", "https:", "blob:"],
             connectSrc: ["'self'", "https://api.stripe.com", "https://checkout.stripe.com"],
             frameSrc: ["https://checkout.stripe.com", "https://js.stripe.com"],
-            objectSrc: ["'none'"], // Disable object/embed for security
+            objectSrc: ["'none'"],
             baseUri: ["'self'"],
             formAction: ["'self'"],
         },
     },
-    crossOriginEmbedderPolicy: false, // Disable to avoid iframe issues
-    hsts: false, // Disable HSTS for localhost development
+    crossOriginEmbedderPolicy: false,
+    hsts: false,
 }));
 
-// Rate limiting
+// rate limiting
 const limiter = rateLimit({
-    windowMs: 15 * 60 * 1000, // 15 minutes
-    max: 1000, // limit each IP to 1000 requests per windowMs (increased for development)
+    windowMs: 15 * 60 * 1000,
+    max: 1000,
     message: 'Too many requests from this IP, please try again later.'
 });
 app.use(limiter);
 
-// Stripe-specific rate limiting
+// stripe rate limiting
 const checkoutLimiter = rateLimit({
-    windowMs: 1 * 60 * 1000, // 1 minute
-    max: 20, // limit each IP to 20 checkout attempts per minute (increased for development)
+    windowMs: 1 * 60 * 1000,
+    max: 20,
     message: 'Too many checkout attempts, please try again later.'
 });
 
-// Middleware
+// middleware
 app.use(cors({
-    origin: ['http://localhost:3000', 'http://127.0.0.1:5500', 'http://localhost:5500'], // Allow multiple origins
+    origin: ['http://localhost:3000', 'http://127.0.0.1:5500', 'http://localhost:5500'],
     credentials: true
 }));
-app.use(express.json({ limit: '10mb' })); // Limit JSON payload size
-app.use(express.static('.')); // Serve static files from current directory
+app.use(express.json({ limit: '10mb' }));
+app.use(express.static('.'));
 
-// Serve your website
+// serve website
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'index.html'));
 });
 
-// Calculate shipping rates
-// Calculate shipping rates (domestic and international)
+// calculate shipping
 app.post('/calculate-shipping', async (req, res) => {
     try {
         const { destination, items = [], orderTotal = 0 } = req.body;
-        
-        // Support both zipCode and destination for backward compatibility
         const shippingDestination = destination || req.body.zipCode;
         
         if (!shippingDestination) {
-            return res.status(400).json({ error: 'Destination (ZIP code or country code) is required' });
+            return res.status(400).json({ error: 'Destination required' });
         }
 
-        // Validate destination format
         const isInternational = shippingCalculator.isInternationalDestination(shippingDestination);
         
         if (!isInternational && !shippingCalculator.validateZipCode(shippingDestination)) {
-            return res.status(400).json({ error: 'Invalid ZIP code format' });
+            return res.status(400).json({ error: 'Invalid ZIP code' });
         }
 
         if (isInternational && !shippingCalculator.validateCountryCode(shippingDestination)) {
-            return res.status(400).json({ error: 'Country not supported for shipping' });
+            return res.status(400).json({ error: 'Country not supported' });
         }
         
-        // Calculate shipping options (now handles both domestic and international)
         const shippingOptions = await shippingCalculator.calculateShipping(shippingDestination, orderTotal, items);
         
         if (shippingOptions.error) {
@@ -114,35 +104,30 @@ app.get('/shipping-countries', (req, res) => {
     }
 });
 
-// Create Stripe checkout session
+// create stripe checkout session
 app.post('/create-checkout-session', checkoutLimiter, async (req, res) => {
     try {
         const { items, destination } = req.body;
-        
-        // Support legacy zipCode parameter for backward compatibility
         const shippingDestination = destination || req.body.zipCode;
         
-        // Input validation
         if (!items || !Array.isArray(items) || items.length === 0) {
             return res.status(400).json({ error: 'Invalid items array' });
         }
         
-        // Validate each item
         const validatedItems = items.map(item => {
             if (!item.name || !item.price || typeof item.price !== 'number' || item.price <= 0) {
                 throw new Error('Invalid item data');
             }
             
-            // Sanitize and validate item properties
             return {
-                name: String(item.name).substring(0, 100), // Limit name length
-                description: String(item.description || '').substring(0, 200), // Limit description
-                price: Math.max(0, Math.min(999999, Number(item.price))), // Price limits
-                images: Array.isArray(item.images) ? item.images.slice(0, 1) : [] // Max 1 image
+                name: String(item.name).substring(0, 100),
+                description: String(item.description || '').substring(0, 200),
+                price: Math.max(0, Math.min(999999, Number(item.price))),
+                images: Array.isArray(item.images) ? item.images.slice(0, 1) : []
             };
         });
         
-        // Convert cart items to Stripe line items
+        // convert to stripe line items
         const lineItems = validatedItems.map(item => ({
             price_data: {
                 currency: 'usd',
@@ -151,12 +136,11 @@ app.post('/create-checkout-session', checkoutLimiter, async (req, res) => {
                     ...(item.description && item.description.trim() ? { description: item.description } : {}),
                     images: item.images.length > 0 ? [item.images[0]] : [],
                 },
-                unit_amount: Math.round(item.price * 100), // Convert to cents
+                unit_amount: Math.round(item.price * 100),
             },
             quantity: 1,
         }));
 
-        // Calculate order total and shipping
         const orderTotal = validatedItems.reduce((sum, item) => sum + item.price, 0);
         
         let shippingOptions;
@@ -168,12 +152,11 @@ app.post('/create-checkout-session', checkoutLimiter, async (req, res) => {
                 if (!shippingData.error) {
                     shippingOptions = shippingCalculator.formatForStripe(shippingData);
                 } else {
-                    // If shipping calculation fails, use fallback rates
                     throw new Error(shippingData.message || 'Shipping calculation failed');
                 }
             } catch (error) {
                 console.error('Shipping calculation error:', error);
-                // Fallback to default US domestic rates
+                // fallback to default rates
                 const qualifiesForFreeShipping = orderTotal >= 75;
                 shippingOptions = qualifiesForFreeShipping ? [
                     {
@@ -275,7 +258,7 @@ app.post('/create-checkout-session', checkoutLimiter, async (req, res) => {
             ];
         }
 
-        // Create Stripe checkout session
+        // create stripe checkout session
         const baseUrl = req.headers.origin || 'http://localhost:3000';
         const session = await stripe.checkout.sessions.create({
             payment_method_types: ['card'],
@@ -300,7 +283,6 @@ app.post('/create-checkout-session', checkoutLimiter, async (req, res) => {
     } catch (error) {
         console.error('Error creating checkout session:', error);
         
-        // Don't expose detailed error information to client
         if (error.message === 'Invalid item data') {
             res.status(400).json({ error: 'Invalid product information' });
         } else {
