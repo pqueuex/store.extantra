@@ -267,7 +267,6 @@ app.post('/create-checkout-session', checkoutLimiter, async (req, res) => {
             success_url: `${baseUrl}/success.html?session_id={CHECKOUT_SESSION_ID}`,
             cancel_url: `${baseUrl}/`,
             automatic_tax: { enabled: true },
-            customer_email: null, // Force email collection
             billing_address_collection: 'required',
             shipping_address_collection: {
                 allowed_countries: [
