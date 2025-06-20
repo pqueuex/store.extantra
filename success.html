@@ -9,27 +9,66 @@
 <body>
     <div class="container">
         <header class="header">
-            <div class="logo-space">LOGO</div>
+            <div class="logo-space">
+                <img src="images/extantralogo.webp" alt="Extantra" class="logo-image">
+            </div>
         </header>
 
         <div class="main-container">
-            <div style="text-align: center; padding: 50px; max-width: 400px; margin: 0 auto;">
-                <h1 style="color: #333; margin-bottom: 20px;">Payment Successful!</h1>
-                <p style="margin-bottom: 30px;">Thank you for your purchase. Your order has been confirmed.</p>
-                
-                <div style="background: #f5f5f5; padding: 20px; margin-bottom: 30px; border: 1px solid #ccc;">
-                    <p style="margin: 0; font-size: 12px;">Order confirmation and tracking information will be sent to your email.</p>
+            <aside class="sidebar">
+                <div class="categories-section">
+                    <div class="category" onclick="goToPage('index.html')">Home</div>
+                    <div class="category" onclick="goToPage('about.html')">About</div>
+                    <div class="category" onclick="goToPage('lighters.html')">Lighters</div>
                 </div>
-                
-                <button onclick="window.location.href='/'" style="
-                    background: white; 
-                    border: 2px outset #ccc; 
-                    padding: 8px 16px; 
-                    font-size: 11px; 
-                    cursor: pointer;
-                    margin: 5px;
-                ">Continue Shopping</button>
-            </div>
+                <div class="cart-button" id="cart-button" onclick="toggleCartDropdown()">
+                    Cart
+                    <div class="cart-count-badge hidden" id="cart-badge">0</div>
+                    <div class="cart-dropdown" id="cart-dropdown">
+                        <div class="cart-dropdown-content">
+                            <div class="cart-items" id="cart-items">
+                                <!-- Cart items will be populated here -->
+                            </div>
+                            <div class="cart-summary">
+                                <div>Items: <span id="cart-count">0</span></div>
+                                <div class="cart-total-line">Total: $<span id="cart-total">0.00</span></div>
+                                <button class="dropdown-checkout-button" id="checkout-btn" onclick="goToCheckout()" disabled>
+                                    Continue Shopping
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </aside>
+
+            <main class="content">
+                <div class="success-container">
+                    <div class="success-content">
+                        <div class="success-icon">✓</div>
+                        <h1>Payment Successful!</h1>
+                        <p class="success-message">Thank you for your purchase. Your order has been confirmed and is being processed.</p>
+                        
+                        <div class="order-info">
+                            <h3>What happens next?</h3>
+                            <ul>
+                                <li>You will receive an email confirmation shortly</li>
+                                <li>Your order will be carefully packaged and shipped</li>
+                                <li>Tracking information will be sent to your email</li>
+                                <li>Delivery typically takes 4-7 business days</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="order-details" id="order-details">
+                            <!-- Order details will be populated here -->
+                        </div>
+                        
+                        <div class="success-actions">
+                            <button class="primary-button" onclick="goToPage('index.html')">Continue Shopping</button>
+                            <button class="secondary-button" onclick="goToPage('about.html')">Contact Support</button>
+                        </div>
+                    </div>
+                </div>
+            </main>
         </div>
     </div>
 
@@ -37,11 +76,57 @@
         // Clear cart after successful payment
         localStorage.removeItem('cart');
         
-        // Optional: Get session ID from URL for order tracking
+        // Update cart display
+        let cart = [];
+        let cartCount = 0;
+        let cartTotal = 0;
+        updateCartDisplay();
+        
+        // Get session ID from URL for order tracking
         const urlParams = new URLSearchParams(window.location.search);
         const sessionId = urlParams.get('session_id');
+        
         if (sessionId) {
             console.log('Stripe session ID:', sessionId);
+            
+            // Optionally fetch order details from session
+            fetchOrderDetails(sessionId);
+        }
+        
+        async function fetchOrderDetails(sessionId) {
+            try {
+                // This would require a new endpoint to fetch session details
+                // For now, we'll just display the session ID
+                const orderDetailsDiv = document.getElementById('order-details');
+                orderDetailsDiv.innerHTML = `
+                    <div class="order-reference">
+                        <strong>Order Reference:</strong> ${sessionId.substring(0, 20)}...
+                    </div>
+                `;
+            } catch (error) {
+                console.error('Error fetching order details:', error);
+            }
+        }
+        
+        function goToPage(page) {
+            window.location.href = page;
+        }
+        
+        function toggleCartDropdown() {
+            // Cart is empty, do nothing
+        }
+        
+        function updateCartDisplay() {
+            document.getElementById('cart-count').textContent = cartCount;
+            document.getElementById('cart-total').textContent = cartTotal.toFixed(2);
+            
+            const badge = document.getElementById('cart-badge');
+            if (cartCount > 0) {
+                badge.textContent = cartCount;
+                badge.classList.remove('hidden');
+            } else {
+                badge.classList.add('hidden');
+            }
         }
     </script>
 </body>
