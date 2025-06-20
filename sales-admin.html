@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sales Management - Extantra Net</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .admin-container {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #f8f8f8;
+            border: 2px solid black;
+        }
+        
+        .admin-title {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        .sales-list {
+            margin-bottom: 30px;
+        }
+        
+        .sale-item {
+            background-color: white;
+            border: 1px solid #ccc;
+            padding: 15px;
+            margin-bottom: 10px;
+            display: grid;
+            grid-template-columns: 1fr auto;
+            gap: 15px;
+            align-items: center;
+        }
+        
+        .sale-info h3 {
+            margin: 0 0 5px 0;
+            font-size: 14px;
+        }
+        
+        .sale-details {
+            font-size: 11px;
+            color: #666;
+            margin-bottom: 8px;
+        }
+        
+        .sale-criteria {
+            font-size: 10px;
+            background-color: #f0f0f0;
+            padding: 4px 8px;
+            border-radius: 3px;
+            display: inline-block;
+        }
+        
+        .sale-controls {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+        
+        .toggle-btn {
+            padding: 6px 12px;
+            font-size: 10px;
+            border: 2px outset #ddd;
+            background-color: #e8e8e8;
+            cursor: pointer;
+        }
+        
+        .toggle-btn.active {
+            background-color: #4CAF50;
+            color: white;
+        }
+        
+        .toggle-btn.inactive {
+            background-color: #f44336;
+            color: white;
+        }
+        
+        .new-sale-form {
+            background-color: white;
+            border: 2px solid black;
+            padding: 20px;
+        }
+        
+        .form-group {
+            margin-bottom: 15px;
+        }
+        
+        .form-group label {
+            display: block;
+            font-size: 11px;
+            font-weight: bold;
+            margin-bottom: 4px;
+        }
+        
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 6px;
+            font-size: 10px;
+            border: 1px solid #ccc;
+            box-sizing: border-box;
+        }
+        
+        .criteria-builder {
+            border: 1px solid #ddd;
+            padding: 10px;
+            background-color: #f9f9f9;
+        }
+        
+        .criteria-item {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 8px;
+            align-items: center;
+        }
+        
+        .submit-btn {
+            padding: 8px 16px;
+            font-size: 11px;
+            border: 2px outset #ddd;
+            background-color: #4CAF50;
+            color: white;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="admin-container">
+        <h1 class="admin-title">Sales Management System</h1>
+        
+        <div class="sales-list" id="sales-list">
+            <h2>Current Sales</h2>
+            <div id="sales-container">
+                <!-- Sales will be loaded here -->
+            </div>
+        </div>
+        
+        <div class="new-sale-form">
+            <h2>Create New Sale</h2>
+            <form id="sale-form">
+                <div class="form-group">
+                    <label for="sale-name">Sale Name:</label>
+                    <input type="text" id="sale-name" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="sale-description">Description:</label>
+                    <input type="text" id="sale-description" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="sale-percentage">Discount Percentage:</label>
+                    <input type="number" id="sale-percentage" min="1" max="90" required>
+                </div>
+                
+                <div class="form-group">
+                    <label>Sale Criteria:</label>
+                    <div class="criteria-builder" id="criteria-builder">
+                        <div class="criteria-item">
+                            <select class="criteria-key">
+                                <option value="">Select Criteria</option>
+                                <option value="type">Product Type</option>
+                                <option value="color">Color</option>
+                                <option value="category">Category</option>
+                                <option value="theme">Theme</option>
+                            </select>
+                            <input type="text" class="criteria-value" placeholder="Value">
+                            <button type="button" onclick="addCriteriaRow()">+</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="start-date">Start Date:</label>
+                    <input type="date" id="start-date" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="end-date">End Date:</label>
+                    <input type="date" id="end-date" required>
+                </div>
+                
+                <button type="submit" class="submit-btn">Create Sale</button>
+            </form>
+        </div>
+        
+        <div style="margin-top: 20px; text-align: center;">
+            <button onclick="goToMainSite()" class="toggle-btn">← Back to Main Site</button>
+        </div>
+    </div>
+
+    <script>
+        let salesData = { products: [], sales: [] };
+
+        document.addEventListener('DOMContentLoaded', function() {
+            // Simple password protection
+            const password = prompt('Enter admin password:');
+            if (password !== 'extantra2025') {
+                alert('Access denied');
+                window.location.href = 'index.html';
+                return;
+            }
+            
+            loadSalesData();
+            document.getElementById('sale-form').addEventListener('submit', createSale);
+        });
+
+        async function loadSalesData() {
+            try {
+                const response = await fetch('products.json');
+                salesData = await response.json();
+                renderSales();
+            } catch (error) {
+                console.error('Error loading sales data:', error);
+            }
+        }
+
+        function renderSales() {
+            const container = document.getElementById('sales-container');
+            const sales = salesData.sales || [];
+            
+            if (sales.length === 0) {
+                container.innerHTML = '<p>No sales configured yet.</p>';
+                return;
+            }
+            
+            container.innerHTML = sales.map(sale => `
+                <div class="sale-item">
+                    <div class="sale-info">
+                        <h3>${sale.name}</h3>
+                        <div class="sale-details">${sale.description} - ${sale.percentage}% off</div>
+                        <div class="sale-criteria">
+                            Criteria: ${Object.entries(sale.criteria).map(([key, value]) => `${key}="${value}"`).join(', ')}
+                        </div>
+                        <div class="sale-details">${sale.startDate} to ${sale.endDate}</div>
+                    </div>
+                    <div class="sale-controls">
+                        <button class="toggle-btn ${sale.active ? 'active' : 'inactive'}" 
+                                onclick="toggleSale('${sale.id}')">
+                            ${sale.active ? 'ACTIVE' : 'INACTIVE'}
+                        </button>
+                        <button class="toggle-btn" onclick="deleteSale('${sale.id}')">DELETE</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        async function toggleSale(saleId) {
+            const sale = salesData.sales.find(s => s.id === saleId);
+            if (sale) {
+                sale.active = !sale.active;
+                await saveSalesData();
+                renderSales();
+            }
+        }
+
+        async function deleteSale(saleId) {
+            if (confirm('Are you sure you want to delete this sale?')) {
+                salesData.sales = salesData.sales.filter(s => s.id !== saleId);
+                await saveSalesData();
+                renderSales();
+            }
+        }
+
+        function addCriteriaRow() {
+            const builder = document.getElementById('criteria-builder');
+            const newRow = document.createElement('div');
+            newRow.className = 'criteria-item';
+            newRow.innerHTML = `
+                <select class="criteria-key">
+                    <option value="">Select Criteria</option>
+                    <option value="type">Product Type</option>
+                    <option value="color">Color</option>
+                    <option value="category">Category</option>
+                    <option value="theme">Theme</option>
+                </select>
+                <input type="text" class="criteria-value" placeholder="Value">
+                <button type="button" onclick="removeCriteriaRow(this)">-</button>
+            `;
+            builder.appendChild(newRow);
+        }
+
+        function removeCriteriaRow(button) {
+            button.parentElement.remove();
+        }
+
+        async function createSale(event) {
+            event.preventDefault();
+            
+            const name = document.getElementById('sale-name').value;
+            const description = document.getElementById('sale-description').value;
+            const percentage = parseInt(document.getElementById('sale-percentage').value);
+            const startDate = document.getElementById('start-date').value;
+            const endDate = document.getElementById('end-date').value;
+            
+            // Build criteria object
+            const criteria = {};
+            const criteriaRows = document.querySelectorAll('.criteria-item');
+            criteriaRows.forEach(row => {
+                const key = row.querySelector('.criteria-key').value;
+                const value = row.querySelector('.criteria-value').value;
+                if (key && value) {
+                    criteria[key] = value;
+                }
+            });
+            
+            if (Object.keys(criteria).length === 0) {
+                alert('Please specify at least one sale criteria');
+                return;
+            }
+            
+            const newSale = {
+                id: 'sale_' + Date.now(),
+                name,
+                description,
+                active: true,
+                percentage,
+                criteria,
+                startDate,
+                endDate
+            };
+            
+            if (!salesData.sales) {
+                salesData.sales = [];
+            }
+            
+            salesData.sales.push(newSale);
+            await saveSalesData();
+            renderSales();
+            
+            // Reset form
+            document.getElementById('sale-form').reset();
+            document.getElementById('criteria-builder').innerHTML = `
+                <div class="criteria-item">
+                    <select class="criteria-key">
+                        <option value="">Select Criteria</option>
+                        <option value="type">Product Type</option>
+                        <option value="color">Color</option>
+                        <option value="category">Category</option>
+                        <option value="theme">Theme</option>
+                    </select>
+                    <input type="text" class="criteria-value" placeholder="Value">
+                    <button type="button" onclick="addCriteriaRow()">+</button>
+                </div>
+            `;
+        }
+
+        async function saveSalesData() {
+            // In a real application, this would save to a backend
+            // For now, we'll just update the local data and show instructions
+            const jsonString = JSON.stringify(salesData, null, 2);
+            
+            // Create a download link for the updated JSON
+            const blob = new Blob([jsonString], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'products.json';
+            
+            // Auto-download the updated file
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            
+            alert('Updated products.json has been downloaded. Replace the existing file to apply changes.');
+        }
+
+        function goToMainSite() {
+            window.location.href = 'index.html';
+        }
+    </script>
+</body>
+</html>

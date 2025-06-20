@@ -3,381 +3,597 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>EXTANTRA - EXT MARKET | Premium Art & Accessories</title>
-    <meta name="description" content="EXTANTRA - Premium handcrafted art prints, woodblock t-shirts, custom accessories. Worldwide shipping from Florida.">
-    <meta name="keywords" content="art prints, woodblock t-shirts, custom zippo, flask, stickers, handmade">
-    <link rel="stylesheet" href="style.css">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <script src="https://js.stripe.com/v3/"></script>
-    <script src="https://cdn.jsdelivr.net/npm/js-cookie@3.0.5/dist/js.cookie.min.js"></script>
+    <title>Extantra Net</title>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <!-- Loading Overlay -->
-    <div id="loading-overlay" class="loading-overlay">
-        <div class="loading-spinner"></div>
-        <div class="loading-text">Loading...</div>
-    </div>
-
-    <div class="main-container">
-        <!-- Header with Navigation -->
-        <header class="header-section">
-            <div class="header-content">
-                <button class="menu-toggle" id="menu-toggle" aria-label="Toggle menu">☰</button>
-                <div class="site-title" onclick="showPage('home')">EXTANTRA</div>
-                <button class="cart-button" onclick="openCart()" aria-label="Shopping cart">
-                    <span class="cart-icon">🛒</span>
-                    <span class="cart-count" id="cart-count">0</span>
-                </button>
+    <div class="container">
+        <header class="header">
+            <div class="logo-space">
+                <img src="images/extantralogo.webp" alt="Extantra" class="logo-image">
             </div>
-            <nav class="main-nav" id="main-nav">
-                <a href="#" onclick="showPage('home')" class="nav-link active">Home</a>
-                <a href="#" onclick="showPage('products')" class="nav-link">Products</a>
-                <a href="#" onclick="showPage('contact')" class="nav-link">Contact</a>
-                <a href="#" onclick="showPage('terms')" class="nav-link">Terms</a>
-                <a href="#" onclick="showPage('privacy')" class="nav-link">Privacy</a>
-            </nav>
         </header>
 
-        <!-- Home Page -->
-        <div id="home-page" class="page active">
-            <!-- Announcement Section -->
-            <div class="section announcement">
-                <div class="deal-text">25% OFF</div>
-                <div class="deal-subtitle">ZIPPO + FLASK SET</div>
-                <div class="deal-description">Limited Time Offer - Save $15</div>
-            </div>
-
-            <!-- Product Navigation -->
-            <div class="section product-nav">
-                <div class="nav-container">
-                    <div class="product-icon" onclick="scrollToSection('prints')">
-                        <div class="icon-symbol">🖼</div>
-                        <div class="icon-label">PRINTS</div>
-                    </div>
-                    <div class="product-icon" onclick="scrollToSection('shirts')">
-                        <div class="icon-symbol">👕</div>
-                        <div class="icon-label">SHIRTS</div>
-                    </div>
-                    <div class="product-icon" onclick="scrollToSection('accessories')">
-                        <div class="icon-symbol">🔥</div>
-                        <div class="icon-label">ZIPPO</div>
-                    </div>
-                    <div class="product-icon" onclick="scrollToSection('accessories')">
-                        <div class="icon-symbol">🍺</div>
-                        <div class="icon-label">FLASK</div>
-                    </div>
-                    <div class="product-icon" onclick="scrollToSection('stickers')">
-                        <div class="icon-symbol">📋</div>
-                        <div class="icon-label">STICKERS</div>
-                    </div>
-                    <div class="product-icon" onclick="scrollToSection('jewelry')">
-                        <div class="icon-symbol">💍</div>
-                        <div class="icon-label">JEWELRY</div>
-                    </div>
+        <div class="main-container">
+            <aside class="sidebar">
+                <div class="categories-section">
+                    <div class="category" onclick="goToPage('index.html')">Home</div>
+                    <div class="category" onclick="goToPage('about.html')">About</div>
+                    <div class="category" onclick="goToPage('lighters.html')">Lighters</div>
                 </div>
-            </div>
-
-            <!-- About Section -->
-            <div class="section about-section">
-                <div class="about-title">About EXTANTRA</div>
-                <div class="about-text">
-                    Welcome to EXTANTRA, where art meets craftsmanship. We specialize in unique, handcrafted pieces that blend artistic expression with functional design.
-                </div>
-                <div class="about-text">
-                    From custom prints to handmade woodblock t-shirts, every piece is created with attention to detail and artistic integrity. Our collection spans various mediums and accessories, each telling its own story.
-                </div>
-                <div class="about-text">
-                    Quality craftsmanship, unique designs, and customer satisfaction drive everything we create. Shipping worldwide from Leesburg, Florida.
-                </div>
-            </div>
-
-            <!-- Art Prints Section -->
-            <div id="prints" class="section product-section">
-                <div class="section-title">Art Prints</div>
-                <div class="product-grid">
-                    <div class="product-item" onclick="showProductDetail('paper-print')">
-                        <div class="product-image-placeholder">📄</div>
-                        <div class="product-name">Paper Print</div>
-                        <div class="product-price">$15 - $45</div>
-                    </div>
-                    <div class="product-item" onclick="showProductDetail('canvas-print')">
-                        <div class="product-image-placeholder">🎨</div>
-                        <div class="product-name">Canvas Print</div>
-                        <div class="product-price">$35 - $85</div>
-                    </div>
-                    <div class="product-item" onclick="showProductDetail('woodblock-print')">
-                        <div class="product-image-placeholder">🪵</div>
-                        <div class="product-name">Woodblock Print</div>
-                        <div class="product-price">$25 - $65</div>
-                    </div>
-                    <div class="product-item" onclick="showProductDetail('metal-print')">
-                        <div class="product-image-placeholder">⚡</div>
-                        <div class="product-name">Metal Print</div>
-                        <div class="product-price">$45 - $120</div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- T-Shirts Section -->
-            <div id="shirts" class="section product-section">
-                <div class="section-title">Handmade Woodblock T-Shirts</div>
-                <div class="product-grid single-product">
-                    <div class="product-item" onclick="showProductDetail('woodblock-tshirt')">
-                        <div class="product-image-placeholder">👕</div>
-                        <div class="product-name">Woodblock T-Shirt</div>
-                        <div class="product-price">$35</div>
-                        <div class="product-colors">Black • White</div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Accessories Section -->
-            <div id="accessories" class="section product-section">
-                <div class="section-title">Accessories</div>
-                <div class="product-grid">
-                    <div class="product-item" onclick="showProductDetail('custom-zippo')">
-                        <div class="product-image-placeholder">🔥</div>
-                        <div class="product-name">Custom Zippo</div>
-                        <div class="product-price">$25 - $35</div>
-                    </div>
-                    <div class="product-item" onclick="showProductDetail('hip-flask')">
-                        <div class="product-image-placeholder">🍺</div>
-                        <div class="product-name">Hip Flask</div>
-                        <div class="product-price">$30 - $45</div>
-                    </div>
-                    <div class="product-item featured" onclick="showProductDetail('zippo-flask-set')">
-                        <div class="product-badge">25% OFF</div>
-                        <div class="product-image-placeholder">🎁</div>
-                        <div class="product-name">Zippo + Flask Set</div>
-                        <div class="product-price">
-                            <span class="original-price">$60</span>
-                            <span class="sale-price">$45</span>
+                <div class="cart-button" id="cart-button" onclick="toggleCartDropdown()">
+                    Cart
+                    <div class="cart-count-badge hidden" id="cart-badge">0</div>
+                    <div class="cart-dropdown" id="cart-dropdown">
+                        <div class="cart-dropdown-content">
+                            <div class="cart-items" id="cart-items">
+                                <!-- Cart items will be populated here -->
+                            </div>
+                            <div class="cart-summary">
+                                <div>Items: <span id="cart-count">0</span></div>
+                                <div class="cart-total-line">Subtotal: $<span id="cart-total">0.00</span></div>
+                                <div class="cart-tax-line">Tax: $<span id="cart-tax">0.00</span></div>
+                            </div>
+                            <button class="dropdown-checkout-button" id="checkout-btn" onclick="goToCheckout()" disabled>
+                                Checkout
+                            </button>
                         </div>
                     </div>
                 </div>
-            </div>
+            </aside>
 
-            <!-- Stickers Section -->
-            <div id="stickers" class="section product-section">
-                <div class="section-title">Sticker Packs</div>
-                <div class="product-grid">
-                    <div class="product-item" onclick="showProductDetail('mini-pack')">
-                        <div class="product-image-placeholder">📋</div>
-                        <div class="product-name">Mini Pack (5)</div>
-                        <div class="product-price">$8</div>
+            <!-- Filtering Controls -->
+            <div class="filter-section">
+                <div class="filter-controls">
+                    <div class="filter-group">
+                        <label for="sort-by">Sort:</label>
+                        <select id="sort-by">
+                            <option value="name">Name</option>
+                            <option value="price-low">Price: Low to High</option>
+                            <option value="price-high">Price: High to Low</option>
+                            <option value="category">Category</option>
+                        </select>
                     </div>
-                    <div class="product-item" onclick="showProductDetail('standard-pack')">
-                        <div class="product-image-placeholder">📋</div>
-                        <div class="product-name">Standard Pack (10)</div>
-                        <div class="product-price">$15</div>
+                    
+                    <div class="filter-group">
+                        <label for="filter-category">Category:</label>
+                        <select id="filter-category">
+                            <option value="">All</option>
+                            <option value="gaming">Gaming</option>
+                            <option value="music">Music</option>
+                            <option value="original">Original</option>
+                        </select>
                     </div>
-                    <div class="product-item" onclick="showProductDetail('mega-pack')">
-                        <div class="product-image-placeholder">📋</div>
-                        <div class="product-name">Mega Pack (20)</div>
-                        <div class="product-price">$25</div>
+                    
+                    <div class="filter-group">
+                        <label for="filter-color">Color:</label>
+                        <select id="filter-color">
+                            <option value="">All</option>
+                            <option value="chrome">Chrome</option>
+                            <option value="black">Black</option>
+                        </select>
+                    </div>
+                    
+                    <div class="filter-group">
+                        <label for="filter-theme">Theme:</label>
+                        <select id="filter-theme">
+                            <option value="">All</option>
+                            <option value="horror">Horror</option>
+                            <option value="electronic">Electronic</option>
+                            <option value="fantasy">Fantasy</option>
+                            <option value="funny">Funny</option>
+                        </select>
+                    </div>
+                    
+                    <div class="filter-group checkbox-group">
+                        <label>
+                            <input type="checkbox" id="filter-instock" checked>
+                            In Stock Only
+                        </label>
+                    </div>
+                    
+                    <div class="filter-group">
+                        <button id="clear-filters" class="clear-filters-btn">Clear</button>
                     </div>
                 </div>
             </div>
 
-            <!-- Jewelry Section -->
-            <div id="jewelry" class="section jewelry-section">
-                <div class="section-title">Jewelry Collection</div>
-                <div class="coming-soon">
-                    <div class="coming-soon-text">Jewelry currently unavailable - coming soon!</div>
-                    <div class="email-signup">
-                        <div class="signup-title">Get notified when jewelry arrives:</div>
-                        <form class="signup-form" id="jewelry-signup-form">
-                            <input type="email" id="jewelry-email" placeholder="Enter your email" required>
-                            <button type="submit">Notify Me</button>
-                        </form>
-                    </div>
-                </div>
-            </div>
+            <main class="product-grid" id="product-grid">
+                <!-- Products will be dynamically loaded here -->
+            </main>
         </div>
 
-        <!-- Products Page -->
-        <div id="products-page" class="page">
-            <div class="section">
-                <div class="page-title">All Products</div>
-                <div id="products-grid" class="products-full-grid">
-                    <!-- Products will be loaded here -->
+        <!-- Footer -->
+        <footer class="footer">
+            <div class="footer-content">
+                <div class="copyright">© 2025 EXTANTRA</div>
+                <div class="contact">
+                    <a href="mailto:store@extantra.net">Contact: store@extantra.net</a>
+                </div>
+                <div class="policy-link">
+                    <a href="policy.html">Policy</a>
                 </div>
             </div>
-        </div>
+        </footer>
+    </div>
 
-        <!-- Contact Page -->
-        <div id="contact-page" class="page">
-            <div class="section">
-                <div class="page-title">Contact Us</div>
-                <div class="contact-info">
-                    <div class="contact-item">
-                        <strong>Email:</strong> pqueue001@gmail.com
-                    </div>
-                    <div class="contact-item">
-                        <strong>Business:</strong> EXTANTRA
-                    </div>
-                    <div class="contact-item">
-                        <strong>Shipping From:</strong> Leesburg, FL 33748
-                    </div>
-                </div>
-                <form class="contact-form" id="contact-form">
-                    <div class="form-group">
-                        <label for="contact-name">Name</label>
-                        <input type="text" id="contact-name" name="name" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="contact-email">Email</label>
-                        <input type="email" id="contact-email" name="email" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="contact-subject">Subject</label>
-                        <input type="text" id="contact-subject" name="subject" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="contact-message">Message</label>
-                        <textarea id="contact-message" name="message" rows="5" required></textarea>
-                    </div>
-                    <button type="submit" class="submit-btn">Send Message</button>
-                </form>
-            </div>
-        </div>
-
-        <!-- Terms Page -->
-        <div id="terms-page" class="page">
-            <div class="section">
-                <div class="page-title">Terms of Service</div>
-                <div class="legal-content">
-                    <h3>1. No Returns Policy</h3>
-                    <p>All sales are final. EXTANTRA does not accept returns or provide refunds for any products purchased.</p>
-                    
-                    <h3>2. Product Information</h3>
-                    <p>We strive to provide accurate product descriptions and images. Colors may vary slightly due to monitor settings.</p>
-                    
-                    <h3>3. Shipping</h3>
-                    <p>Products ship from Leesburg, FL 33748. Shipping costs are calculated at checkout based on destination.</p>
-                    
-                    <h3>4. Payment</h3>
-                    <p>We accept secure payments through Stripe. All transactions are processed securely.</p>
-                    
-                    <h3>5. Contact</h3>
-                    <p>For questions, contact us at pqueue001@gmail.com</p>
-                </div>
-            </div>
-        </div>
-
-        <!-- Privacy Page -->
-        <div id="privacy-page" class="page">
-            <div class="section">
-                <div class="page-title">Privacy Policy</div>
-                <div class="legal-content">
-                    <h3>Information We Collect</h3>
-                    <p>We collect information you provide when making purchases, including name, email, and shipping address.</p>
-                    
-                    <h3>How We Use Information</h3>
-                    <p>Information is used to process orders, send confirmations, and provide customer service.</p>
-                    
-                    <h3>Data Security</h3>
-                    <p>We use secure payment processing through Stripe and protect your personal information.</p>
-                    
-                    <h3>Cookies</h3>
-                    <p>We use cookies to maintain your shopping cart and improve your experience.</p>
-                    
-                    <h3>Contact</h3>
-                    <p>Questions about privacy? Email pqueue001@gmail.com</p>
-                </div>
+    <!-- Image Modal -->
+    <div class="image-modal" id="image-modal">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeModal()">&times;</button>
+            <div class="modal-image" id="modal-image">
+                Enlarged Product Image
             </div>
         </div>
     </div>
 
-    <!-- Cart Modal -->
-    <div id="cart-modal" class="modal cart-modal">
-        <div class="modal-content cart-content">
-            <div class="modal-header">
-                <h2>Shopping Cart</h2>
-                <button class="close-btn" onclick="closeCart()">&times;</button>
-            </div>
-            <div id="cart-items" class="cart-items">
-                <div class="empty-cart">Your cart is empty</div>
-            </div>
-            <div id="cart-total" class="cart-total" style="display: none;">
-                <div class="subtotal-row">
-                    <span>Subtotal:</span>
-                    <span>$<span id="subtotal-amount">0.00</span></span>
-                </div>
-                <div class="tax-row">
-                    <span>Tax:</span>
-                    <span>$<span id="tax-amount">0.00</span></span>
-                </div>
-                <div class="shipping-row">
-                    <span>Shipping:</span>
-                    <span id="shipping-amount">Calculated at checkout</span>
-                </div>
-                <div class="total-row">
-                    <span>Total:</span>
-                    <span>$<span id="total-amount">0.00</span></span>
-                </div>
-                <button class="checkout-btn" onclick="proceedToCheckout()">Proceed to Checkout</button>
-            </div>
-        </div>
-    </div>
+    <script>
+        // Validate and sanitize cart data from localStorage
+        function validateCartData(cartData) {
+            try {
+                if (!Array.isArray(cartData)) return [];
+                
+                return cartData.filter(item => {
+                    return item && 
+                           typeof item.name === 'string' && 
+                           typeof item.price === 'number' && 
+                           item.price > 0 && 
+                           item.price < 10000 && // Reasonable price limit
+                           typeof item.id !== 'undefined';
+                }).map(item => ({
+                    ...item,
+                    name: String(item.name).substring(0, 100), // Limit name length
+                    price: Math.max(0, Math.min(9999, Number(item.price))) // Sanitize price
+                }));
+            } catch (e) {
+                console.error('Cart validation error:', e);
+                return [];
+            }
+        }
 
-    <!-- Product Detail Modal -->
-    <div id="product-modal" class="modal product-modal">
-        <div class="modal-content product-content">
-            <div class="modal-header">
-                <button class="close-btn" onclick="closeProductModal()">&times;</button>
-            </div>
-            <div id="product-detail-content">
-                <!-- Product details will be loaded here -->
-            </div>
-        </div>
-    </div>
+        // Simplified cart initialization for debugging
+        let cart = [];
+        try {
+            const savedCart = localStorage.getItem('cart');
+            if (savedCart) {
+                cart = JSON.parse(savedCart);
+                // Basic validation - just check if it's an array
+                if (!Array.isArray(cart)) {
+                    cart = [];
+                }
+            }
+        } catch (e) {
+            console.error('Error loading cart from localStorage:', e);
+            cart = [];
+        }
+        
+        let cartCount = cart.length;
+        let cartTotal = cart.reduce((sum, item) => sum + (item.price || 0), 0);
+        let products = []; // Will be loaded from JSON
+        let sales = []; // Will be loaded from JSON
+        let currentImageIndex = {}; // Track current image for each product by ID
+        
+        // Sales tax configuration
+        const SALES_TAX_RATE = 0.085; // 8.5%
+        let cartTax = cartTotal * SALES_TAX_RATE;
 
-    <!-- Checkout Modal -->
-    <div id="checkout-modal" class="modal checkout-modal">
-        <div class="modal-content checkout-content">
-            <div class="modal-header">
-                <h2>Checkout</h2>
-                <button class="close-btn" onclick="closeCheckout()">&times;</button>
-            </div>
-            <div class="checkout-steps">
-                <div class="step active" data-step="1">1. Shipping</div>
-                <div class="step" data-step="2">2. Payment</div>
-                <div class="step" data-step="3">3. Confirm</div>
-            </div>
-            <div id="checkout-content">
-                <!-- Checkout forms will be loaded here -->
-            </div>
-        </div>
-    </div>
+        document.addEventListener('DOMContentLoaded', function() {
+            loadProducts();
+            updateCartDisplay();
+            initializeFilters();
+        });
 
-    <!-- Success Modal -->
-    <div id="success-modal" class="modal success-modal">
-        <div class="modal-content success-content">
-            <div class="success-icon">✓</div>
-            <h2>Order Confirmed!</h2>
-            <p>Thank you for your purchase. You'll receive a confirmation email shortly.</p>
-            <div id="order-number"></div>
-            <button class="continue-btn" onclick="closeSuccessModal()">Continue Shopping</button>
-        </div>
-    </div>
+        function initializeFilters() {
+            // Add event listeners to all filter controls
+            document.getElementById('sort-by').addEventListener('change', applyFiltersAndSort);
+            document.getElementById('filter-category').addEventListener('change', applyFiltersAndSort);
+            document.getElementById('filter-color').addEventListener('change', applyFiltersAndSort);
+            document.getElementById('filter-theme').addEventListener('change', applyFiltersAndSort);
+            document.getElementById('filter-instock').addEventListener('change', applyFiltersAndSort);
+            document.getElementById('clear-filters').addEventListener('click', clearAllFilters);
+        }
 
-    <!-- Error Modal -->
-    <div id="error-modal" class="modal error-modal">
-        <div class="modal-content error-content">
-            <div class="error-icon">⚠</div>
-            <h2>Error</h2>
-            <p id="error-message">Something went wrong. Please try again.</p>
-            <button class="error-btn" onclick="closeErrorModal()">OK</button>
-        </div>
-    </div>
+        function applyFiltersAndSort() {
+            let filteredProducts = [...products];
+            
+            // Apply filters
+            const categoryFilter = document.getElementById('filter-category').value;
+            const colorFilter = document.getElementById('filter-color').value;
+            const themeFilter = document.getElementById('filter-theme').value;
+            const instockFilter = document.getElementById('filter-instock').checked;
+            
+            if (categoryFilter) {
+                filteredProducts = filteredProducts.filter(p => p.category === categoryFilter);
+            }
+            
+            if (colorFilter) {
+                filteredProducts = filteredProducts.filter(p => p.color === colorFilter);
+            }
+            
+            if (themeFilter) {
+                filteredProducts = filteredProducts.filter(p => p.theme === themeFilter);
+            }
+            
+            if (instockFilter) {
+                filteredProducts = filteredProducts.filter(p => p.inStock);
+            }
+            
+            // Apply sorting
+            const sortBy = document.getElementById('sort-by').value;
+            switch (sortBy) {
+                case 'name':
+                    filteredProducts.sort((a, b) => a.name.localeCompare(b.name));
+                    break;
+                case 'price-low':
+                    filteredProducts.sort((a, b) => a.currentPrice - b.currentPrice);
+                    break;
+                case 'price-high':
+                    filteredProducts.sort((a, b) => b.currentPrice - a.currentPrice);
+                    break;
+                case 'category':
+                    filteredProducts.sort((a, b) => a.category.localeCompare(b.category));
+                    break;
+            }
+            
+            renderFilteredProducts(filteredProducts);
+        }
 
-    <!-- Scripts -->
-    <script src="products.js"></script>
-    <script src="cart.js"></script>
-    <script src="checkout.js"></script>
-    <script src="main.js"></script>
+        function clearAllFilters() {
+            document.getElementById('sort-by').value = 'name';
+            document.getElementById('filter-category').value = '';
+            document.getElementById('filter-color').value = '';
+            document.getElementById('filter-theme').value = '';
+            document.getElementById('filter-instock').checked = true;
+            applyFiltersAndSort();
+        }
+
+        function renderFilteredProducts(filteredProducts) {
+            const productGrid = document.getElementById('product-grid');
+            productGrid.innerHTML = '';
+            
+            if (filteredProducts.length === 0) {
+                productGrid.innerHTML = '<div class="no-products">No products match your filters.</div>';
+                return;
+            }
+            
+            filteredProducts.forEach((product) => {
+                const productCard = document.createElement('div');
+                productCard.className = 'product-card';
+                productCard.setAttribute('data-product-id', product.id);
+                
+                const hasMultipleImages = product.images && product.images.length > 1;
+                const imageUrl = product.images && product.images.length > 0 ? product.images[0] : 'images/IMG_2179.jpeg';
+                
+                // Sanitize product data before rendering
+                const sanitizeName = product.name.replace(/[<>]/g, '');
+                const sanitizeDescription = (product.description || 'Quality product with great features').replace(/[<>]/g, '');
+                const sanitizeBarcode = (product.barcode || '||||| ||| ||').replace(/[<>]/g, '');
+                
+                productCard.innerHTML = `
+                    <div class="product-image" onclick="enlargeImage(${product.id})">
+                        <img src="${imageUrl}" alt="${sanitizeName}" class="product-img">
+                        ${product.onSale ? `<div class="sale-badge">${product.salePercentage}% OFF</div>` : ''}
+                        ${hasMultipleImages ? `
+                            <div class="image-nav image-nav-left">
+                                <button class="nav-button" onclick="event.stopPropagation(); previousImage(${product.id})">&lt;</button>
+                            </div>
+                            <div class="image-nav image-nav-right">
+                                <button class="nav-button" onclick="event.stopPropagation(); nextImage(${product.id})">&gt;</button>
+                            </div>
+                        ` : ''}
+                    </div>
+                    <div class="product-info">
+                        <div class="product-title clickable-title" onclick="goToProduct(${product.id})">${sanitizeName}</div>
+                        <div class="product-description">${sanitizeDescription}</div>
+                        <div class="barcode-space">${sanitizeBarcode}</div>
+                        <div class="product-pricing">
+                            ${product.onSale ? `
+                                <div class="sale-price">$${product.currentPrice.toFixed(2)}</div>
+                                <div class="original-price">$${product.originalPrice.toFixed(2)}</div>
+                            ` : `
+                                <div class="product-price">$${product.currentPrice.toFixed(2)}</div>
+                            `}
+                        </div>
+                        <button class="purchase-button" onclick="addToCart(${product.id})">Add to Cart</button>
+                    </div>
+                `;
+                
+                productGrid.appendChild(productCard);
+            });
+        }
+
+        async function loadProducts() {
+            try {
+                const response = await fetch('products.json');
+                const data = await response.json();
+                products = data.products;
+                sales = data.sales || [];
+                
+                // Apply sales to products
+                applyActiveSales();
+                applyFiltersAndSort(); // Use filtering system instead of direct render
+                
+                // Initialize current image index for each product by ID
+                products.forEach((product) => {
+                    currentImageIndex[product.id] = 0;
+                });
+                
+            } catch (error) {
+                console.error('Error loading products:', error);
+                // Fallback to placeholder products if JSON fails to load
+                loadFallbackProducts();
+            }
+        }
+
+        function applyActiveSales() {
+            // Reset all sale prices first
+            products.forEach(product => {
+                product.salePrice = null;
+                product.currentPrice = product.originalPrice;
+                product.onSale = false;
+                product.salePercentage = 0;
+            });
+
+            // Apply active sales
+            sales.filter(sale => sale.active).forEach(sale => {
+                products.forEach(product => {
+                    if (matchesSaleCriteria(product, sale.criteria)) {
+                        const salePrice = product.originalPrice * (1 - sale.percentage / 100);
+                        product.salePrice = salePrice;
+                        product.currentPrice = salePrice;
+                        product.onSale = true;
+                        product.salePercentage = sale.percentage;
+                        product.saleName = sale.name;
+                    }
+                });
+            });
+        }
+
+        function matchesSaleCriteria(product, criteria) {
+            return Object.keys(criteria).every(key => {
+                return product[key] === criteria[key];
+            });
+        }
+
+        function loadFallbackProducts() {
+            products = [
+                { id: 1, name: 'Sample Product Title', originalPrice: 29.99, currentPrice: 29.99, images: ['images/001_silent_hill_2_zippo_lighter_1.jpeg'], description: 'High-quality item', barcode: '||||| ||| ||', type: 'lighter', color: 'chrome' },
+                { id: 2, name: 'Another Product Name', originalPrice: 45.00, currentPrice: 45.00, images: ['images/002_aphex_twin_zippo_lighter_1.jpeg'], description: 'Premium quality', barcode: '||||| ||| ||', type: 'lighter', color: 'black' },
+                { id: 3, name: 'Third Product', originalPrice: 19.95, currentPrice: 19.95, images: ['images/003_silent_hill_3_zippo_lighter_1.jpeg'], description: 'Great value', barcode: '||||| ||| ||', type: 'lighter', color: 'chrome' },
+                { id: 4, name: 'Product Four', originalPrice: 35.50, currentPrice: 35.50, images: ['images/004_elder_scrolls_skyrim_zippo_lighter_1.jpeg'], description: 'Reliable choice', barcode: '||||| ||| ||', type: 'lighter', color: 'black' },
+                { id: 5, name: 'Fifth Product Item', originalPrice: 22.99, currentPrice: 22.99, images: ['images/005_elder_scrolls_oblivion_zippo_lighter_1.jpeg'], description: 'Quality assured', barcode: '||||| ||| ||', type: 'lighter', color: 'chrome' },
+                { id: 6, name: 'Sixth Product', originalPrice: 55.00, currentPrice: 55.00, images: ['images/007_need_head_blown_off_zippo_lighter_1.jpeg'], description: 'Premium option', barcode: '||||| ||| ||', type: 'lighter', color: 'black' }
+            ];
+            sales = [];
+            applyFiltersAndSort(); // Use filtering system instead of direct render
+            
+            // Initialize current image index for each product by ID
+            products.forEach((product) => {
+                currentImageIndex[product.id] = 0;
+            });
+        }
+
+        function addToCart(productId) {
+            const product = products.find(p => p.id === productId);
+            if (!product) return;
+            
+            const cartItem = {
+                ...product,
+                price: product.currentPrice,
+                id: Date.now() + Math.random()
+            };
+            
+            cart.push(cartItem);
+            cartCount++;
+            cartTotal += product.currentPrice;
+            cartTax = cartTotal * SALES_TAX_RATE;
+
+            localStorage.setItem('cart', JSON.stringify(cart));
+            updateCartDisplay();
+        }
+
+        function removeFromCart(itemId) {
+            const itemIndex = cart.findIndex(item => item.id === itemId);
+            if (itemIndex > -1) {
+                const item = cart[itemIndex];
+                cart.splice(itemIndex, 1);
+                cartCount--;
+                cartTotal -= item.price;
+                cartTax = cartTotal * SALES_TAX_RATE;
+                
+                // Save to localStorage
+                localStorage.setItem('cart', JSON.stringify(cart));
+                
+                updateCartDisplay();
+            }
+        }
+
+        function goToProduct(productId) {
+            window.location.href = `product.html?id=${productId}`;
+        }
+
+        function goToPage(url) {
+            window.location.href = url;
+        }
+
+        // Navigate to checkout page
+        function goToCheckout() {
+            console.log('goToCheckout called, cartCount:', cartCount);
+            if (cartCount > 0) {
+                console.log('Redirecting to checkout.html');
+                window.location.href = 'checkout.html';
+            } else {
+                console.log('Cart is empty, not redirecting');
+            }
+        }
+
+        function updateCartDisplay() {
+            document.getElementById('cart-count').textContent = cartCount;
+            document.getElementById('cart-total').textContent = cartTotal.toFixed(2);
+            document.getElementById('cart-tax').textContent = cartTax.toFixed(2);
+            
+            // Update badge
+            const badge = document.getElementById('cart-badge');
+            badge.textContent = cartCount;
+            
+            if (cartCount > 0) {
+                badge.classList.remove('hidden');
+            } else {
+                badge.classList.add('hidden');
+            }
+            
+            // Update cart items list
+            const cartItemsContainer = document.getElementById('cart-items');
+            cartItemsContainer.innerHTML = '';
+            
+            cart.forEach(item => {
+                const itemElement = document.createElement('div');
+                itemElement.className = 'cart-item';
+                
+                // Sanitize item name before rendering
+                const sanitizedName = item.name.replace(/[<>]/g, '');
+                
+                itemElement.innerHTML = `
+                    <div class="item-icon"></div>
+                    <div class="item-details">
+                        <div class="item-name">${sanitizedName}</div>
+                        <div class="item-price">$${item.price.toFixed(2)}</div>
+                    </div>
+                    <div class="delete-item" onclick="removeFromCart(${item.id})">×</div>
+                `;
+                cartItemsContainer.appendChild(itemElement);
+            });
+            
+            // Enable checkout button if cart has items
+            const checkoutBtn = document.getElementById('checkout-btn');
+            checkoutBtn.disabled = cartCount === 0;
+        }
+
+        function toggleCartDropdown() {
+            const dropdown = document.getElementById('cart-dropdown');
+            dropdown.classList.toggle('show');
+        }
+
+        // Close dropdown when clicking outside
+        document.addEventListener('click', function(event) {
+            const cartButton = document.getElementById('cart-button');
+            const dropdown = document.getElementById('cart-dropdown');
+            
+            if (!cartButton.contains(event.target)) {
+                dropdown.classList.remove('show');
+            }
+        });
+
+        async function redirectToStripe() {
+            if (cartCount === 0) return;
+
+            try {
+                // Send cart data to backend to create Stripe checkout session
+                // Use the Node.js server URL (port 3000) instead of the current page's URL
+                const serverUrl = 'http://localhost:3000/create-checkout-session';
+                
+                const response = await fetch(serverUrl, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        items: cart
+                    })
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
+                const { url } = await response.json();
+                
+                // Redirect to Stripe checkout
+                window.location.href = url;
+                
+            } catch (error) {
+                console.error('Error creating checkout session:', error);
+                alert('There was an error processing your checkout. Please try again.');
+            }
+        }
+
+        // Image navigation functions
+        function previousImage(productId) {
+            const product = products.find(p => p.id === productId);
+            if (!product || !product.images || product.images.length <= 1) return;
+            
+            // Decrease the current image index, wrap around if necessary
+            currentImageIndex[productId] = (currentImageIndex[productId] - 1 + product.images.length) % product.images.length;
+            
+            // Update the image src using the product card with matching data-product-id
+            const productCard = document.querySelector(`[data-product-id="${productId}"]`);
+            if (productCard) {
+                const img = productCard.querySelector('.product-img');
+                img.src = product.images[currentImageIndex[productId]];
+            }
+        }
+
+        function nextImage(productId) {
+            const product = products.find(p => p.id === productId);
+            if (!product || !product.images || product.images.length <= 1) return;
+            
+            // Increase the current image index, wrap around if necessary
+            currentImageIndex[productId] = (currentImageIndex[productId] + 1) % product.images.length;
+            
+            // Update the image src using the product card with matching data-product-id
+            const productCard = document.querySelector(`[data-product-id="${productId}"]`);
+            if (productCard) {
+                const img = productCard.querySelector('.product-img');
+                img.src = product.images[currentImageIndex[productId]];
+            }
+        }
+
+        // Image enlargement functions
+        function enlargeImage(productId) {
+            const product = products.find(p => p.id === productId);
+            if (!product) return;
+            
+            const modal = document.getElementById('image-modal');
+            const modalImage = document.getElementById('modal-image');
+            
+            // Show the current image in the modal
+            const currentImage = product.images && product.images.length > 0 
+                ? product.images[currentImageIndex[productId] || 0] 
+                : 'images/IMG_2179.jpeg';
+            
+            modalImage.innerHTML = `<img src="${currentImage}" alt="${product.name}">`;
+            modal.classList.add('show');
+            
+            // Prevent body scrolling when modal is open
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeModal() {
+            const modal = document.getElementById('image-modal');
+            modal.classList.remove('show');
+            
+            // Restore body scrolling
+            document.body.style.overflow = 'auto';
+        }
+
+        // Close modal when clicking outside the image
+        document.getElementById('image-modal').addEventListener('click', function(event) {
+            if (event.target === this) {
+                closeModal();
+            }
+        });
+
+        // Enhanced keyboard navigation  
+        document.addEventListener('keydown', function(event) {
+            const modal = document.getElementById('image-modal');
+            const isModalOpen = modal.classList.contains('show');
+            
+            if (event.key === 'Escape' && isModalOpen) {
+                closeModal();
+            }
+            // Note: Arrow key navigation for multiple images would need the current product context
+            // This is primarily handled on individual product pages
+        });
+    </script>
 </body>
 </html>

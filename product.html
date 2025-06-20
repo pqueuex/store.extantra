@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title id="page-title">Product - Extantra Net</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <div class="logo-space">
+                <img src="images/extantralogo.webp" alt="Extantra" class="logo-image">
+            </div>
+        </header>
+
+        <div class="main-container">
+            <aside class="sidebar">
+                <div class="categories-section">
+                    <div class="category" onclick="goToPage('index.html')">Home</div>
+                    <div class="category" onclick="goToPage('about.html')">About</div>
+                    <div class="category" onclick="goToPage('lighters.html')">Lighters</div>
+                </div>
+                <div class="cart-button" id="cart-button" onclick="toggleCartDropdown()">
+                    Cart
+                    <div class="cart-count-badge hidden" id="cart-badge">0</div>
+                    <div class="cart-dropdown" id="cart-dropdown">
+                        <div class="cart-dropdown-content">
+                            <div class="cart-items" id="cart-items">
+                                <!-- Cart items will be populated here -->
+                            </div>
+                            <div class="cart-summary">
+                                <div>Items: <span id="cart-count">0</span></div>
+                                <div class="cart-total-line">Subtotal: $<span id="cart-total">0.00</span></div>
+                                <div class="cart-tax-line">Tax: $<span id="cart-tax">0.00</span></div>
+                            </div>
+                            <button class="dropdown-checkout-button" id="checkout-btn" onclick="goToCheckout()" disabled>
+                                Checkout
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </aside>
+
+            <main class="product-page-content" id="product-content">
+                <!-- Product content will be loaded here -->
+                <div class="loading-message">Loading product...</div>
+            </main>
+        </div>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <div class="footer-content">
+                <div class="copyright">© 2025 EXTANTRA</div>
+                <div class="contact">
+                    <a href="mailto:store@extantra.net">Contact: store@extantra.net</a>
+                </div>
+                <div class="policy-link">
+                    <a href="policy.html">Policy</a>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <!-- Image Modal -->
+    <div class="image-modal" id="image-modal">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeModal()">&times;</button>
+            <div class="modal-image" id="modal-image">
+                Enlarged Product Image
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let cart = JSON.parse(localStorage.getItem('cart')) || [];
+        let cartCount = cart.length;
+        let cartTotal = cart.reduce((sum, item) => sum + item.price, 0);
+        let currentProduct = null;
+        let currentImageIndex = 0;
+        let products = [];
+        let sales = [];
+        
+        // Sales tax configuration
+        const SALES_TAX_RATE = 0.085; // 8.5%
+        let cartTax = cartTotal * SALES_TAX_RATE;
+
+        document.addEventListener('DOMContentLoaded', function() {
+            loadProductFromURL();
+            updateCartDisplay();
+        });
+
+        function loadProductFromURL() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const productId = urlParams.get('id');
+            
+            if (productId) {
+                loadProduct(productId);
+            } else {
+                showError('No product specified');
+            }
+        }
+
+        async function loadProduct(productId) {
+            try {
+                const response = await fetch('products.json');
+                const data = await response.json();
+                products = data.products;
+                sales = data.sales || [];
+                
+                // Apply sales to products
+                applyActiveSales();
+                
+                const product = products.find(p => p.id == productId);
+                
+                if (product) {
+                    currentProduct = product;
+                    renderProductPage(product);
+                    document.getElementById('page-title').textContent = `${product.name} - Extantra Net`;
+                } else {
+                    showError('Product not found');
+                }
+            } catch (error) {
+                console.error('Error loading product:', error);
+                showError('Error loading product');
+            }
+        }
+
+        function applyActiveSales() {
+            // Reset all sale prices first
+            products.forEach(product => {
+                product.salePrice = null;
+                product.currentPrice = product.originalPrice;
+                product.onSale = false;
+                product.salePercentage = 0;
+            });
+
+            // Apply active sales
+            sales.filter(sale => sale.active).forEach(sale => {
+                products.forEach(product => {
+                    if (matchesSaleCriteria(product, sale.criteria)) {
+                        const salePrice = product.originalPrice * (1 - sale.percentage / 100);
+                        product.salePrice = salePrice;
+                        product.currentPrice = salePrice;
+                        product.onSale = true;
+                        product.salePercentage = sale.percentage;
+                        product.saleName = sale.name;
+                    }
+                });
+            });
+        }
+
+        function matchesSaleCriteria(product, criteria) {
+            return Object.keys(criteria).every(key => {
+                return product[key] === criteria[key];
+            });
+        }
+
+        function renderProductPage(product) {
+            const contentElement = document.getElementById('product-content');
+            
+            contentElement.innerHTML = `
+                <div class="product-page">
+                    <button class="back-button" onclick="goToPage('index.html')">&larr; Back to Products</button>
+                    
+                    <div class="product-detail-grid">
+                        <div class="product-images-section">
+                            <div class="main-product-image" onclick="enlargeImage()">
+                                <img src="${product.images[0]}" alt="${product.name}" class="main-product-img" id="main-image">
+                                ${product.images.length > 1 ? `
+                                    <div class="image-nav image-nav-left">
+                                        <button class="nav-button" onclick="event.stopPropagation(); previousImage()">&lt;</button>
+                                    </div>
+                                    <div class="image-nav image-nav-right">
+                                        <button class="nav-button" onclick="event.stopPropagation(); nextImage()">&gt;</button>
+                                    </div>
+                                ` : ''}
+                            </div>
+                            ${product.images.length > 1 ? `
+                                <div class="image-thumbnails">
+                                    ${product.images.map((img, index) => 
+                                        `<img src="${img}" alt="${product.name} ${index + 1}" class="thumbnail ${index === 0 ? 'active' : ''}" onclick="selectImage(${index})">`
+                                    ).join('')}
+                                </div>
+                            ` : ''}
+                        </div>
+                        
+                        <div class="product-info-section">
+                            <h1 class="product-page-title">${product.name}</h1>
+                            ${product.onSale ? `
+                                <div class="product-sale-info">
+                                    <div class="sale-badge-large">${product.salePercentage}% OFF</div>
+                                    <div class="product-page-sale-price">$${product.currentPrice.toFixed(2)}</div>
+                                    <div class="product-page-original-price">$${product.originalPrice.toFixed(2)}</div>
+                                </div>
+                            ` : `
+                                <div class="product-page-price">$${product.currentPrice.toFixed(2)}</div>
+                            `}
+                            <div class="product-barcode">${product.barcode}</div>
+                            
+                            <div class="product-description-section">
+                                <h3>Description</h3>
+                                <p class="short-description">${product.description}</p>
+                                ${product.longDescription ? `<p class="long-description">${product.longDescription}</p>` : ''}
+                            </div>
+                            
+                            ${product.specifications ? `
+                                <div class="specifications-section">
+                                    <h3>Specifications</h3>
+                                    <div class="specs-grid">
+                                        ${Object.entries(product.specifications).map(([key, value]) => 
+                                            `<div class="spec-item">
+                                                <span class="spec-label">${key.charAt(0).toUpperCase() + key.slice(1)}:</span>
+                                                <span class="spec-value">${value}</span>
+                                            </div>`
+                                        ).join('')}
+                                    </div>
+                                </div>
+                            ` : ''}
+                            
+                            <div class="purchase-section">
+                                <button class="add-to-cart-button" onclick="addToCart()">Add to Cart - $${product.currentPrice.toFixed(2)}</button>
+                                <div class="stock-status ${product.inStock ? 'in-stock' : 'out-of-stock'}">
+                                    ${product.inStock ? '✓ In Stock' : '✗ Out of Stock'}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function showError(message) {
+            const contentElement = document.getElementById('product-content');
+            contentElement.innerHTML = `
+                <div class="error-message">
+                    <h2>Error</h2>
+                    <p>${message}</p>
+                    <button onclick="goToPage('index.html')">Return to Products</button>
+                </div>
+            `;
+        }
+
+        function selectImage(index) {
+            if (!currentProduct || !currentProduct.images) return;
+            
+            currentImageIndex = index;
+            const mainImage = document.getElementById('main-image');
+            mainImage.src = currentProduct.images[index];
+            
+            // Update thumbnail active state
+            const thumbnails = document.querySelectorAll('.thumbnail');
+            thumbnails.forEach((thumb, i) => {
+                thumb.classList.toggle('active', i === index);
+            });
+        }
+
+        function previousImage() {
+            if (!currentProduct || !currentProduct.images || currentProduct.images.length <= 1) return;
+            
+            currentImageIndex = (currentImageIndex - 1 + currentProduct.images.length) % currentProduct.images.length;
+            selectImage(currentImageIndex);
+        }
+
+        function nextImage() {
+            if (!currentProduct || !currentProduct.images || currentProduct.images.length <= 1) return;
+            
+            currentImageIndex = (currentImageIndex + 1) % currentProduct.images.length;
+            selectImage(currentImageIndex);
+        }
+
+        function enlargeImage() {
+            if (!currentProduct || !currentProduct.images) return;
+            
+            const modal = document.getElementById('image-modal');
+            const modalImage = document.getElementById('modal-image');
+            
+            const currentImage = currentProduct.images[currentImageIndex];
+            modalImage.innerHTML = `<img src="${currentImage}" alt="${currentProduct.name}">`;
+            modal.classList.add('show');
+            
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeModal() {
+            const modal = document.getElementById('image-modal');
+            modal.classList.remove('show');
+            document.body.style.overflow = 'auto';
+        }
+
+        function addToCart() {
+            if (!currentProduct) return;
+            
+            const cartItem = {
+                ...currentProduct,
+                price: currentProduct.currentPrice, // Use current price (sale or original)
+                id: Date.now() + Math.random()
+            };
+            
+            cart.push(cartItem);
+            cartCount++;
+            cartTotal += currentProduct.currentPrice;
+            cartTax = cartTotal * SALES_TAX_RATE;
+            
+            // Save to localStorage
+            localStorage.setItem('cart', JSON.stringify(cart));
+            
+            updateCartDisplay();
+            
+            // Show feedback
+            const button = document.querySelector('.add-to-cart-button');
+            const originalText = button.textContent;
+            button.textContent = 'Added to Cart!';
+            button.style.backgroundColor = '#4CAF50';
+            
+            setTimeout(() => {
+                button.textContent = originalText;
+                button.style.backgroundColor = '';
+            }, 1500);
+        }
+
+        function removeFromCart(itemId) {
+            const itemIndex = cart.findIndex(item => item.id === itemId);
+            if (itemIndex > -1) {
+                const item = cart[itemIndex];
+                cart.splice(itemIndex, 1);
+                cartCount--;
+                cartTotal -= item.price;
+                cartTax = cartTotal * SALES_TAX_RATE;
+                localStorage.setItem('cart', JSON.stringify(cart));
+                updateCartDisplay();
+            }
+        }
+
+        function updateCartDisplay() {
+            document.getElementById('cart-count').textContent = cartCount;
+            document.getElementById('cart-total').textContent = cartTotal.toFixed(2);
+            document.getElementById('cart-tax').textContent = cartTax.toFixed(2);
+            
+            const badge = document.getElementById('cart-badge');
+            badge.textContent = cartCount;
+            
+            if (cartCount > 0) {
+                badge.classList.remove('hidden');
+            } else {
+                badge.classList.add('hidden');
+            }
+            
+            const cartItemsContainer = document.getElementById('cart-items');
+            cartItemsContainer.innerHTML = '';
+            
+            cart.forEach(item => {
+                const itemElement = document.createElement('div');
+                itemElement.className = 'cart-item';
+                itemElement.innerHTML = `
+                    <div class="item-icon"></div>
+                    <div class="item-details">
+                        <div class="item-name">${item.name}</div>
+                        <div class="item-price">$${item.price.toFixed(2)}</div>
+                    </div>
+                    <div class="delete-item" onclick="removeFromCart(${item.id})">×</div>
+                `;
+                cartItemsContainer.appendChild(itemElement);
+            });
+            
+            const checkoutBtn = document.getElementById('checkout-btn');
+            checkoutBtn.disabled = cartCount === 0;
+        }
+
+        function toggleCartDropdown() {
+            const dropdown = document.getElementById('cart-dropdown');
+            dropdown.classList.toggle('show');
+        }
+
+        function goToPage(url) {
+            window.location.href = url;
+        }
+
+        // Navigate to checkout page
+        function goToCheckout() {
+            console.log('goToCheckout called, cartCount:', cartCount);
+            if (cartCount > 0) {
+                console.log('Redirecting to checkout.html');
+                window.location.href = 'checkout.html';
+            } else {
+                console.log('Cart is empty, not redirecting');
+            }
+        }
+
+        // Close dropdown when clicking outside
+        document.addEventListener('click', function(event) {
+            const cartButton = document.getElementById('cart-button');
+            const dropdown = document.getElementById('cart-dropdown');
+            
+            if (!cartButton.contains(event.target)) {
+                dropdown.classList.remove('show');
+            }
+        });
+
+        // Enhanced keyboard navigation
+        document.addEventListener('keydown', function(event) {
+            const modal = document.getElementById('image-modal');
+            const isModalOpen = modal.classList.contains('show');
+            
+            if (event.key === 'Escape' && isModalOpen) {
+                closeModal();
+            } else if (isModalOpen && currentProduct && currentProduct.images && currentProduct.images.length > 1) {
+                if (event.key === 'ArrowLeft') {
+                    event.preventDefault();
+                    previousImage();
+                } else if (event.key === 'ArrowRight') {
+                    event.preventDefault();
+                    nextImage();
+                }
+            }
+        });
+
+        // Close modal when clicking outside the image
+        document.getElementById('image-modal').addEventListener('click', function(event) {
+            if (event.target === this) {
+                closeModal();
+            }
+        });
+    </script>
+</body>
+</html>

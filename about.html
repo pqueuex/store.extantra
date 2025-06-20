@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Extantra Net - About</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <div class="logo-space">
+                <img src="images/extantralogo.webp" alt="Extantra" class="logo-image">
+            </div>
+        </header>
+
+        <div class="main-container">
+            <aside class="sidebar">
+                <div class="categories-section">
+                    <div class="category" onclick="goToPage('index.html')">Home</div>
+                    <div class="category">About</div>
+                    <div class="category" onclick="goToPage('lighters.html')">Lighters</div>
+                </div>
+                <div class="cart-button" id="cart-button" onclick="toggleCartDropdown()">
+                    Cart
+                    <div class="cart-count-badge hidden" id="cart-badge">0</div>
+                    <div class="cart-dropdown" id="cart-dropdown">
+                        <div class="cart-dropdown-content">
+                            <div class="cart-items" id="cart-items">
+                                <!-- Cart items will be populated here -->
+                            </div>
+                            <div class="cart-summary">
+                                <div>Items: <span id="cart-count">0</span></div>
+                                <div class="cart-total-line">Subtotal: $<span id="cart-total">0.00</span></div>
+                                <div class="cart-tax-line">Tax: $<span id="cart-tax">0.00</span></div>
+                            </div>
+                            <button class="dropdown-checkout-button" id="checkout-btn" onclick="goToCheckout()" disabled>
+                                Checkout
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </aside>
+
+            <main class="about-content">
+                <div class="about-section">
+                    <h1 class="about-header">About Extantra Net</h1>
+                    <p class="about-paragraph">
+                        Welcome to Extantra Net, your premier destination for high-quality lighters and accessories. 
+                        We specialize in providing reliable, durable, and stylish lighting solutions for all your needs. 
+                        Our curated collection features both classic and modern designs, ensuring you'll find the perfect 
+                        lighter to match your style. With years of experience in the industry, we pride ourselves on 
+                        exceptional customer service and fast, secure shipping.
+                    </p>
+                        <video class="vertical-video" controls>
+                            <source src="about-video.mp4" type="video/mp4">
+                            Your browser does not support the video tag.
+                        </video>
+                </div>
+            </main>
+        </div>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <div class="footer-content">
+                <div class="copyright">© 2025 EXTANTRA</div>
+                <div class="contact">
+                    <a href="mailto:store@extantra.net">Contact: store@extantra.net</a>
+                </div>
+                <div class="policy-link">
+                    <a href="policy.html">Policy</a>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        // Cart functionality with localStorage persistence
+        let cart = JSON.parse(localStorage.getItem('cart')) || [];
+        let cartCount = cart.length;
+        let cartTotal = cart.reduce((sum, item) => sum + item.price, 0);
+        
+        // Sales tax configuration
+        const SALES_TAX_RATE = 0.085; // 8.5%
+        let cartTax = cartTotal * SALES_TAX_RATE;
+
+        document.addEventListener('DOMContentLoaded', function() {
+            updateCartDisplay();
+        });
+
+        function updateCartDisplay() {
+            document.getElementById('cart-count').textContent = cartCount;
+            document.getElementById('cart-total').textContent = cartTotal.toFixed(2);
+            document.getElementById('cart-tax').textContent = cartTax.toFixed(2);
+            
+            // Update badge
+            const badge = document.getElementById('cart-badge');
+            badge.textContent = cartCount;
+            
+            if (cartCount > 0) {
+                badge.classList.remove('hidden');
+            } else {
+                badge.classList.add('hidden');
+            }
+            
+            // Update cart items list
+            const cartItemsContainer = document.getElementById('cart-items');
+            cartItemsContainer.innerHTML = '';
+            
+            cart.forEach(item => {
+                const itemElement = document.createElement('div');
+                itemElement.className = 'cart-item';
+                itemElement.innerHTML = `
+                    <div class="item-icon"></div>
+                    <div class="item-details">
+                        <div class="item-name">${item.name}</div>
+                        <div class="item-price">$${item.price.toFixed(2)}</div>
+                    </div>
+                    <div class="delete-item" onclick="removeFromCart(${item.id})">×</div>
+                `;
+                cartItemsContainer.appendChild(itemElement);
+            });
+            
+            // Enable checkout button if cart has items
+            const checkoutBtn = document.getElementById('checkout-btn');
+            checkoutBtn.disabled = cartCount === 0;
+        }
+
+        function removeFromCart(itemId) {
+            const itemIndex = cart.findIndex(item => item.id === itemId);
+            if (itemIndex > -1) {
+                const item = cart[itemIndex];
+                cart.splice(itemIndex, 1);
+                cartCount--;
+                cartTotal -= item.price;
+                cartTax = cartTotal * SALES_TAX_RATE;
+                
+                // Save to localStorage
+                localStorage.setItem('cart', JSON.stringify(cart));
+                
+                updateCartDisplay();
+            }
+        }
+
+        function toggleCartDropdown() {
+            const dropdown = document.getElementById('cart-dropdown');
+            dropdown.classList.toggle('show');
+        }
+
+        // Close dropdown when clicking outside
+        document.addEventListener('click', function(event) {
+            const cartButton = document.getElementById('cart-button');
+            const dropdown = document.getElementById('cart-dropdown');
+            
+            if (!cartButton.contains(event.target)) {
+                dropdown.classList.remove('show');
+            }
+        });
+
+        function goToCheckout() {
+            if (cartCount > 0) {
+                window.location.href = 'checkout.html';
+            }
+        }
+
+        function goToPage(url) {
+            window.location.href = url;
+        }
+    </script>
+</body>
+</html>

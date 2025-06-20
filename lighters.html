@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zippo Lighters: History, Care & Daily Integration - Extantra Net</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <div class="logo-space">
+                <img src="images/extantralogo.webp" alt="Extantra" class="logo-image">
+            </div>
+        </header>
+
+        <div class="main-container">
+            <aside class="sidebar">
+                <div class="categories-section">
+                    <div class="category" onclick="goToPage('index.html')">Home</div>
+                    <div class="category" onclick="goToPage('about.html')">About</div>
+                    <div class="category">Lighters</div>
+                </div>
+                <div class="cart-button" id="cart-button" onclick="toggleCartDropdown()">
+                    Cart
+                    <div class="cart-count-badge hidden" id="cart-badge">0</div>
+                    <div class="cart-dropdown" id="cart-dropdown">
+                        <div class="cart-dropdown-content">
+                            <div class="cart-items" id="cart-items">
+                                <!-- Cart items will be populated here -->
+                            </div>
+                            <div class="cart-summary">
+                                <div>Items: <span id="cart-count">0</span></div>
+                                <div class="cart-total-line">Subtotal: $<span id="cart-total">0.00</span></div>
+                                <div class="cart-tax-line">Tax: $<span id="cart-tax">0.00</span></div>
+                            </div>
+                            <button class="dropdown-checkout-button" id="checkout-btn" onclick="goToCheckout()" disabled>
+                                Checkout
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </aside>
+
+            <main class="lighters-content">
+                <div class="lighters-section">
+                    <h1 class="lighters-header">Zippo Lighters: History, Care & Daily Integration</h1>
+                    
+                    <div class="content-group">
+                        <h2>A Brief History and Cultural Significance</h2>
+                        <p>Founded in 1932 by George G. Blaisdell in Bradford, Pennsylvania, Zippo Manufacturing Company revolutionized the lighter industry with a simple promise: create a reliable windproof lighter that works every time. Inspired by an Austrian lighter design, Blaisdell refined the concept into what would become an enduring American icon.</p>
+                        
+                        <h3>The Zippo Legacy</h3>
+                        <p>The distinctive rectangular case, hinged lid, and signature "click" sound have remained virtually unchanged for over 90 years. This consistency in design reflects Zippo's commitment to reliability and quality craftsmanship that has made it a trusted companion across generations.</p>
+                        
+                        <h3>Cultural Impact</h3>
+                        <p>Zippo lighters transcended their utilitarian purpose to become cultural symbols:</p>
+                        
+                        <p><strong>Military Heritage:</strong> During World War II, Zippo ceased civilian production to supply the U.S. military exclusively. Soldiers relied on these lighters not just for flame, but as tools, emergency signaling devices, and morale boosters. Many carried personalized engravings of loved ones or unit insignia.</p>
+                        
+                        <p><strong>Hollywood Icon:</strong> Featured in countless films, the Zippo became synonymous with coolness and reliability. The dramatic flip-open, the steady flame in wind—these moments cemented Zippo's place in popular culture.</p>
+                        
+                        <p><strong>Personal Connection:</strong> Unlike disposable lighters, Zippos develop character over time. The brass ages, the chrome wears in patterns unique to each user, creating a deeply personal object that tells a story.</p>
+                        
+                        <h3>The Lifetime Guarantee</h3>
+                        <p>Zippo's unconditional lifetime guarantee—"It works or we fix it free"—represents more than customer service. It's a commitment to sustainability, quality, and building relationships that last generations. This philosophy makes every Zippo an investment rather than a consumable.</p>
+                    </div>
+                    
+                    <div class="content-group">
+                        <h2>Proper Care and Maintenance</h2>
+                        <p>Maintaining your Zippo ensures decades of reliable service while preserving its appearance and functionality.</p>
+                        
+                        <h3>Fuel Management</h3>
+                        <p><strong>Refueling Process:</strong></p>
+                        <ul>
+                            <li>Remove the inner unit from the outer case</li>
+                            <li>Lift the felt pad at the bottom to expose the cotton packing</li>
+                            <li>Saturate the cotton with genuine Zippo lighter fluid</li>
+                            <li>Replace the felt pad and insert the unit back into the case</li>
+                            <li>Clean any excess fluid from the exterior</li>
+                        </ul>
+                        
+                        <p><strong>Fuel Tips:</strong></p>
+                        <ul>
+                            <li>Use only genuine Zippo lighter fluid for optimal performance</li>
+                            <li>A properly fueled Zippo provides 1-2 weeks of normal use</li>
+                            <li>Fuel naturally evaporates even when not in use</li>
+                            <li>Store in cool, dry conditions to minimize evaporation</li>
+                        </ul>
+                        
+                        <h3>Flint Replacement</h3>
+                        <p><strong>Signs You Need a New Flint:</strong></p>
+                        <ul>
+                            <li>Difficulty generating sparks</li>
+                            <li>Weak or inconsistent flame ignition</li>
+                            <li>No spark production</li>
+                        </ul>
+                        
+                        <p><strong>Replacement Process:</strong></p>
+                        <ul>
+                            <li>Unscrew the spring-loaded screw at the bottom of the inner unit</li>
+                            <li>Remove the old flint and spring</li>
+                            <li>Insert a new flint (pointed end down) into the tube</li>
+                            <li>Replace the spring and tighten the screw</li>
+                        </ul>
+                        
+                        <p><strong>Flint Maintenance:</strong></p>
+                        <ul>
+                            <li>Replace flints every 1-3 months depending on usage</li>
+                            <li>Keep spare flints for uninterrupted operation</li>
+                            <li>Use only genuine Zippo flints for best results</li>
+                        </ul>
+                        
+                        <h3>Wick Maintenance</h3>
+                        <p><strong>Wick Lifespan:</strong><br>
+                        With proper care, Zippo wicks can last several months to over a year. The wick should extend approximately 1/4 inch above the wick hole for optimal performance.</p>
+                        
+                        <p><strong>Wick Replacement:</strong></p>
+                        <ul>
+                            <li>Pull the old wick out completely using needle-nose pliers</li>
+                            <li>Thread the new wick through the wick hole from inside the fuel chamber</li>
+                            <li>Pull enough wick through to extend 1/4 inch above the surface</li>
+                            <li>Trim excess wick to proper length</li>
+                        </ul>
+                        
+                        <h3>Cleaning and Preservation</h3>
+                        <p><strong>Exterior Care:</strong></p>
+                        <ul>
+                            <li>Clean with soft cloth and mild soap solution</li>
+                            <li>Avoid harsh chemicals that may damage finishes</li>
+                            <li>For chrome finishes, use appropriate metal polish occasionally</li>
+                            <li>Brass finishes develop natural patina—embrace or polish as preferred</li>
+                        </ul>
+                        
+                        <p><strong>Interior Maintenance:</strong></p>
+                        <ul>
+                            <li>Keep the fuel chamber clean and dry when storing long-term</li>
+                            <li>Replace cotton packing if it becomes degraded or contaminated</li>
+                            <li>Ensure proper fit of all components to prevent fuel leaks</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="content-group">
+                        <h2>Integrating Zippo Lighters into Daily Life</h2>
+                        <p>Modern Zippo ownership extends far beyond traditional lighting needs. These versatile tools adapt to contemporary lifestyles while maintaining their classic appeal.</p>
+                        
+                        <h3>Everyday Carry (EDC) Integration</h3>
+                        <p><strong>Practical Applications:</strong></p>
+                        <ul>
+                            <li>Candle lighting for ambiance or power outages</li>
+                            <li>Outdoor activities: camping, grilling, fire starting</li>
+                            <li>Emergency preparedness kit component</li>
+                            <li>Utility tool for burning rope ends or shrink tubing</li>
+                            <li>Conversation starter and personal statement piece</li>
+                        </ul>
+                        
+                        <p><strong>Professional Settings:</strong></p>
+                        <ul>
+                            <li>Discrete, elegant lighting solution for special occasions</li>
+                            <li>Networking conversation piece at business events</li>
+                            <li>Ceremonial lighting for office celebrations or events</li>
+                            <li>Reliable backup when technology fails</li>
+                        </ul>
+                        
+                        <h3>Personal Expression Through Custom Engraving</h3>
+                        <p>Custom engraving transforms your Zippo from a tool into a personal artifact:</p>
+                        
+                        <p><strong>Meaningful Personalization:</strong></p>
+                        <ul>
+                            <li>Commemorate special dates, achievements, or relationships</li>
+                            <li>Display personal mottos, coordinates of significant locations</li>
+                            <li>Honor military service, career milestones, or family heritage</li>
+                            <li>Create unique gifts that carry emotional significance</li>
+                        </ul>
+                        
+                        <p><strong>Professional Branding:</strong></p>
+                        <ul>
+                            <li>Company logos for corporate gifts or personal branding</li>
+                            <li>Professional credentials or certifications</li>
+                            <li>Business contact information in elegant format</li>
+                            <li>Award recognition or achievement documentation</li>
+                        </ul>
+                        
+                        <h3>Building Rituals and Habits</h3>
+                        <p><strong>Daily Rituals:</strong><br>
+                        The tactile experience of operating a Zippo can become a mindful daily practice. The familiar weight, the satisfying click, the steady flame—these sensory elements create moments of pause and reflection in busy days.</p>
+                        
+                        <p><strong>Collection and Appreciation:</strong><br>
+                        Many users develop collections based on themes, eras, or personal interests. Each Zippo becomes a chapter in a larger story, representing different periods of life or commemorating important events.</p>
+                        
+                        <p><strong>Social Connection:</strong><br>
+                        Zippos naturally invite interaction. Whether lighting someone else's candle or sharing the story behind your engraving, these lighters facilitate human connection in our increasingly digital world.</p>
+                        
+                        <h3>Maintenance as Mindful Practice</h3>
+                        <p>Regular Zippo maintenance becomes a meditative ritual for many owners. The process of refueling, cleaning, and caring for your lighter creates a connection between user and tool that's absent with disposable alternatives.</p>
+                        
+                        <p><strong>Benefits of Regular Maintenance:</strong></p>
+                        <ul>
+                            <li>Develops appreciation for quality craftsmanship</li>
+                            <li>Creates routine moments of mindfulness</li>
+                            <li>Ensures reliable performance when needed</li>
+                            <li>Preserves the lighter's value and appearance</li>
+                            <li>Strengthens the personal connection to the object</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="content-group">
+                        <h2>Why Choose Custom Engraved Zippos</h2>
+                        <p>Custom engraving elevates the Zippo experience from functional tool to personal treasure:</p>
+                        
+                        <ul>
+                            <li><strong>Permanence:</strong> Laser engraving creates lasting marks that won't fade or wear away</li>
+                            <li><strong>Uniqueness:</strong> Your design reflects your personality, values, or important relationships</li>
+                            <li><strong>Gift Value:</strong> Personalized Zippos become cherished gifts that recipients treasure for decades</li>
+                            <li><strong>Investment:</strong> Well-maintained engraved Zippos often appreciate in value over time</li>
+                            <li><strong>Legacy:</strong> These lighters become family heirlooms passed down through generations</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="content-group">
+                        <h2>Conclusion</h2>
+                        <p>Zippo lighters represent more than mere utility—they embody American craftsmanship, personal expression, and enduring quality in an age of disposable goods. Through proper care and thoughtful integration into daily life, your custom engraved Zippo becomes a trusted companion that serves practical needs while telling your unique story.</p>
+                        
+                        <p>Whether you're lighting candles for dinner, starting a campfire, or simply carrying a piece of reliable American engineering, your Zippo connects you to nearly a century of innovation and tradition. With custom engraving, this connection becomes deeply personal, creating not just a tool, but a meaningful artifact that reflects your individual journey through life.</p>
+                    </div>
+                </div>
+            </main>
+        </div>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <div class="footer-content">
+                <div class="copyright">© 2025 EXTANTRA</div>
+                <div class="contact">
+                    <a href="mailto:store@extantra.net">Contact: store@extantra.net</a>
+                </div>
+                <div class="policy-link">
+                    <a href="policy.html">Policy</a>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        // Cart functionality with localStorage persistence
+        let cart = JSON.parse(localStorage.getItem('cart')) || [];
+        let cartCount = cart.length;
+        let cartTotal = cart.reduce((sum, item) => sum + item.price, 0);
+        
+        // Sales tax configuration
+        const SALES_TAX_RATE = 0.085; // 8.5%
+        let cartTax = cartTotal * SALES_TAX_RATE;
+
+        document.addEventListener('DOMContentLoaded', function() {
+            updateCartDisplay();
+        });
+
+        function updateCartDisplay() {
+            document.getElementById('cart-count').textContent = cartCount;
+            document.getElementById('cart-total').textContent = cartTotal.toFixed(2);
+            document.getElementById('cart-tax').textContent = cartTax.toFixed(2);
+            
+            // Update badge
+            const badge = document.getElementById('cart-badge');
+            badge.textContent = cartCount;
+            
+            if (cartCount > 0) {
+                badge.classList.remove('hidden');
+            } else {
+                badge.classList.add('hidden');
+            }
+            
+            // Update cart items list
+            const cartItemsContainer = document.getElementById('cart-items');
+            cartItemsContainer.innerHTML = '';
+            
+            cart.forEach(item => {
+                const itemElement = document.createElement('div');
+                itemElement.className = 'cart-item';
+                itemElement.innerHTML = `
+                    <div class="item-icon"></div>
+                    <div class="item-details">
+                        <div class="item-name">${item.name}</div>
+                        <div class="item-price">$${item.price.toFixed(2)}</div>
+                    </div>
+                    <div class="delete-item" onclick="removeFromCart(${item.id})">×</div>
+                `;
+                cartItemsContainer.appendChild(itemElement);
+            });
+            
+            // Enable checkout button if cart has items
+            const checkoutBtn = document.getElementById('checkout-btn');
+            checkoutBtn.disabled = cartCount === 0;
+        }
+
+        function removeFromCart(itemId) {
+            const itemIndex = cart.findIndex(item => item.id === itemId);
+            if (itemIndex > -1) {
+                const item = cart[itemIndex];
+                cart.splice(itemIndex, 1);
+                cartCount--;
+                cartTotal -= item.price;
+                cartTax = cartTotal * SALES_TAX_RATE;
+                
+                // Save to localStorage
+                localStorage.setItem('cart', JSON.stringify(cart));
+                
+                updateCartDisplay();
+            }
+        }
+
+        function toggleCartDropdown() {
+            const dropdown = document.getElementById('cart-dropdown');
+            dropdown.classList.toggle('show');
+        }
+
+        // Close dropdown when clicking outside
+        document.addEventListener('click', function(event) {
+            const cartButton = document.getElementById('cart-button');
+            const dropdown = document.getElementById('cart-dropdown');
+            
+            if (!cartButton.contains(event.target)) {
+                dropdown.classList.remove('show');
+            }
+        });
+
+        function goToCheckout() {
+            if (cartCount > 0) {
+                window.location.href = 'checkout.html';
+            }
+        }
+
+        function goToPage(url) {
+            window.location.href = url;
+        }
+    </script>
+</body>
+</html>

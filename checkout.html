@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checkout - Extantra Net</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <div class="logo-space">
+                <img src="images/extantralogo.webp" alt="Extantra" class="logo-image">
+            </div>
+        </header>
+
+        <div class="main-container">
+            <aside class="sidebar">
+                <div class="categories-section">
+                    <div class="category" onclick="goToPage('index.html')">Home</div>
+                    <div class="category" onclick="goToPage('about.html')">About</div>
+                    <div class="category" onclick="goToPage('lighters.html')">Lighters</div>
+                </div>
+                <div class="cart-button" id="cart-button" onclick="toggleCartDropdown()">
+                    Cart
+                    <div class="cart-count-badge hidden" id="cart-badge">0</div>
+                    <div class="cart-dropdown" id="cart-dropdown">
+                        <div class="cart-dropdown-content">
+                            <div class="cart-items" id="cart-items">
+                                <!-- Cart items will be populated here -->
+                            </div>
+                            <div class="cart-summary">
+                                <div>Items: <span id="cart-count">0</span></div>
+                                <div class="cart-total-line">Total: $<span id="cart-total">0.00</span></div>
+                                <button class="dropdown-checkout-button" id="checkout-btn" onclick="goToCheckout()" disabled>
+                                    Continue Shopping
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </aside>
+
+            <main class="checkout-content">
+                <div class="checkout-header">
+                    <h1>Checkout</h1>
+                    <p>Review your order and complete your purchase</p>
+                </div>
+
+                <div class="checkout-sections">
+                    <!-- Order Summary Section -->
+                    <div class="checkout-section order-summary">
+                        <h2>Order Summary</h2>
+                        <div class="order-items" id="order-items">
+                            <!-- Order items will be populated here -->
+                        </div>
+                        <div class="order-totals">
+                            <div class="total-line">
+                                <span>Subtotal:</span>
+                                <span id="subtotal">$0.00</span>
+                            </div>
+                            <div class="total-line">
+                                <span>Sales Tax:</span>
+                                <span id="sales-tax">$0.00</span>
+                            </div>
+                            <div class="total-line">
+                                <span>Shipping:</span>
+                                <span id="shipping-cost">Calculated at next step</span>
+                            </div>
+                            <div class="total-line final-total">
+                                <span>Total:</span>
+                                <span id="final-total">$0.00</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Shipping Information Section -->
+                    <div class="checkout-section shipping-info">
+                        <h2>Shipping Information</h2>
+                        <div class="shipping-options">
+                            <div class="shipping-type-selector">
+                                <label class="shipping-option">
+                                    <input type="radio" name="shipping-type" value="domestic" checked onchange="handleShippingTypeChange()">
+                                    <span class="option-content">
+                                        <strong>US Domestic Shipping</strong>
+                                        <small>Enter ZIP code for rates</small>
+                                    </span>
+                                </label>
+                                <label class="shipping-option">
+                                    <input type="radio" name="shipping-type" value="international" onchange="handleShippingTypeChange()">
+                                    <span class="option-content">
+                                        <strong>International Shipping</strong>
+                                        <small>Select country for rates</small>
+                                    </span>
+                                </label>
+                            </div>
+
+                            <div class="shipping-input-section" id="domestic-input">
+                                <label for="zip-code">ZIP Code:</label>
+                                <input type="text" id="zip-code" placeholder="Enter ZIP code" maxlength="10" onchange="calculateShipping()">
+                            </div>
+
+                            <div class="shipping-input-section hidden" id="international-input">
+                                <label for="country-select">Country:</label>
+                                <select id="country-select" onchange="calculateShipping()">
+                                    <option value="">Select Country...</option>
+                                </select>
+                            </div>
+
+                            <div class="shipping-rates" id="shipping-rates">
+                                <p class="shipping-notice">Enter your location to see shipping options</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div class="checkout-actions">
+                        <button class="btn-secondary" onclick="goToPage('index.html')">Continue Shopping</button>
+                        <button class="btn-primary" id="proceed-to-payment" onclick="proceedToPayment()" disabled>
+                            Proceed to Payment
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Empty Cart Message -->
+                <div class="empty-checkout hidden" id="empty-checkout">
+                    <h2>Your cart is empty</h2>
+                    <p>Add some items to your cart to proceed with checkout</p>
+                    <button class="btn-primary" onclick="goToPage('index.html')">Start Shopping</button>
+                </div>
+            </main>
+        </div>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <div class="footer-content">
+                <div class="copyright">© 2025 EXTANTRA</div>
+                <div class="contact">
+                    <a href="mailto:store@extantra.net">Contact: store@extantra.net</a>
+                </div>
+                <div class="policy-link">
+                    <a href="policy.html">Policy</a>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        let cart = [];
+        let cartCount = 0;
+        let cartTotal = 0;
+        let selectedShippingOption = null;
+        let countries = [];
+        
+        // Sales tax configuration (8.5% default rate)
+        const SALES_TAX_RATE = 0.085; // 8.5%
+        let salesTax = 0;
+
+        // Initialize page
+        document.addEventListener('DOMContentLoaded', function() {
+            loadCart();
+            loadCountries();
+            displayOrderSummary();
+            updateCartDisplay();
+        });
+
+        // Load cart from localStorage
+        function loadCart() {
+            try {
+                const savedCart = localStorage.getItem('cart');
+                if (savedCart) {
+                    cart = validateCartData(JSON.parse(savedCart));
+                } else {
+                    cart = [];
+                }
+                updateCartTotals();
+            } catch (e) {
+                console.error('Error loading cart:', e);
+                cart = [];
+            }
+        }
+
+        // Validate cart data
+        function validateCartData(cartData) {
+            try {
+                if (!Array.isArray(cartData)) return [];
+                
+                return cartData.filter(item => {
+                    return item && 
+                           typeof item.name === 'string' && 
+                           typeof item.price === 'number' && 
+                           item.price > 0 && 
+                           item.price < 10000;
+                }).map(item => ({
+                    ...item,
+                    name: String(item.name).substring(0, 100),
+                    price: Math.max(0, Math.min(9999, Number(item.price)))
+                }));
+            } catch (e) {
+                console.error('Cart validation error:', e);
+                return [];
+            }
+        }
+
+        // Update cart totals
+        function updateCartTotals() {
+            cartCount = cart.length;
+            cartTotal = cart.reduce((total, item) => total + item.price, 0);
+            salesTax = cartTotal * SALES_TAX_RATE;
+        }
+
+        // Update cart display
+        function updateCartDisplay() {
+            const cartItemsElement = document.getElementById('cart-items');
+            const cartCountElement = document.getElementById('cart-count');
+            const cartTotalElement = document.getElementById('cart-total');
+            const badge = document.getElementById('cart-badge');
+
+            if (cartCount === 0) {
+                cartItemsElement.innerHTML = '<div class="empty-cart">Your cart is empty</div>';
+                document.querySelector('.checkout-sections').classList.add('hidden');
+                document.getElementById('empty-checkout').classList.remove('hidden');
+            } else {
+                cartItemsElement.innerHTML = cart.map(item => `
+                    <div class="cart-item">
+                        <img src="${item.image}" alt="${item.name}" class="cart-item-image">
+                        <div class="cart-item-details">
+                            <div class="cart-item-name">${item.name}</div>
+                            <div class="cart-item-price">$${item.price.toFixed(2)}</div>
+                        </div>
+                        <button class="remove-item" onclick="removeFromCart('${item.id}')">×</button>
+                    </div>
+                `).join('');
+                document.querySelector('.checkout-sections').classList.remove('hidden');
+                document.getElementById('empty-checkout').classList.add('hidden');
+            }
+
+            cartCountElement.textContent = cartCount;
+            cartTotalElement.textContent = cartTotal.toFixed(2);
+
+            if (cartCount > 0) {
+                badge.classList.remove('hidden');
+                badge.textContent = cartCount;
+            } else {
+                badge.classList.add('hidden');
+            }
+        }
+
+        // Display order summary
+        function displayOrderSummary() {
+            const orderItemsElement = document.getElementById('order-items');
+            const subtotalElement = document.getElementById('subtotal');
+
+            if (cartCount === 0) {
+                orderItemsElement.innerHTML = '<p>No items in cart</p>';
+                subtotalElement.textContent = '$0.00';
+                return;
+            }
+
+            orderItemsElement.innerHTML = cart.map(item => `
+                <div class="order-item">
+                    <img src="${item.image}" alt="${item.name}" class="order-item-image">
+                    <div class="order-item-details">
+                        <h4>${item.name}</h4>
+                        <span class="price">$${item.price.toFixed(2)}</span>
+                    </div>
+                </div>
+            `).join('');
+
+            subtotalElement.textContent = `$${cartTotal.toFixed(2)}`;
+            document.getElementById('sales-tax').textContent = `$${salesTax.toFixed(2)}`;
+            updateFinalTotal();
+        }
+
+        // Load countries for international shipping
+        async function loadCountries() {
+            try {
+                const response = await fetch('/shipping-countries');
+                if (response.ok) {
+                    const data = await response.json();
+                    countries = data.international;
+                    populateCountrySelect();
+                }
+            } catch (error) {
+                console.error('Error loading countries:', error);
+            }
+        }
+
+        // Populate country select
+        function populateCountrySelect() {
+            const select = document.getElementById('country-select');
+            select.innerHTML = '<option value="">Select Country...</option>';
+            
+            countries.forEach(country => {
+                const option = document.createElement('option');
+                option.value = country.code;
+                option.textContent = `${country.name} (from $${country.baseRate})`;
+                select.appendChild(option);
+            });
+        }
+
+        // Handle shipping type change
+        function handleShippingTypeChange() {
+            const shippingType = document.querySelector('input[name="shipping-type"]:checked').value;
+            const domesticInput = document.getElementById('domestic-input');
+            const internationalInput = document.getElementById('international-input');
+
+            if (shippingType === 'domestic') {
+                domesticInput.classList.remove('hidden');
+                internationalInput.classList.add('hidden');
+            } else {
+                domesticInput.classList.add('hidden');
+                internationalInput.classList.remove('hidden');
+            }
+
+            // Reset shipping selection
+            selectedShippingOption = null;
+            document.getElementById('shipping-rates').innerHTML = '<p class="shipping-notice">Enter your location to see shipping options</p>';
+            updateFinalTotal();
+        }
+
+        // Calculate shipping
+        async function calculateShipping() {
+            const shippingType = document.querySelector('input[name="shipping-type"]:checked').value;
+            let destination = '';
+
+            if (shippingType === 'domestic') {
+                destination = document.getElementById('zip-code').value.trim();
+            } else {
+                destination = document.getElementById('country-select').value;
+            }
+
+            if (!destination) {
+                document.getElementById('shipping-rates').innerHTML = '<p class="shipping-notice">Enter your location to see shipping options</p>';
+                return;
+            }
+
+            try {
+                const response = await fetch('/calculate-shipping', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        destination: destination,
+                        weight: cartCount * 0.2, // Approximate weight
+                        value: cartTotal
+                    })
+                });
+
+                if (response.ok) {
+                    const shippingData = await response.json();
+                    displayShippingOptions(shippingData);
+                } else {
+                    throw new Error('Failed to calculate shipping');
+                }
+            } catch (error) {
+                console.error('Error calculating shipping:', error);
+                document.getElementById('shipping-rates').innerHTML = '<p class="error">Error calculating shipping rates</p>';
+            }
+        }
+
+        // Display shipping options
+        function displayShippingOptions(shippingData) {
+            const ratesElement = document.getElementById('shipping-rates');
+            
+            if (shippingData.freeShipping) {
+                ratesElement.innerHTML = `
+                    <div class="free-shipping-notice">
+                        🎉 Free shipping on orders $75+
+                    </div>
+                `;
+                selectedShippingOption = { cost: 0 };
+                document.getElementById('proceed-to-payment').disabled = false;
+            } else {
+                const optionsHtml = shippingData.options.map(option => `
+                    <label class="shipping-rate-option">
+                        <input type="radio" name="shipping-option" value="${option.id}" 
+                               data-cost="${option.cost}" onchange="selectShippingOption(this)">
+                        <div class="option-details">
+                            <div class="option-name">${option.name}</div>
+                            <div class="option-cost">$${option.cost.toFixed(2)}</div>
+                            <div class="option-transit">${option.transit}</div>
+                        </div>
+                    </label>
+                `).join('');
+
+                ratesElement.innerHTML = optionsHtml;
+            }
+
+            updateFinalTotal();
+        }
+
+        // Select shipping option
+        function selectShippingOption(radio) {
+            selectedShippingOption = {
+                id: radio.value,
+                cost: parseFloat(radio.dataset.cost)
+            };
+            document.getElementById('proceed-to-payment').disabled = false;
+            updateFinalTotal();
+        }
+
+        // Update final total
+        function updateFinalTotal() {
+            const shippingCostElement = document.getElementById('shipping-cost');
+            const finalTotalElement = document.getElementById('final-total');
+            
+            const subtotalWithTax = cartTotal + salesTax;
+
+            if (selectedShippingOption) {
+                const shippingCost = selectedShippingOption.cost;
+                shippingCostElement.textContent = shippingCost === 0 ? 'FREE' : `$${shippingCost.toFixed(2)}`;
+                finalTotalElement.textContent = `$${(subtotalWithTax + shippingCost).toFixed(2)}`;
+            } else {
+                shippingCostElement.textContent = 'Calculated at next step';
+                finalTotalElement.textContent = `$${subtotalWithTax.toFixed(2)}`;
+            }
+        }
+
+        // Proceed to payment
+        async function proceedToPayment() {
+            if (cartCount === 0) return;
+
+            const shippingType = document.querySelector('input[name="shipping-type"]:checked').value;
+            let destination = '';
+
+            if (shippingType === 'domestic') {
+                destination = document.getElementById('zip-code').value.trim();
+            } else {
+                destination = document.getElementById('country-select').value;
+            }
+
+            try {
+                const response = await fetch('/create-checkout-session', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        items: cart,
+                        destination: destination
+                    })
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
+                const { url } = await response.json();
+                window.location.href = url;
+            } catch (error) {
+                console.error('Error creating checkout session:', error);
+                alert('There was an error processing your checkout. Please try again.');
+            }
+        }
+
+        // Remove item from cart
+        function removeFromCart(itemId) {
+            cart = cart.filter(item => item.id !== itemId);
+            localStorage.setItem('cart', JSON.stringify(cart));
+            updateCartTotals();
+            updateCartDisplay();
+            displayOrderSummary();
+        }
+
+        // Toggle cart dropdown
+        function toggleCartDropdown() {
+            const dropdown = document.getElementById('cart-dropdown');
+            dropdown.classList.toggle('show');
+        }
+
+        // Navigate to page
+        function goToPage(page) {
+            window.location.href = page;
+        }
+
+        // Go to checkout (for cart dropdown button)
+        function goToCheckout() {
+            window.location.href = 'checkout.html';
+        }
+
+        // Close dropdown when clicking outside
+        document.addEventListener('click', function(event) {
+            const cartButton = document.getElementById('cart-button');
+            const dropdown = document.getElementById('cart-dropdown');
+            
+            if (!cartButton.contains(event.target)) {
+                dropdown.classList.remove('show');
+            }
+        });
+    </script>
+</body>
+</html>
