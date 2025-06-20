@@ -282,9 +282,20 @@ app.post('/create-checkout-session', checkoutLimiter, async (req, res) => {
         res.json({ url: session.url });
     } catch (error) {
         console.error('Error creating checkout session:', error);
+        console.error('Error details:', {
+            message: error.message,
+            stack: error.stack,
+            code: error.code,
+            type: error.type,
+            request_log_url: error.request_log_url
+        });
         
         if (error.message === 'Invalid item data') {
             res.status(400).json({ error: 'Invalid product information' });
+        } else if (error.type === 'StripeCardError') {
+            res.status(400).json({ error: 'Payment error: ' + error.message });
+        } else if (error.type === 'StripeInvalidRequestError') {
+            res.status(400).json({ error: 'Invalid request: ' + error.message });
         } else {
             res.status(500).json({ error: 'Unable to process checkout. Please try again.' });
         }
