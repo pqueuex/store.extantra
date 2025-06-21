@@ -1,0 +1,30 @@
+{
+  "shopUrl": "https://www.etsy.com/shop/Monoangel/reviews",
+  "productMappings": {
+    "silent hill 2": 1,
+    "pyramid head": 1,
+    "bubble head nurse": 1,
+    "aphex twin": 2,
+    "electronic music": 2,
+    "idm": 2,
+    "silent hill 3": 3,
+    "robbie": 3,
+    "rabbit": 3,
+    "skyrim": 4,
+    "elder scrolls": 4,
+    "dragon": 4,
+    "oblivion": 5,
+    "elder scrolls oblivion": 5,
+    "head blown off": 7,
+    "blown off": 7
+  },
+  "settings": {
+    "maxReviews": 100,
+    "downloadImages": true,
+    "headless": false,
+    "anonymizeNames": true,
+    "generateTitles": false,
+    "scrollDelay": 2000,
+    "maxScrollHeight": 5000
+  }
+}

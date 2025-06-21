@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- SEO Meta Tags -->
+    <title>Leave a Review - EXTANTRA</title>
+    <meta name="description" content="Share your experience with your EXTANTRA purchase. Help other customers by leaving an honest review of our gaming and music themed Zippo lighters.">
+    <meta name="robots" content="noindex, nofollow">
+    
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <div class="logo-space">
+                <img src="images/extantralogo.webp" alt="Extantra" class="logo-image">
+            </div>
+        </header>
+
+        <div class="main-container">
+            <aside class="sidebar">
+                <div class="categories-section">
+                    <div class="category" onclick="goToPage('index.html')">Home</div>
+                    <div class="category" onclick="goToPage('about.html')">About</div>
+                    <div class="category" onclick="goToPage('lighters.html')">Lighters</div>
+                </div>
+                <div class="cart-button" id="cart-button" onclick="toggleCartDropdown()">
+                    Cart
+                    <div class="cart-count-badge hidden" id="cart-badge">0</div>
+                    <div class="cart-dropdown" id="cart-dropdown">
+                        <div class="cart-dropdown-content">
+                            <div class="cart-items" id="cart-items">
+                                <!-- Cart items will be populated here -->
+                            </div>
+                            <div class="cart-summary">
+                                <div>Items: <span id="cart-count">0</span></div>
+                                <div class="cart-total-line">Total: $<span id="cart-total">0.00</span></div>
+                                <button class="dropdown-checkout-button" id="checkout-btn" onclick="goToCheckout()" disabled>
+                                    Continue Shopping
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </aside>
+
+            <main class="content">
+                <div class="review-page-container">
+                    <div class="review-page-header">
+                        <h1>Leave a Review</h1>
+                        <p>Thank you for your purchase! Please share your experience to help other customers.</p>
+                    </div>
+
+                    <div class="review-options">
+                        <div class="review-option">
+                            <h3>Trustpilot (Recommended)</h3>
+                            <p>Leave a verified review on Trustpilot for maximum credibility and visibility.</p>
+                            <a href="https://www.trustpilot.com/review/extantra.net" target="_blank" class="trustpilot-review-btn">
+                                Review on Trustpilot →
+                            </a>
+                        </div>
+
+                        <div class="review-option">
+                            <h3>Website Review</h3>
+                            <p>Leave a review directly on our website. It will be displayed after approval.</p>
+                            <button class="website-review-btn" onclick="showReviewForm()">Write Review</button>
+                        </div>
+                    </div>
+
+                    <div class="review-form-container" id="review-form-container" style="display: none;">
+                        <div class="product-selection">
+                            <h3>Select Product to Review</h3>
+                            <select id="product-select" onchange="selectProduct()">
+                                <option value="">Choose a product...</option>
+                                <!-- Products will be loaded here -->
+                            </select>
+                        </div>
+
+                        <div class="review-form-section" id="review-form-section" style="display: none;">
+                            <h3>Write Your Review</h3>
+                            <div class="selected-product-info" id="selected-product-info">
+                                <!-- Selected product info will appear here -->
+                            </div>
+
+                            <form id="review-form" onsubmit="submitReview(event)">
+                                <div class="form-group">
+                                    <label for="reviewer-name">Your Name *</label>
+                                    <input type="text" id="reviewer-name" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="reviewer-email">Email Address * (not displayed publicly)</label>
+                                    <input type="email" id="reviewer-email" required>
+                                    <small>We'll only use this to verify your purchase</small>
+                                </div>
+                                <div class="form-group">
+                                    <label for="review-rating">Rating *</label>
+                                    <div class="star-rating" id="star-rating">
+                                        <span class="star" data-rating="1">★</span>
+                                        <span class="star" data-rating="2">★</span>
+                                        <span class="star" data-rating="3">★</span>
+                                        <span class="star" data-rating="4">★</span>
+                                        <span class="star" data-rating="5">★</span>
+                                    </div>
+                                    <input type="hidden" id="review-rating" value="0">
+                                </div>
+                                <div class="form-group">
+                                    <label for="review-title">Review Title *</label>
+                                    <input type="text" id="review-title" placeholder="Sum up your experience" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="review-text">Your Review *</label>
+                                    <textarea id="review-text" rows="6" placeholder="Tell others about your experience with this product. How was the quality? How does it look? How long did shipping take?" required></textarea>
+                                </div>
+                                <div class="form-group">
+                                    <label>
+                                        <input type="checkbox" id="verified-purchase" required>
+                                        I confirm this is a genuine review of a product I purchased from EXTANTRA
+                                    </label>
+                                </div>
+                                <button type="submit" class="submit-review-btn">Submit Review</button>
+                            </form>
+                        </div>
+                    </div>
+
+                    <div class="review-success" id="review-success" style="display: none;">
+                        <h2>Thank You!</h2>
+                        <p>Your review has been submitted successfully and will be published after verification.</p>
+                        <button onclick="goToPage('index.html')" class="continue-shopping-btn">Continue Shopping</button>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <script>
+        let cart = JSON.parse(localStorage.getItem('cart')) || [];
+        let cartCount = cart.length;
+        let cartTotal = cart.reduce((sum, item) => sum + item.price, 0);
+        let products = [];
+        let selectedProduct = null;
+
+        document.addEventListener('DOMContentLoaded', function() {
+            updateCartDisplay();
+            loadProducts();
+            
+            // Check if there's a product ID in the URL (from email link)
+            const urlParams = new URLSearchParams(window.location.search);
+            const productId = urlParams.get('product');
+            if (productId) {
+                // Pre-select the product if specified in URL
+                setTimeout(() => {
+                    const productSelect = document.getElementById('product-select');
+                    productSelect.value = productId;
+                    selectProduct();
+                    showReviewForm();
+                }, 500);
+            }
+        });
+
+        async function loadProducts() {
+            try {
+                const response = await fetch('products.json');
+                const data = await response.json();
+                products = data.products;
+                
+                const productSelect = document.getElementById('product-select');
+                productSelect.innerHTML = '<option value="">Choose a product...</option>';
+                
+                products.forEach(product => {
+                    const option = document.createElement('option');
+                    option.value = product.id;
+                    option.textContent = product.name;
+                    productSelect.appendChild(option);
+                });
+            } catch (error) {
+                console.error('Error loading products:', error);
+            }
+        }
+
+        function selectProduct() {
+            const productSelect = document.getElementById('product-select');
+            const productId = parseInt(productSelect.value);
+            
+            if (productId) {
+                selectedProduct = products.find(p => p.id === productId);
+                if (selectedProduct) {
+                    document.getElementById('selected-product-info').innerHTML = `
+                        <div class="product-preview">
+                            <img src="${selectedProduct.images[0]}" alt="${selectedProduct.name}" class="product-thumb">
+                            <div class="product-details">
+                                <h4>${selectedProduct.name}</h4>
+                                <p>$${selectedProduct.originalPrice.toFixed(2)}</p>
+                            </div>
+                        </div>
+                    `;
+                    document.getElementById('review-form-section').style.display = 'block';
+                }
+            } else {
+                document.getElementById('review-form-section').style.display = 'none';
+            }
+        }
+
+        function showReviewForm() {
+            document.getElementById('review-form-container').style.display = 'block';
+        }
+
+        // Star rating interaction
+        document.addEventListener('click', function(event) {
+            if (event.target.classList.contains('star')) {
+                const rating = parseInt(event.target.dataset.rating);
+                document.getElementById('review-rating').value = rating;
+                
+                // Update star display
+                const stars = document.querySelectorAll('.star');
+                stars.forEach((star, index) => {
+                    star.classList.toggle('active', index < rating);
+                });
+            }
+        });
+
+        async function submitReview(event) {
+            event.preventDefault();
+            
+            if (!selectedProduct) {
+                alert('Please select a product to review');
+                return;
+            }
+            
+            const formData = {
+                productId: selectedProduct.id,
+                customerName: document.getElementById('reviewer-name').value,
+                email: document.getElementById('reviewer-email').value,
+                rating: parseInt(document.getElementById('review-rating').value),
+                title: document.getElementById('review-title').value,
+                review: document.getElementById('review-text').value
+            };
+            
+            if (formData.rating === 0) {
+                alert('Please select a rating');
+                return;
+            }
+            
+            try {
+                const response = await fetch('/api/reviews', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(formData)
+                });
+                
+                const result = await response.json();
+                
+                if (response.ok) {
+                    document.getElementById('review-form-container').style.display = 'none';
+                    document.getElementById('review-success').style.display = 'block';
+                } else {
+                    alert('Error submitting review: ' + result.error);
+                }
+            } catch (error) {
+                console.error('Error submitting review:', error);
+                alert('Error submitting review. Please try again.');
+            }
+        }
+
+        // Utility functions
+        function goToPage(page) {
+            window.location.href = page;
+        }
+        
+        function toggleCartDropdown() {
+            const dropdown = document.getElementById('cart-dropdown');
+            dropdown.classList.toggle('visible');
+        }
+        
+        function updateCartDisplay() {
+            document.getElementById('cart-count').textContent = cartCount;
+            document.getElementById('cart-total').textContent = cartTotal.toFixed(2);
+            
+            const badge = document.getElementById('cart-badge');
+            if (cartCount > 0) {
+                badge.textContent = cartCount;
+                badge.classList.remove('hidden');
+            } else {
+                badge.classList.add('hidden');
+            }
+        }
+    </script>
+</body>
+</html>

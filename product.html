@@ -29,6 +29,9 @@
     
     <link rel="stylesheet" href="styles.css">
     
+    <!-- Trustpilot Widget Script -->
+    <script type="text/javascript" src="//widget.trustpilot.com/bootstrap/v5/tp.widget.bootstrap.min.js" async></script>
+    
     <!-- Structured Data for Product (will be populated by JavaScript) -->
     <script type="application/ld+json" id="product-structured-data">
     {
@@ -110,12 +113,10 @@
     </div>
 
     <!-- Image Modal -->
-    <div class="image-modal" id="image-modal">
+    <div class="image-modal" id="image-modal" onclick="closeImageModal()">
         <div class="modal-content">
-            <button class="modal-close" onclick="closeModal()">&times;</button>
-            <div class="modal-image" id="modal-image">
-                Enlarged Product Image
-            </div>
+            <button class="modal-close" onclick="closeImageModal()">&times;</button>
+            <img class="modal-image" id="modal-image" src="" alt="Enlarged image">
         </div>
     </div>
 
@@ -365,8 +366,53 @@
                             </div>
                         </div>
                     </div>
+                    
+                    <!-- Reviews Section -->
+                    <div class="reviews-section" id="reviews-section">
+                        <div class="reviews-header">
+                            <h2>Customer Reviews</h2>
+                            <div class="reviews-summary" id="reviews-summary">
+                                <!-- Reviews summary will be loaded here -->
+                            </div>
+                        </div>
+                        
+                        <div class="reviews-tabs">
+                            <button class="tab-button active" onclick="showReviewsTab('reviews')">Reviews</button>
+                            <button class="tab-button" onclick="showReviewsTab('trustpilot')">Trustpilot</button>
+                        </div>
+                        
+                        <div class="reviews-content">
+                            <div class="tab-content active" id="reviews-tab">
+                                <div class="reviews-list" id="reviews-list">
+                                    <!-- Reviews will be loaded here -->
+                                </div>
+                            </div>
+                            
+                            <div class="tab-content" id="trustpilot-tab">
+                                <div class="trustpilot-widget">
+                                    <p>See our verified reviews on Trustpilot:</p>
+                                    
+                                    <!-- Trustpilot widget -->
+                                    <div class="trustpilot-reviews-widget">
+                                        <div class="trustpilot-widget" data-locale="en-US" data-template-id="5419b6ffb0d04a076446a9af" data-businessunit-id="67151b8a3f3a8a4b8ec4e0ad" data-style-height="52px" data-style-width="100%">
+                                            <a href="https://www.trustpilot.com/review/extantra.net" target="_blank" rel="noopener">Trustpilot</a>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="trustpilot-placeholder">
+                                        <a href="https://www.trustpilot.com/review/extantra.net" target="_blank" class="trustpilot-link">
+                                            Leave a Review on Trustpilot →
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             `;
+            
+            // Load reviews after rendering the product
+            loadProductReviews(product.id);
         }
 
         function showError(message) {
@@ -560,6 +606,167 @@
                 closeModal();
             }
         });
+
+        // Review system functions
+        async function loadProductReviews(productId) {
+            try {
+                const response = await fetch(`/api/reviews/product/${productId}`);
+                const reviewsData = await response.json();
+                
+                displayReviewsSummary(reviewsData);
+                displayReviewsList(reviewsData.reviews);
+                
+                // Update structured data with real review data
+                updateReviewStructuredData(reviewsData);
+            } catch (error) {
+                console.error('Error loading reviews:', error);
+                document.getElementById('reviews-summary').innerHTML = '<p>Unable to load reviews</p>';
+            }
+        }
+
+        function displayReviewsSummary(data) {
+            const summaryElement = document.getElementById('reviews-summary');
+            const averageRating = data.averageRating.toFixed(1);
+            
+            summaryElement.innerHTML = `
+                <div class="rating-summary">
+                    <div class="average-rating">
+                        <span class="rating-number">${averageRating}</span>
+                        <div class="stars">${renderStars(data.averageRating)}</div>
+                        <span class="review-count">(${data.totalReviews} review${data.totalReviews !== 1 ? 's' : ''})</span>
+                    </div>
+                </div>
+            `;
+        }
+
+        function displayReviewsList(reviews) {
+            const reviewsListElement = document.getElementById('reviews-list');
+            
+            if (reviews.length === 0) {
+                reviewsListElement.innerHTML = '<p class="no-reviews">No reviews yet. Be the first to review this product!</p>';
+                return;
+            }
+            
+            reviewsListElement.innerHTML = reviews.map(review => `
+                <div class="review-item">
+                    <div class="review-header">
+                        <div class="reviewer-info">
+                            <span class="reviewer-name">${review.customerName}</span>
+                            <span class="review-date">${formatDate(review.date)}</span>
+                            ${review.verified ? '<span class="verified-badge">Verified Purchase</span>' : ''}
+                            <span class="review-source">${review.source === 'etsy' ? 'Etsy' : 'Website'}</span>
+                        </div>
+                        <div class="review-rating">${renderStars(review.rating)}</div>
+                    </div>
+                    <h4 class="review-title">${review.title}</h4>
+                    <p class="review-text">${review.review}</p>
+                    ${review.images && review.images.length > 0 ? `
+                        <div class="review-images">
+                            ${review.images.map(image => `
+                                <img src="${image}" alt="Customer photo" class="review-image" onclick="openImageModal('${image}')" loading="lazy">
+                            `).join('')}
+                        </div>
+                    ` : ''}
+                </div>
+            `).join('');
+        }
+
+        function renderStars(rating) {
+            const fullStars = Math.floor(rating);
+            const hasHalfStar = rating % 1 >= 0.5;
+            const emptyStars = 5 - fullStars - (hasHalfStar ? 1 : 0);
+            
+            return '★'.repeat(fullStars) + 
+                   (hasHalfStar ? '☆' : '') + 
+                   '☆'.repeat(emptyStars);
+        }
+
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            return date.toLocaleDateString('en-US', { 
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric' 
+            });
+        }
+
+        function showReviewsTab(tabName) {
+            // Remove active class from all tabs and content
+            document.querySelectorAll('.tab-button').forEach(btn => btn.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+            
+            // Add active class to selected tab and content
+            document.querySelector(`[onclick="showReviewsTab('${tabName}')"]`).classList.add('active');
+            document.getElementById(`${tabName}-tab`).classList.add('active');
+        }
+
+        // Star rating interaction
+        document.addEventListener('click', function(event) {
+            if (event.target.classList.contains('star')) {
+                const rating = parseInt(event.target.dataset.rating);
+                document.getElementById('review-rating').value = rating;
+                
+                // Update star display
+                const stars = document.querySelectorAll('.star');
+                stars.forEach((star, index) => {
+                    star.classList.toggle('active', index < rating);
+                });
+            }
+        });
+
+        function updateReviewStructuredData(reviewsData) {
+            if (reviewsData.totalReviews > 0) {
+                const structuredDataElement = document.getElementById('product-structured-data');
+                const currentData = JSON.parse(structuredDataElement.textContent);
+                
+                currentData.aggregateRating = {
+                    "@type": "AggregateRating",
+                    "ratingValue": reviewsData.averageRating.toFixed(1),
+                    "reviewCount": reviewsData.totalReviews.toString()
+                };
+                
+                // Add reviews to structured data
+                currentData.review = reviewsData.reviews.slice(0, 5).map(review => ({
+                    "@type": "Review",
+                    "reviewRating": {
+                        "@type": "Rating",
+                        "ratingValue": review.rating.toString()
+                    },
+                    "author": {
+                        "@type": "Person",
+                        "name": review.customerName
+                    },
+                    "reviewBody": review.review,
+                    "datePublished": review.date
+                }));
+                
+                structuredDataElement.textContent = JSON.stringify(currentData, null, 2);
+            }
+        }
+
+        // Image modal functionality
+        function openImageModal(imageSrc) {
+            const modal = document.getElementById('image-modal');
+            const modalImg = document.getElementById('modal-image');
+            modalImg.src = imageSrc;
+            modal.classList.add('show');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeImageModal() {
+            const modal = document.getElementById('image-modal');
+            modal.classList.remove('show');
+            document.body.style.overflow = 'auto';
+        }
+
+        // Close modal when clicking outside the image
+        document.addEventListener('click', function(event) {
+            const modal = document.getElementById('image-modal');
+            if (event.target === modal) {
+                closeImageModal();
+            }
+        });
     </script>
+
 </body>
 </html>

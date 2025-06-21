@@ -302,6 +302,107 @@ app.post('/create-checkout-session', checkoutLimiter, async (req, res) => {
     }
 });
 
+// Review endpoints
+app.get('/api/reviews', (req, res) => {
+    try {
+        const fs = require('fs');
+        const reviewsData = JSON.parse(fs.readFileSync('./reviews.json', 'utf8'));
+        res.json(reviewsData);
+    } catch (error) {
+        console.error('Error loading reviews:', error);
+        res.status(500).json({ error: 'Unable to load reviews' });
+    }
+});
+
+app.get('/api/reviews/product/:productId', (req, res) => {
+    try {
+        const fs = require('fs');
+        const reviewsData = JSON.parse(fs.readFileSync('./reviews.json', 'utf8'));
+        const productId = parseInt(req.params.productId);
+        
+        const productReviews = reviewsData.reviews.filter(review => review.productId === productId);
+        const productSummary = {
+            totalReviews: productReviews.length,
+            averageRating: productReviews.length > 0 ? 
+                productReviews.reduce((sum, review) => sum + review.rating, 0) / productReviews.length : 0,
+            reviews: productReviews
+        };
+        
+        res.json(productSummary);
+    } catch (error) {
+        console.error('Error loading product reviews:', error);
+        res.status(500).json({ error: 'Unable to load product reviews' });
+    }
+});
+
+// Submit new review
+const reviewLimiter = rateLimit({
+    windowMs: 60 * 60 * 1000, // 1 hour
+    max: 3, // 3 reviews per hour per IP
+    message: 'Too many review submissions, please try again later.'
+});
+
+app.post('/api/reviews', reviewLimiter, (req, res) => {
+    try {
+        const fs = require('fs');
+        const { productId, customerName, email, rating, title, review } = req.body;
+        
+        // Validate input
+        if (!productId || !customerName || !email || !rating || !title || !review) {
+            return res.status(400).json({ error: 'All fields are required' });
+        }
+        
+        if (rating < 1 || rating > 5) {
+            return res.status(400).json({ error: 'Rating must be between 1 and 5' });
+        }
+        
+        // Basic email validation
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(email)) {
+            return res.status(400).json({ error: 'Invalid email address' });
+        }
+        
+        const reviewsData = JSON.parse(fs.readFileSync('./reviews.json', 'utf8'));
+        
+        const newReview = {
+            id: Math.max(...reviewsData.reviews.map(r => r.id), 0) + 1,
+            productId: parseInt(productId),
+            customerName: customerName.trim(),
+            rating: parseInt(rating),
+            title: title.trim(),
+            review: review.trim(),
+            date: new Date().toISOString().split('T')[0],
+            verified: false, // Manual verification needed
+            source: 'website',
+            images: []
+        };
+        
+        reviewsData.reviews.push(newReview);
+        
+        // Update summary
+        reviewsData.summary.totalReviews = reviewsData.reviews.length;
+        const totalRating = reviewsData.reviews.reduce((sum, r) => sum + r.rating, 0);
+        reviewsData.summary.averageRating = totalRating / reviewsData.reviews.length;
+        
+        // Update rating distribution
+        reviewsData.summary.ratingDistribution = { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 };
+        reviewsData.reviews.forEach(r => {
+            reviewsData.summary.ratingDistribution[r.rating]++;
+        });
+        
+        fs.writeFileSync('./reviews.json', JSON.stringify(reviewsData, null, 2));
+        
+        res.json({ 
+            success: true, 
+            message: 'Review submitted successfully and is pending approval',
+            reviewId: newReview.id 
+        });
+    } catch (error) {
+        console.error('Error submitting review:', error);
+        res.status(500).json({ error: 'Unable to submit review' });
+    }
+});
+
 app.listen(PORT, () => {
     console.log(`Server running on http://localhost:${PORT}`);
 });

@@ -109,6 +109,14 @@
         <priority>0.5</priority>
     </url>
     
+    <!-- Review Page -->
+    <url>
+        <loc>https://store.extantra.net/review.html</loc>
+        <lastmod>2025-06-20</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.4</priority>
+    </url>
+    
     <!-- Policy Page -->
     <url>
         <loc>https://store.extantra.net/policy.html</loc>

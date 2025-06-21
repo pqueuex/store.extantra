@@ -1,0 +1,44 @@
+{
+  "reviews": [
+    {
+      "id": 1,
+      "productId": 1,
+      "customerName": "Hayden",
+      "rating": 5,
+      "title": "",
+      "review": "Item quality is exceptional and the seller shipped fast and communicated perfectly and this is exceptional work for me being the first person to order from this seller! I strongly recommend anything this seller makes and will be purchasing again!",
+      "date": "2025-06-09",
+      "verified": true,
+      "source": "etsy",      "images": [
+        "images/reviews/review_1_1750473472238.jpg"
+      ],
+      "productName": ""
+    },
+    {
+      "id": 2,
+      "productId": 2,
+      "customerName": "Hayden",
+      "rating": 5,
+      "title": "",
+      "review": "Items quality is exceptional and the seller is very kind and helpful. I recommend them 100% Shipped fast too, will be buying from this seller again!",
+      "date": "2025-06-09",
+      "verified": true,
+      "source": "etsy",
+      "images": [
+        "images/reviews/review_2_1750473472485.jpg"
+      ],
+      "productName": ""
+    }
+  ],
+  "summary": {
+    "totalReviews": 2,
+    "averageRating": 5,
+    "ratingDistribution": {
+      "1": 0,
+      "2": 0,
+      "3": 0,
+      "4": 0,
+      "5": 2
+    }
+  }
+}
