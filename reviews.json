@@ -9,14 +9,15 @@
       "review": "Item quality is exceptional and the seller shipped fast and communicated perfectly and this is exceptional work for me being the first person to order from this seller! I strongly recommend anything this seller makes and will be purchasing again!",
       "date": "2025-06-09",
       "verified": true,
-      "source": "etsy",      "images": [
+      "source": "etsy",
+      "images": [
         "images/reviews/review_1_1750473472238.jpg"
       ],
       "productName": ""
     },
     {
       "id": 2,
-      "productId": 2,
+      "productId": 1,
       "customerName": "Hayden",
       "rating": 5,
       "title": "",

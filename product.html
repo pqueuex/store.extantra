@@ -336,7 +336,9 @@
                             ` : `
                                 <div class="product-page-price">$${product.currentPrice.toFixed(2)}</div>
                             `}
-                            <div class="product-barcode">${product.barcode}</div>
+                            <div class="product-barcode">
+                                <img src="${product.barcode}" alt="Product barcode" class="barcode-image">
+                            </div>
                             
                             <div class="product-description-section">
                                 <h3>Description</h3>

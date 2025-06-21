@@ -329,7 +329,9 @@
                 // Sanitize product data before rendering
                 const sanitizeName = product.name.replace(/[<>]/g, '');
                 const sanitizeDescription = (product.description || 'Quality product with great features').replace(/[<>]/g, '');
-                const sanitizeBarcode = (product.barcode || '||||| ||| ||').replace(/[<>]/g, '');
+                const barcodeContent = product.barcode && product.barcode.includes('images/') 
+                    ? `<img src="${product.barcode}" alt="Product barcode" class="barcode-image">`
+                    : (product.barcode || '||||| ||| ||').replace(/[<>]/g, '');
                 
                 productCard.innerHTML = `
                     <div class="product-image" onclick="enlargeImage(${product.id})">
@@ -347,7 +349,7 @@
                     <div class="product-info">
                         <div class="product-title clickable-title" onclick="goToProduct(${product.id})">${sanitizeName}</div>
                         <div class="product-description">${sanitizeDescription}</div>
-                        <div class="barcode-space">${sanitizeBarcode}</div>
+                        <div class="barcode-space">${barcodeContent}</div>
                         <div class="product-pricing">
                             ${product.onSale ? `
                                 <div class="sale-price">$${product.currentPrice.toFixed(2)}</div>
@@ -419,12 +421,12 @@
 
         function loadFallbackProducts() {
             products = [
-                { id: 1, name: 'Sample Product Title', originalPrice: 29.99, currentPrice: 29.99, images: ['images/001_silent_hill_2_zippo_lighter_1.jpeg'], description: 'High-quality item', barcode: '||||| ||| ||', type: 'lighter', color: 'chrome' },
-                { id: 2, name: 'Another Product Name', originalPrice: 45.00, currentPrice: 45.00, images: ['images/002_aphex_twin_zippo_lighter_1.jpeg'], description: 'Premium quality', barcode: '||||| ||| ||', type: 'lighter', color: 'black' },
-                { id: 3, name: 'Third Product', originalPrice: 19.95, currentPrice: 19.95, images: ['images/003_silent_hill_3_zippo_lighter_1.jpeg'], description: 'Great value', barcode: '||||| ||| ||', type: 'lighter', color: 'chrome' },
-                { id: 4, name: 'Product Four', originalPrice: 35.50, currentPrice: 35.50, images: ['images/004_elder_scrolls_skyrim_zippo_lighter_1.jpeg'], description: 'Reliable choice', barcode: '||||| ||| ||', type: 'lighter', color: 'black' },
-                { id: 5, name: 'Fifth Product Item', originalPrice: 22.99, currentPrice: 22.99, images: ['images/005_elder_scrolls_oblivion_zippo_lighter_1.jpeg'], description: 'Quality assured', barcode: '||||| ||| ||', type: 'lighter', color: 'chrome' },
-                { id: 6, name: 'Sixth Product', originalPrice: 55.00, currentPrice: 55.00, images: ['images/007_need_head_blown_off_zippo_lighter_1.jpeg'], description: 'Premium option', barcode: '||||| ||| ||', type: 'lighter', color: 'black' }
+                { id: 1, name: 'Sample Product Title', originalPrice: 29.99, currentPrice: 29.99, images: ['images/001_silent_hill_2_zippo_lighter_1.jpeg'], description: 'High-quality item', barcode: 'images/barcodes/001.jpeg', type: 'lighter', color: 'chrome' },
+                { id: 2, name: 'Another Product Name', originalPrice: 45.00, currentPrice: 45.00, images: ['images/002_aphex_twin_zippo_lighter_1.jpeg'], description: 'Premium quality', barcode: 'images/barcodes/002.jpeg', type: 'lighter', color: 'black' },
+                { id: 3, name: 'Third Product', originalPrice: 19.95, currentPrice: 19.95, images: ['images/003_silent_hill_3_zippo_lighter_1.jpeg'], description: 'Great value', barcode: 'images/barcodes/003.jpeg', type: 'lighter', color: 'chrome' },
+                { id: 4, name: 'Product Four', originalPrice: 35.50, currentPrice: 35.50, images: ['images/004_elder_scrolls_skyrim_zippo_lighter_1.jpeg'], description: 'Reliable choice', barcode: 'images/barcodes/004.jpeg', type: 'lighter', color: 'black' },
+                { id: 5, name: 'Fifth Product Item', originalPrice: 22.99, currentPrice: 22.99, images: ['images/005_elder_scrolls_oblivion_zippo_lighter_1.jpeg'], description: 'Quality assured', barcode: 'images/barcodes/005.jpeg', type: 'lighter', color: 'chrome' },
+                { id: 7, name: 'Sixth Product', originalPrice: 55.00, currentPrice: 55.00, images: ['images/007_need_head_blown_off_zippo_lighter_1.jpeg'], description: 'Premium option', barcode: 'images/barcodes/007.jpg', type: 'lighter', color: 'black' }
             ];
             sales = [];
             applyFiltersAndSort(); // Use filtering system instead of direct render

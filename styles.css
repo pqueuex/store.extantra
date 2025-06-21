@@ -685,14 +685,21 @@ body {
 }
 
 .barcode-space {
-    height: 16px;
-    border: 1px solid black;
-    background-color: #f8f8f8;
+    height: auto;
+    background-color: white;
     display: flex;
     align-items: center;
     justify-content: center;
     font-size: 7px;
     color: #666;
+    padding: 2px;
+}
+
+.barcode-space .barcode-image {
+    max-width: 100%;
+    height: auto;
+    max-height: 20px;
+    object-fit: contain;
 }
 
 /* Product Page Styles */
@@ -816,14 +823,19 @@ body {
 }
 
 .product-barcode {
-    height: 16px;
-    border: 1px solid black;
-    background-color: #f8f8f8;
-    font-family: monospace;
-    font-size: 10px;
+    height: auto;
+    background-color: white;
     display: flex;
     align-items: center;
-    padding-left: 4px;
+    justify-content: center;
+    padding: 4px;
+}
+
+.barcode-image {
+    max-width: 100%;
+    height: auto;
+    max-height: 40px;
+    object-fit: contain;
 }
 
 .product-description-section h3,
