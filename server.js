@@ -17,12 +17,37 @@ app.use(helmet({
     contentSecurityPolicy: {
         directives: {
             defaultSrc: ["'self'"],
-            scriptSrc: ["'self'", "'unsafe-inline'", "'unsafe-eval'"],
+            scriptSrc: [
+                "'self'", 
+                "'unsafe-inline'", 
+                "'unsafe-eval'",
+                "https://widget.trustpilot.com",
+                "https://invitejs.trustpilot.com"
+            ],
             scriptSrcAttr: ["'unsafe-inline'"],
-            styleSrc: ["'self'", "'unsafe-inline'"],
-            imgSrc: ["'self'", "data:", "https:", "blob:"],
-            connectSrc: ["'self'", "https://api.stripe.com", "https://checkout.stripe.com"],
-            frameSrc: ["https://checkout.stripe.com", "https://js.stripe.com"],
+            styleSrc: [
+                "'self'", 
+                "'unsafe-inline'", 
+                "https://widget.trustpilot.com"
+            ],
+            imgSrc: [
+                "'self'", 
+                "data:", 
+                "https:", 
+                "blob:",
+                "https://logo.trustpilot.com"
+            ],
+            connectSrc: [
+                "'self'", 
+                "https://api.stripe.com", 
+                "https://checkout.stripe.com",
+                "https://api.trustpilot.com"
+            ],
+            frameSrc: [
+                "https://checkout.stripe.com", 
+                "https://js.stripe.com",
+                "https://widget.trustpilot.com"
+            ],
             objectSrc: ["'none'"],
             baseUri: ["'self'"],
             formAction: ["'self'"],
