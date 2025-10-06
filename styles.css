@@ -453,7 +453,7 @@ body {
 
 .product-image {
     width: 100%;
-    height: 200px;
+    aspect-ratio: 1 / 1;
     border: 1px solid black;
     background-color: #f8f8f8;
     margin-bottom: 6px;
@@ -2673,18 +2673,32 @@ body {
         border-right: none;
     }
     
-    /* Prevent iOS auto-zoom on input focus */
-    input, textarea, select {
+    /* Prevent iOS auto-zoom on input focus - but NOT for filter controls */
+    .engraving-input input,
+    .engraving-input textarea,
+    #zip-code-input {
         font-size: 16px !important;
     }
     
-    /* Adjust labels proportionally */
-    label, .option-label, .engraving-label {
+    /* Adjust labels proportionally for form inputs only */
+    .engraving-label,
+    .option-label {
         font-size: 16px;
     }
     
     .engraving-input small {
         font-size: 14px;
+    }
+    
+    /* Keep filter controls small */
+    .filter-group select,
+    .filter-group label,
+    .filter-controls {
+        font-size: 10px !important;
+    }
+    
+    .filter-group select {
+        padding: 2px 4px;
     }
 }
 
@@ -2851,12 +2865,7 @@ body {
     background-color: #f0f0f0;
 }
 
-.product-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-    gap: 10px;
-    margin-top: 10px;
-}
+/* Duplicate .product-grid removed - see line ~432 for main definition */
 
 .product-info h3 {
     font-size: 11px;
