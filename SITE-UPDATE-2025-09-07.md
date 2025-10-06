@@ -22,7 +22,7 @@ Major product enhancement update adding visual improveme#### JavaScript Updates
 
 ### 2. Color Variant System
 - **Dual color options for all lighters**
-  - Street Chrome version ($30 base price)
+  - Street Chrome version ($35 base price)
   - Black version ($25 base price)
   - Update product data structure to support variants
   - Maintain existing product IDs as parent products

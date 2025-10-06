@@ -3,8 +3,8 @@
     {
       "id": 1,
       "name": "Silent Hill 2 Zippo Flip Lighter",
-      "description": "Street chrome Zippo featuring Pyramid Head and Bubble Head Nurse designs on either side with the iconic Silent Hill 2 logo. Available in chrome and black variants.",
-      "longDescription": "A stunning lighter showcasing the most iconic creatures from Silent Hill 2. One side features the menacing Pyramid Head while the other displays the haunting Bubble Head Nurse, with the distinctive Silent Hill 2 logo completing this collector's masterpiece. Built with legendary reliability and windproof design for horror fans and collectors alike.",
+      "description": "Standard-size Zippo featuring Pyramid Head and Bubble Head Nurse designs on either side with the iconic Silent Hill 2 logo. Available in chrome and black variants.",
+      "longDescription": "A stunning lighter showcasing the most iconic creatures from Silent Hill 2. One side features the menacing Pyramid Head while the other displays the haunting Bubble Head Nurse, with the distinctive Silent Hill 2 logo completing this collector's masterpiece. Built with legendary reliability and windproof design for horror fans and collectors alike. This is a standard Zippo size lighter. Ships without lighter fluid - use standard Zippo lighter fluid or Ronsonol fluid for traditional wick operation (or upgrade to butane/electric insert).",
       "category": "gaming",
       "type": "lighter",
       "theme": "horror",
@@ -15,7 +15,7 @@
           "id": "001-chrome",
           "color": "chrome",
           "colorName": "Street Chrome",
-          "price": 30,
+          "price": 35,
           "images": [
             "images/variants/chrome/001_chrome_1.webp",
             "images/variants/chrome/001_chrome_2.webp",
@@ -64,8 +64,8 @@
     {
       "id": 2,
       "name": "Aphex Twin Logo Zippo Flip Lighter",
-      "description": "Rare Aphex Twin electronic music themed lighter with distinctive IDM artwork. Available in chrome and black variants.",
-      "longDescription": "Celebrate the genius of Richard D. James with this exclusive Aphex Twin lighter. Showcasing the distinctive visual style associated with the legendary electronic music producer, this lighter is a must-have for fans of intelligent dance music and experimental electronica. The design captures the essence of Aphex Twin's innovative sound with striking visuals that reflect his influential career spanning ambient, acid, and IDM genres.",
+      "description": "Standard-size Aphex Twin electronic music themed lighter with distinctive IDM artwork. Available in chrome and black variants.",
+      "longDescription": "Celebrate the genius of Richard D. James with this exclusive Aphex Twin lighter. Showcasing the distinctive visual style associated with the legendary electronic music producer, this lighter is a must-have for fans of intelligent dance music and experimental electronica. The design captures the essence of Aphex Twin's innovative sound with striking visuals that reflect his influential career spanning ambient, acid, and IDM genres. This is a standard Zippo size lighter. Ships without lighter fluid - use standard Zippo lighter fluid or Ronsonol fluid for traditional wick operation (or upgrade to butane/electric insert).",
       "category": "music",
       "type": "lighter",
       "theme": "electronic",
@@ -76,7 +76,7 @@
           "id": "002-chrome",
           "color": "chrome",
           "colorName": "Street Chrome",
-          "price": 30,
+          "price": 35,
           "images": [
             "images/variants/chrome/002_chrome_1.webp",
             "images/variants/chrome/002_chrome_2.webp",
@@ -125,8 +125,8 @@
     {
       "id": 3,
       "name": "Silent Hill 3 Zippo Flip Lighter",
-      "description": "Street chrome lighter featuring the beautiful Silent Hill 3 logo and iconic Robbie the Rabbit. Available in chrome and black variants.",
-      "longDescription": "A stunning lighter showcasing the beautiful Silent Hill 3 logo alongside the iconic and unsettling Robbie the Rabbit. This collector's piece captures the eerie atmosphere of Heather Mason's journey with detailed artwork that Silent Hill fans will instantly recognize. Built with legendary reliability and windproof design.",
+      "description": "Standard-size lighter featuring the beautiful Silent Hill 3 logo and iconic Robbie the Rabbit. Available in chrome and black variants.",
+      "longDescription": "A stunning lighter showcasing the beautiful Silent Hill 3 logo alongside the iconic and unsettling Robbie the Rabbit. This collector's piece captures the eerie atmosphere of Heather Mason's journey with detailed artwork that Silent Hill fans will instantly recognize. Built with legendary reliability and windproof design. This is a standard Zippo size lighter. Ships without lighter fluid - use standard Zippo lighter fluid or Ronsonol fluid for traditional wick operation (or upgrade to butane/electric insert).",
       "category": "gaming",
       "type": "lighter",
       "theme": "horror",
@@ -137,7 +137,7 @@
           "id": "003-chrome",
           "color": "chrome",
           "colorName": "Street Chrome",
-          "price": 30,
+          "price": 35,
           "images": [
             "images/variants/chrome/003_chrome_1.webp",
             "images/variants/chrome/003_chrome_2.webp",
@@ -186,8 +186,8 @@
     {
       "id": 4,
       "name": "Elder Scrolls Skyrim Zippo Flip Lighter",
-      "description": "Minimalist Skyrim lighter featuring the iconic Elder Scrolls V logo. Available in chrome and black variants.",
-      "longDescription": "A sleek tribute to Elder Scrolls V: Skyrim featuring the game's distinctive logo in a clean, minimalist design. This high-quality lighter showcases the iconic Skyrim dragon emblem without unnecessary clutter, letting the legendary symbol speak for itself. Perfect for fans who appreciate understated elegance and the timeless appeal of one of gaming's most beloved RPGs.",
+      "description": "Standard-size minimalist Skyrim lighter featuring the iconic Elder Scrolls V logo. Available in chrome and black variants.",
+      "longDescription": "A sleek tribute to Elder Scrolls V: Skyrim featuring the game's distinctive logo in a clean, minimalist design. This high-quality lighter showcases the iconic Skyrim dragon emblem without unnecessary clutter, letting the legendary symbol speak for itself. Perfect for fans who appreciate understated elegance and the timeless appeal of one of gaming's most beloved RPGs. This is a standard Zippo size lighter. Ships without lighter fluid - use standard Zippo lighter fluid or Ronsonol fluid for traditional wick operation (or upgrade to butane/electric insert).",
       "category": "gaming",
       "type": "lighter",
       "theme": "fantasy",
@@ -198,7 +198,7 @@
           "id": "004-chrome",
           "color": "chrome",
           "colorName": "Street Chrome",
-          "price": 30,
+          "price": 35,
           "images": [
             "images/variants/chrome/004_chrome_1.webp",
             "images/variants/chrome/004_chrome_2.webp",
@@ -247,8 +247,8 @@
     {
       "id": 5,
       "name": "Elder Scrolls Oblivion Zippo Flip Lighter",
-      "description": "Oblivion-themed lighter featuring the iconic Elder Scrolls IV logo. Available in chrome and black variants.",
-      "longDescription": "A sleek tribute to Elder Scrolls IV: Oblivion featuring the game's distinctive logo in a clean, minimalist design. This high-quality lighter showcases the iconic Oblivion emblem without unnecessary clutter, letting the legendary symbol speak for itself. Perfect for fans who appreciate understated elegance and the timeless appeal of one of gaming's most beloved RPGs.",
+      "description": "Standard-size Oblivion-themed lighter featuring the iconic Elder Scrolls IV logo. Available in chrome and black variants.",
+      "longDescription": "A sleek tribute to Elder Scrolls IV: Oblivion featuring the game's distinctive logo in a clean, minimalist design. This high-quality lighter showcases the iconic Oblivion emblem without unnecessary clutter, letting the legendary symbol speak for itself. Perfect for fans who appreciate understated elegance and the timeless appeal of one of gaming's most beloved RPGs. This is a standard Zippo size lighter. Ships without lighter fluid - use standard Zippo lighter fluid or Ronsonol fluid for traditional wick operation (or upgrade to butane/electric insert).",
       "category": "gaming",
       "type": "lighter",
       "theme": "fantasy",
@@ -259,7 +259,7 @@
           "id": "005-chrome",
           "color": "chrome",
           "colorName": "Street Chrome",
-          "price": 30,
+          "price": 35,
           "images": [
             "images/variants/chrome/005_chrome_1.webp",
             "images/variants/chrome/005_chrome_2.webp",
@@ -308,8 +308,8 @@
     {
       "id": 7,
       "name": "Need Head Blown Off Stick Figure Zippo Flip Lighter",
-      "description": "Edgy stick figure lighter with bold graphic design. Available in chrome and black variants.",
-      "longDescription": "Make a bold statement with this striking stick figure-themed lighter. Featuring provocative artwork and edgy design elements, this lighter is perfect for those who appreciate darker aesthetic themes and aren't afraid to stand out. The detailed graphics showcase goofy, nostalgic stick figure imagery with bold typography that demands attention.",
+      "description": "Standard-size edgy stick figure lighter with bold graphic design. Available in chrome and black variants.",
+      "longDescription": "Make a bold statement with this striking stick figure-themed lighter. Featuring provocative artwork and edgy design elements, this lighter is perfect for those who appreciate darker aesthetic themes and aren't afraid to stand out. The detailed graphics showcase goofy, nostalgic stick figure imagery with bold typography that demands attention. This is a standard Zippo size lighter. Ships without lighter fluid - use standard Zippo lighter fluid or Ronsonol fluid for traditional wick operation (or upgrade to butane/electric insert).",
       "category": "original",
       "type": "lighter",
       "theme": "funny",
@@ -320,7 +320,7 @@
           "id": "007-chrome",
           "color": "chrome",
           "colorName": "Street Chrome",
-          "price": 30,
+          "price": 35,
           "images": [
             "images/variants/chrome/007_chrome_1.webp",
             "images/variants/chrome/007_chrome_2.webp",
@@ -369,8 +369,8 @@
     {
       "id": 6,
       "name": "Dark Souls Artorias Zippo Flip Lighter",
-      "description": "Knight Artorias themed Zippo lighter featuring the legendary Abysswalker. Chrome finish with detailed artwork.",
-      "longDescription": "Honor the legendary Knight Artorias with this exclusive Dark Souls themed lighter. Showcasing the corrupted knight who sacrificed himself to the Abyss, this lighter captures the tragic heroism of one of Dark Souls' most beloved characters. Perfect for fans of the Dark Souls series and collectors of gaming memorabilia.",
+      "description": "Standard-size Knight Artorias themed Zippo lighter featuring the legendary Abysswalker. Chrome finish with detailed artwork.",
+      "longDescription": "Honor the legendary Knight Artorias with this exclusive Dark Souls themed lighter. Showcasing the corrupted knight who sacrificed himself to the Abyss, this lighter captures the tragic heroism of one of Dark Souls' most beloved characters. Perfect for fans of the Dark Souls series and collectors of gaming memorabilia. This is a standard Zippo size lighter. Ships without lighter fluid - use standard Zippo lighter fluid or Ronsonol fluid for traditional wick operation (or upgrade to butane/electric insert).",
       "category": "gaming",
       "type": "lighter", 
       "theme": "fantasy",
@@ -381,7 +381,7 @@
           "id": "006-chrome",
           "color": "chrome",
           "colorName": "Street Chrome",
-          "price": 30,
+          "price": 35,
           "images": [
             "images/variants/chrome/006_chrome_1.webp",
             "images/variants/chrome/006_chrome_2.webp", 
@@ -416,8 +416,8 @@
     {
       "id": 8,
       "name": "Dark Souls Sif Zippo Flip Lighter",
-      "description": "Great Grey Wolf Sif themed Zippo lighter featuring the loyal wolf guardian. Chrome finish with detailed artwork.",
-      "longDescription": "Pay tribute to the Great Grey Wolf Sif with this exclusive Dark Souls themed lighter. Featuring the loyal guardian of Artorias' grave, this lighter captures the noble spirit of one of Dark Souls' most memorable boss encounters. A must-have for fans of the series and collectors of gaming memorabilia.",
+      "description": "Standard-size Great Grey Wolf Sif themed Zippo lighter featuring the loyal wolf guardian. Chrome finish with detailed artwork.",
+      "longDescription": "Pay tribute to the Great Grey Wolf Sif with this exclusive Dark Souls themed lighter. Featuring the loyal guardian of Artorias' grave, this lighter captures the noble spirit of one of Dark Souls' most memorable boss encounters. A must-have for fans of the series and collectors of gaming memorabilia. This is a standard Zippo size lighter. Ships without lighter fluid - use standard Zippo lighter fluid or Ronsonol fluid for traditional wick operation (or upgrade to butane/electric insert).",
       "category": "gaming",
       "type": "lighter",
       "theme": "fantasy", 
@@ -428,7 +428,7 @@
           "id": "008-chrome",
           "color": "chrome", 
           "colorName": "Street Chrome",
-          "price": 30,
+          "price": 35,
           "images": [
             "images/variants/chrome/008_chrome_1.webp",
             "images/variants/chrome/008_chrome_2.webp",
@@ -463,8 +463,8 @@
     {
       "id": 9,
       "name": "Resident Evil 3 Jill Valentine Zippo Flip Lighter",
-      "description": "Jill Valentine themed Zippo lighter from Resident Evil 3. Chrome finish featuring the iconic S.T.A.R.S. member.",
-      "longDescription": "Celebrate the iconic Jill Valentine with this exclusive Resident Evil 3 themed lighter. Featuring the legendary S.T.A.R.S. member in her battle against Nemesis, this lighter is perfect for fans of the survival horror classic and collectors of Resident Evil memorabilia.",
+      "description": "Standard-size Jill Valentine themed Zippo lighter from Resident Evil 3. Chrome finish featuring the iconic S.T.A.R.S. member.",
+      "longDescription": "Celebrate the iconic Jill Valentine with this exclusive Resident Evil 3 themed lighter. Featuring the legendary S.T.A.R.S. member in her battle against Nemesis, this lighter is perfect for fans of the survival horror classic and collectors of Resident Evil memorabilia. This is a standard Zippo size lighter. Ships without lighter fluid - use standard Zippo lighter fluid or Ronsonol fluid for traditional wick operation (or upgrade to butane/electric insert).",
       "category": "gaming",
       "type": "lighter",
       "theme": "horror",
@@ -475,7 +475,7 @@
           "id": "009-chrome",
           "color": "chrome",
           "colorName": "Street Chrome", 
-          "price": 30,
+          "price": 35,
           "images": [
             "images/variants/chrome/009_chrome_1.webp",
             "images/variants/chrome/009_chrome_2.webp",
@@ -510,8 +510,8 @@
     {
       "id": 10,
       "name": "Resident Evil 4 Leon Kennedy Zippo Flip Lighter",
-      "description": "Leon Kennedy themed Zippo lighter from Resident Evil 4. Chrome finish featuring the agent's iconic look.",
-      "longDescription": "Honor the legendary Leon S. Kennedy with this exclusive Resident Evil 4 themed lighter. Featuring the government agent in his mission to rescue Ashley Graham, this lighter captures the essence of one of survival horror's most beloved protagonists.",
+      "description": "Standard-size Leon Kennedy themed Zippo lighter from Resident Evil 4. Chrome finish featuring the agent's iconic look.",
+      "longDescription": "Honor the legendary Leon S. Kennedy with this exclusive Resident Evil 4 themed lighter. Featuring the government agent in his mission to rescue Ashley Graham, this lighter captures the essence of one of survival horror's most beloved protagonists. This is a standard Zippo size lighter. Ships without lighter fluid - use standard Zippo lighter fluid or Ronsonol fluid for traditional wick operation (or upgrade to butane/electric insert).",
       "category": "gaming",
       "type": "lighter",
       "theme": "horror",
@@ -522,7 +522,7 @@
           "id": "010-chrome",
           "color": "chrome",
           "colorName": "Street Chrome",
-          "price": 30,
+          "price": 35,
           "images": [
             "images/variants/chrome/010_chrome_1.webp",
             "images/variants/chrome/010_chrome_2.webp",
@@ -557,8 +557,8 @@
     {
       "id": 11,
       "name": "Resident Evil 4 Ada Wong Zippo Flip Lighter", 
-      "description": "Ada Wong themed Zippo lighter from Resident Evil 4. Chrome finish featuring the mysterious spy.",
-      "longDescription": "Celebrate the enigmatic Ada Wong with this exclusive Resident Evil 4 themed lighter. Featuring the mysterious spy with her own agenda, this lighter captures the allure and danger of one of Resident Evil's most intriguing characters.",
+      "description": "Standard-size Ada Wong themed Zippo lighter from Resident Evil 4. Chrome finish featuring the mysterious spy.",
+      "longDescription": "Celebrate the enigmatic Ada Wong with this exclusive Resident Evil 4 themed lighter. Featuring the mysterious spy with her own agenda, this lighter captures the allure and danger of one of Resident Evil's most intriguing characters. This is a standard Zippo size lighter. Ships without lighter fluid - use standard Zippo lighter fluid or Ronsonol fluid for traditional wick operation (or upgrade to butane/electric insert).",
       "category": "gaming",
       "type": "lighter",
       "theme": "horror",
@@ -569,7 +569,7 @@
           "id": "011-chrome",
           "color": "chrome",
           "colorName": "Street Chrome",
-          "price": 30,
+          "price": 35,
           "images": [
             "images/variants/chrome/011_chrome_1.webp",
             "images/variants/chrome/011_chrome_2.webp",
