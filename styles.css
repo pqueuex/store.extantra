@@ -14,10 +14,12 @@ body {
     justify-content: center;
     padding: 0;
     margin: 0;
+    -webkit-text-size-adjust: 100%; /* Prevent font scaling on iOS */
 }
 
 .container {
     width: 480px;
+    max-width: 100%;
     border: 1px solid black;
     background-color: white;
     min-height: 100vh;
@@ -372,18 +374,10 @@ body {
     font-size: 10px;
 }
 
+/* Mobile: keep desktop look */
 @media (max-width: 460px) {
     .filter-controls {
         gap: 6px;
-    }
-    
-    .filter-group select {
-        min-width: 50px;
-        font-size: 8px;
-    }
-    
-    .filter-group label {
-        font-size: 9px;
     }
 }
 
@@ -1074,16 +1068,9 @@ body {
     text-align: center;
 }
 
+/* Mobile: keep desktop layout */
 @media (max-width: 520px) {
-    .product-detail-grid {
-        grid-template-columns: 1fr;
-    }
-    .product-images-section {
-        width: 100%;
-    }
-    .product-gif {
-        height: 190px;
-    }
+    /* Keep desktop look - no changes */
 }
 
 .product-page-title {
@@ -2670,56 +2657,34 @@ body {
     margin: 20px 0;
 }
 
-/* Responsive Design */
+/* Responsive Design - Keep desktop look on mobile */
 @media (max-width: 768px) {
-    .color-variants {
-        flex-direction: column;
-        align-items: stretch;
-    }
-    
-    .color-option {
-        justify-content: center;
-        margin-bottom: 10px;
-    }
-    
-    .thumbnail-container {
-        gap: 5px;
-    }
-    
-    .thumbnail {
-        width: 60px;
-        height: 60px;
-    }
-    
-    .image-nav {
-        padding: 8px;
-        font-size: 16px;
-    }
-    
-    .total-price {
-        font-size: 20px;
+    /* Keep everything the same as desktop */
+    .container {
+        border-left: none;
+        border-right: none;
     }
 }
 
 @media (max-width: 480px) {
-    .product-options {
-        padding: 15px;
-        margin: 15px 0;
+    /* Keep everything the same as desktop */
+    .container {
+        border-left: none;
+        border-right: none;
     }
     
-    .option-section {
-        margin-bottom: 15px;
-        padding-bottom: 10px;
+    /* Prevent iOS auto-zoom on input focus */
+    input, textarea, select {
+        font-size: 16px !important;
     }
     
-    .premium-options,
-    .customization-options {
-        padding: 10px;
+    /* Adjust labels proportionally */
+    label, .option-label, .engraving-label {
+        font-size: 16px;
     }
     
-    .thumbnail {
-        width: 50px;
-        height: 50px;
+    .engraving-input small {
+        font-size: 14px;
     }
 }
 
