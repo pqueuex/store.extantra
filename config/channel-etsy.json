@@ -1,0 +1,26 @@
+{
+  "shopName": "Monoangel",
+  "policy": {
+    "who_made": "i_did",
+    "when_made": "2020_2025",
+    "is_supply": false
+  },
+  "shippingProfileId": null,
+  "sectionId": null,
+  "renewalOption": "manual",
+  "taxonomyHints": {
+    "lighter": 6921
+  },
+  "tagBoost": [
+    "zippo",
+    "gaming",
+    "music",
+    "silent hill",
+    "aphex twin",
+    "elder scrolls",
+    "skyrim",
+    "oblivion",
+    "horror",
+    "fantasy"
+  ]
+}

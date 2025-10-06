@@ -269,7 +269,12 @@
             }
             
             if (colorFilter) {
-                filteredProducts = filteredProducts.filter(p => p.color === colorFilter);
+                filteredProducts = filteredProducts.filter(p => {
+                    if (Array.isArray(p.colors) && p.colors.length > 0) {
+                        return p.colors.includes(colorFilter);
+                    }
+                    return p.color === colorFilter;
+                });
             }
             
             if (themeFilter) {
@@ -368,7 +373,7 @@
 
         async function loadProducts() {
             try {
-                const response = await fetch('products.json');
+                const response = await fetch('/api/products');
                 const data = await response.json();
                 products = data.products;
                 sales = data.sales || [];
@@ -392,10 +397,12 @@
         function applyActiveSales() {
             // Reset all sale prices first
             products.forEach(product => {
+                const basePrice = typeof product.basePrice === 'number' ? product.basePrice : (product.currentPrice || product.originalPrice);
                 product.salePrice = null;
-                product.currentPrice = product.originalPrice;
+                product.currentPrice = basePrice;
                 product.onSale = false;
                 product.salePercentage = 0;
+                product.originalPrice = basePrice;
             });
 
             // Apply active sales

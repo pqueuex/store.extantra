@@ -1,0 +1,19 @@
+{
+  "defaultQuantity": 5,
+  "defaultCurrency": "USD",
+  "materials": ["Metal", "Refillable"],
+  "whoMade": "i_did",
+  "whenMade": "2020_2025",
+  "isSupply": false,
+  "maxTitleLength": 140,
+  "maxTags": 13,
+  "defaultTags": [
+    "windproof lighter",
+    "flip lighter",
+    "engraved lighter",
+    "collectible lighter",
+    "gift for him",
+    "gift for her",
+    "EDC"
+  ]
+}

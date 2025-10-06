@@ -1,0 +1,384 @@
+{
+  "products": [
+    {
+      "id": 1,
+      "name": "Silent Hill 2 Zippo Flip Lighter",
+      "description": "Street chrome Zippo featuring Pyramid Head and Bubble Head Nurse designs on either side with the iconic Silent Hill 2 logo. Available in chrome and black variants.",
+      "longDescription": "A stunning lighter showcasing the most iconic creatures from Silent Hill 2. One side features the menacing Pyramid Head while the other displays the haunting Bubble Head Nurse, with the distinctive Silent Hill 2 logo completing this collector's masterpiece. Built with legendary reliability and windproof design for horror fans and collectors alike.",
+      "category": "gaming",
+      "type": "lighter",
+      "theme": "horror",
+      "inStock": true,
+      "barcode": "images/barcodes/001.jpeg",
+      "variants": [
+        {
+          "id": "001-chrome",
+          "color": "chrome",
+          "colorName": "Street Chrome",
+          "price": 30,
+          "images": [
+            "images/variants/chrome/001_chrome_1.webp",
+            "images/variants/chrome/001_chrome_2.webp",
+            "images/variants/chrome/001_chrome_3.webp"
+          ],
+          "gif": "images/gifs/001_chrome.gif",
+          "inStock": true,
+          "premiumOptions": {
+            "butaneInsert": {
+              "available": true,
+              "price": 25,
+              "description": "Upgrade to butane torch insert for reliable wind-resistant flame"
+            }
+          }
+        },
+        {
+          "id": "001-black",
+          "color": "black",
+          "colorName": "Matte Black",
+          "price": 25,
+          "images": [
+            "images/variants/black/001_black_1.webp",
+            "images/variants/black/001_black_2.webp",
+            "images/variants/black/001_black_3.webp"
+          ],
+          "gif": "images/gifs/001_black.gif",
+          "inStock": true,
+          "disclaimer": "Black color variant is not an official Zippo brand product but nonetheless high quality"
+        }
+      ],
+      "customization": {
+        "sideEngraving": {
+          "available": true,
+          "price": 10,
+          "maxCharacters": 50,
+          "description": "Add custom text to the side"
+        },
+        "backEngraving": {
+          "available": true,
+          "price": 10,
+          "maxCharacters": 50,
+          "description": "Add custom text to the back"
+        }
+      }
+    },
+    {
+      "id": 2,
+      "name": "Aphex Twin Logo Zippo Flip Lighter",
+      "description": "Rare Aphex Twin electronic music themed lighter with distinctive IDM artwork. Available in chrome and black variants.",
+      "longDescription": "Celebrate the genius of Richard D. James with this exclusive Aphex Twin lighter. Showcasing the distinctive visual style associated with the legendary electronic music producer, this lighter is a must-have for fans of intelligent dance music and experimental electronica. The design captures the essence of Aphex Twin's innovative sound with striking visuals that reflect his influential career spanning ambient, acid, and IDM genres.",
+      "category": "music",
+      "type": "lighter",
+      "theme": "electronic",
+      "inStock": true,
+      "barcode": "images/barcodes/002.jpeg",
+      "variants": [
+        {
+          "id": "002-chrome",
+          "color": "chrome",
+          "colorName": "Street Chrome",
+          "price": 30,
+          "images": [
+            "images/variants/chrome/002_chrome_1.webp",
+            "images/variants/chrome/002_chrome_2.webp",
+            "images/variants/chrome/002_chrome_3.webp"
+          ],
+          "gif": "images/gifs/002_chrome.gif",
+          "inStock": true,
+          "premiumOptions": {
+            "butaneInsert": {
+              "available": true,
+              "price": 25,
+              "description": "Upgrade to butane torch insert for reliable wind-resistant flame"
+            }
+          }
+        },
+        {
+          "id": "002-black",
+          "color": "black",
+          "colorName": "Matte Black",
+          "price": 25,
+          "images": [
+            "images/variants/black/002_black_1.webp",
+            "images/variants/black/002_black_2.webp",
+            "images/variants/black/002_black_3.webp"
+          ],
+          "gif": "images/gifs/002_black.gif",
+          "inStock": true,
+          "disclaimer": "Black color variant is not an official Zippo brand product but nonetheless high quality"
+        }
+      ],
+      "customization": {
+        "sideEngraving": {
+          "available": true,
+          "price": 10,
+          "maxCharacters": 50,
+          "description": "Add custom text to the side"
+        },
+        "backEngraving": {
+          "available": true,
+          "price": 10,
+          "maxCharacters": 50,
+          "description": "Add custom text to the back"
+        }
+      }
+    },
+    {
+      "id": 3,
+      "name": "Silent Hill 3 Zippo Flip Lighter",
+      "description": "Street chrome lighter featuring the beautiful Silent Hill 3 logo and iconic Robbie the Rabbit. Available in chrome and black variants.",
+      "longDescription": "A stunning lighter showcasing the beautiful Silent Hill 3 logo alongside the iconic and unsettling Robbie the Rabbit. This collector's piece captures the eerie atmosphere of Heather Mason's journey with detailed artwork that Silent Hill fans will instantly recognize. Built with legendary reliability and windproof design.",
+      "category": "gaming",
+      "type": "lighter",
+      "theme": "horror",
+      "inStock": true,
+      "barcode": "images/barcodes/003.jpeg",
+      "variants": [
+        {
+          "id": "003-chrome",
+          "color": "chrome",
+          "colorName": "Street Chrome",
+          "price": 30,
+          "images": [
+            "images/variants/chrome/003_chrome_1.webp",
+            "images/variants/chrome/003_chrome_2.webp",
+            "images/variants/chrome/003_chrome_3.webp"
+          ],
+          "gif": "images/gifs/003_chrome.gif",
+          "inStock": true,
+          "premiumOptions": {
+            "butaneInsert": {
+              "available": true,
+              "price": 25,
+              "description": "Upgrade to butane torch insert for reliable wind-resistant flame"
+            }
+          }
+        },
+        {
+          "id": "003-black",
+          "color": "black",
+          "colorName": "Matte Black",
+          "price": 25,
+          "images": [
+            "images/variants/black/003_black_1.webp",
+            "images/variants/black/003_black_2.webp",
+            "images/variants/black/003_black_3.webp"
+          ],
+          "gif": "images/gifs/003_black.gif",
+          "inStock": true,
+          "disclaimer": "Black color variant is not an official Zippo brand product but nonetheless high quality"
+        }
+      ],
+      "customization": {
+        "sideEngraving": {
+          "available": true,
+          "price": 10,
+          "maxCharacters": 50,
+          "description": "Add custom text to the side"
+        },
+        "backEngraving": {
+          "available": true,
+          "price": 10,
+          "maxCharacters": 50,
+          "description": "Add custom text to the back"
+        }
+      }
+    },
+    {
+      "id": 4,
+      "name": "Elder Scrolls Skyrim Zippo Flip Lighter",
+      "description": "Minimalist Skyrim lighter featuring the iconic Elder Scrolls V logo. Available in chrome and black variants.",
+      "longDescription": "A sleek tribute to Elder Scrolls V: Skyrim featuring the game's distinctive logo in a clean, minimalist design. This high-quality lighter showcases the iconic Skyrim dragon emblem without unnecessary clutter, letting the legendary symbol speak for itself. Perfect for fans who appreciate understated elegance and the timeless appeal of one of gaming's most beloved RPGs.",
+      "category": "gaming",
+      "type": "lighter",
+      "theme": "fantasy",
+      "inStock": true,
+      "barcode": "images/barcodes/004.jpeg",
+      "variants": [
+        {
+          "id": "004-chrome",
+          "color": "chrome",
+          "colorName": "Street Chrome",
+          "price": 30,
+          "images": [
+            "images/variants/chrome/004_chrome_1.webp",
+            "images/variants/chrome/004_chrome_2.webp",
+            "images/variants/chrome/004_chrome_3.webp"
+          ],
+          "gif": "images/gifs/004_chrome.gif",
+          "inStock": true,
+          "premiumOptions": {
+            "butaneInsert": {
+              "available": true,
+              "price": 25,
+              "description": "Upgrade to butane torch insert for reliable wind-resistant flame"
+            }
+          }
+        },
+        {
+          "id": "004-black",
+          "color": "black",
+          "colorName": "Matte Black",
+          "price": 25,
+          "images": [
+            "images/variants/black/004_black_1.webp",
+            "images/variants/black/004_black_2.webp",
+            "images/variants/black/004_black_3.webp"
+          ],
+          "gif": "images/gifs/004_black.gif",
+          "inStock": true,
+          "disclaimer": "Black color variant is not an official Zippo brand product but nonetheless high quality"
+        }
+      ],
+      "customization": {
+        "sideEngraving": {
+          "available": true,
+          "price": 10,
+          "maxCharacters": 50,
+          "description": "Add custom text to the side"
+        },
+        "backEngraving": {
+          "available": true,
+          "price": 10,
+          "maxCharacters": 50,
+          "description": "Add custom text to the back"
+        }
+      }
+    },
+    {
+      "id": 5,
+      "name": "Elder Scrolls Oblivion Zippo Flip Lighter",
+      "description": "Oblivion-themed lighter featuring the iconic Elder Scrolls IV logo. Available in chrome and black variants.",
+      "longDescription": "A sleek tribute to Elder Scrolls IV: Oblivion featuring the game's distinctive logo in a clean, minimalist design. This high-quality lighter showcases the iconic Oblivion emblem without unnecessary clutter, letting the legendary symbol speak for itself. Perfect for fans who appreciate understated elegance and the timeless appeal of one of gaming's most beloved RPGs.",
+      "category": "gaming",
+      "type": "lighter",
+      "theme": "fantasy",
+      "inStock": true,
+      "barcode": "images/barcodes/005.jpeg",
+      "variants": [
+        {
+          "id": "005-chrome",
+          "color": "chrome",
+          "colorName": "Street Chrome",
+          "price": 30,
+          "images": [
+            "images/variants/chrome/005_chrome_1.webp",
+            "images/variants/chrome/005_chrome_2.webp",
+            "images/variants/chrome/005_chrome_3.webp"
+          ],
+          "gif": "images/gifs/005_chrome.gif",
+          "inStock": true,
+          "premiumOptions": {
+            "butaneInsert": {
+              "available": true,
+              "price": 25,
+              "description": "Upgrade to butane torch insert for reliable wind-resistant flame"
+            }
+          }
+        },
+        {
+          "id": "005-black",
+          "color": "black",
+          "colorName": "Matte Black",
+          "price": 25,
+          "images": [
+            "images/variants/black/005_black_1.webp",
+            "images/variants/black/005_black_2.webp",
+            "images/variants/black/005_black_3.webp"
+          ],
+          "gif": "images/gifs/005_black.gif",
+          "inStock": true,
+          "disclaimer": "Black color variant is not an official Zippo brand product but nonetheless high quality"
+        }
+      ],
+      "customization": {
+        "sideEngraving": {
+          "available": true,
+          "price": 10,
+          "maxCharacters": 50,
+          "description": "Add custom text to the side"
+        },
+        "backEngraving": {
+          "available": true,
+          "price": 10,
+          "maxCharacters": 50,
+          "description": "Add custom text to the back"
+        }
+      }
+    },
+    {
+      "id": 7,
+      "name": "Need Head Blown Off Stick Figure Zippo Flip Lighter",
+      "description": "Edgy stick figure lighter with bold graphic design. Available in chrome and black variants.",
+      "longDescription": "Make a bold statement with this striking stick figure-themed lighter. Featuring provocative artwork and edgy design elements, this lighter is perfect for those who appreciate darker aesthetic themes and aren't afraid to stand out. The detailed graphics showcase goofy, nostalgic stick figure imagery with bold typography that demands attention.",
+      "category": "original",
+      "type": "lighter",
+      "theme": "funny",
+      "inStock": true,
+      "barcode": "images/barcodes/007.jpg",
+      "variants": [
+        {
+          "id": "007-chrome",
+          "color": "chrome",
+          "colorName": "Street Chrome",
+          "price": 30,
+          "images": [
+            "images/variants/chrome/007_chrome_1.webp",
+            "images/variants/chrome/007_chrome_2.webp",
+            "images/variants/chrome/007_chrome_3.webp"
+          ],
+          "gif": "images/gifs/007_chrome.gif",
+          "inStock": true,
+          "premiumOptions": {
+            "butaneInsert": {
+              "available": true,
+              "price": 25,
+              "description": "Upgrade to butane torch insert for reliable wind-resistant flame"
+            }
+          }
+        },
+        {
+          "id": "007-black",
+          "color": "black",
+          "colorName": "Matte Black",
+          "price": 25,
+          "images": [
+            "images/variants/black/007_black_1.webp",
+            "images/variants/black/007_black_2.webp",
+            "images/variants/black/007_black_3.webp"
+          ],
+          "gif": "images/gifs/007_black.gif",
+          "inStock": true,
+          "disclaimer": "Black color variant is not an official Zippo brand product but nonetheless high quality"
+        }
+      ],
+      "customization": {
+        "sideEngraving": {
+          "available": true,
+          "price": 10,
+          "maxCharacters": 50,
+          "description": "Add custom text to the side"
+        },
+        "backEngraving": {
+          "available": true,
+          "price": 10,
+          "maxCharacters": 50,
+          "description": "Add custom text to the back"
+        }
+      }
+    }
+  ],
+  "sales": [
+    {
+      "id": "sale_1750424839978",
+      "name": "LIGHTER",
+      "description": "25% off Chrome Lighters",
+      "active": false,
+      "percentage": 25,
+      "criteria": {
+        "color": "chrome"
+      },
+      "startDate": "2025-06-20",
+      "endDate": "2025-08-20"
+    }
+  ]
+}

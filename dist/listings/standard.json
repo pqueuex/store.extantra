@@ -1,0 +1,188 @@
+[
+  {
+    "id": 1,
+    "sku": "EXT-001",
+    "title": "Silent Hill 2 Zippo Flip Lighter",
+    "description": "A stunning street chrome Zippo lighter showcasing the most iconic creatures from Silent Hill 2. One side features the menacing Pyramid Head while the other displays the haunting Bubble Head Nurse, with the distinctive Silent Hill 2 logo completing this collector's masterpiece. The premium chrome finish provides a brilliant backdrop for these legendary horror designs from James Sunderland's psychological nightmare. Built with Zippo's legendary reliability and windproof design for horror fans and collectors alike.",
+    "price": 30,
+    "currency": "USD",
+    "quantity": 5,
+    "images": [
+      "images/001_silent_hill_2_zippo_lighter_1.webp",
+      "images/001_silent_hill_2_zippo_lighter_2.webp",
+      "images/001_silent_hill_2_zippo_lighter_3.webp"
+    ],
+    "barcodeImage": "images/barcodes/001.jpeg",
+    "attributes": {
+      "category": "gaming",
+      "color": "chrome",
+      "theme": "horror",
+      "type": "lighter",
+      "onSale": false,
+      "salePercentage": 0
+    },
+    "shipping": {
+      "freeThreshold": 75,
+      "domesticStd": 8.99,
+      "domesticExp": 14.99
+    },
+    "meta": {
+      "slug": "1-silent-hill-2-zippo-flip-lighter"
+    }
+  },
+  {
+    "id": 2,
+    "sku": "EXT-002",
+    "title": "Aphex Twin Logo Zippo Flip Lighter",
+    "description": "Celebrate the genius of Richard D. James with this exclusive Aphex Twin Zippo lighter. Showcasing the distinctive visual style associated with the legendary electronic music producer, this lighter is a must-have for fans of intelligent dance music and experimental electronica. The design captures the essence of Aphex Twin's innovative sound with striking visuals that reflect his influential career spanning ambient, acid, and IDM genres. Built with Zippo's legendary quality and lifetime guarantee.",
+    "price": 30,
+    "currency": "USD",
+    "quantity": 5,
+    "images": [
+      "images/002_aphex_twin_zippo_lighter_1.webp",
+      "images/002_aphex_twin_zippo_lighter_2.webp",
+      "images/002_aphex_twin_zippo_lighter_3.webp"
+    ],
+    "barcodeImage": "images/barcodes/002.jpeg",
+    "attributes": {
+      "category": "music",
+      "color": "chrome",
+      "theme": "electronic",
+      "type": "lighter",
+      "onSale": false,
+      "salePercentage": 0
+    },
+    "shipping": {
+      "freeThreshold": 75,
+      "domesticStd": 8.99,
+      "domesticExp": 14.99
+    },
+    "meta": {
+      "slug": "2-aphex-twin-logo-zippo-flip-lighter"
+    }
+  },
+  {
+    "id": 3,
+    "sku": "EXT-003",
+    "title": "Silent Hill 3 Zippo Flip Lighter",
+    "description": "A stunning street chrome Zippo lighter showcasing the beautiful Silent Hill 3 logo alongside the iconic and unsettling Robbie the Rabbit. The premium chrome finish provides a sleek backdrop for the haunting imagery from Konami's psychological horror masterpiece. This collector's piece captures the eerie atmosphere of Heather Mason's journey with detailed artwork that Silent Hill fans will instantly recognize. Built with Zippo's legendary reliability and windproof design.",
+    "price": 30,
+    "currency": "USD",
+    "quantity": 5,
+    "images": [
+      "images/003_silent_hill_3_zippo_lighter_1.webp",
+      "images/003_silent_hill_3_zippo_lighter_2.webp",
+      "images/003_silent_hill_3_zippo_lighter_3.webp"
+    ],
+    "barcodeImage": "images/barcodes/003.jpeg",
+    "attributes": {
+      "category": "gaming",
+      "color": "chrome",
+      "theme": "horror",
+      "type": "lighter",
+      "onSale": false,
+      "salePercentage": 0
+    },
+    "shipping": {
+      "freeThreshold": 75,
+      "domesticStd": 8.99,
+      "domesticExp": 14.99
+    },
+    "meta": {
+      "slug": "3-silent-hill-3-zippo-flip-lighter"
+    }
+  },
+  {
+    "id": 4,
+    "sku": "EXT-004",
+    "title": "Elder Scrolls Skyrim Zippo Flip Lighter",
+    "description": "A sleek tribute to Elder Scrolls V: Skyrim featuring the game's distinctive logo in a clean, minimalist design. This high-quality lighter showcases the iconic Skyrim dragon emblem without unnecessary clutter, letting the legendary symbol speak for itself. While not a Zippo brand lighter, this exceptional quality alternative offers the same reliable windproof performance and durable construction. Perfect for fans who appreciate understated elegance and the timeless appeal of one of gaming's most beloved RPGs.",
+    "price": 25,
+    "currency": "USD",
+    "quantity": 5,
+    "images": [
+      "images/004_elder_scrolls_skyrim_zippo_lighter_1.webp",
+      "images/004_elder_scrolls_skyrim_zippo_lighter_2.webp",
+      "images/004_elder_scrolls_skyrim_zippo_lighter_3.webp"
+    ],
+    "barcodeImage": "images/barcodes/004.jpeg",
+    "attributes": {
+      "category": "gaming",
+      "color": "black",
+      "theme": "fantasy",
+      "type": "lighter",
+      "onSale": false,
+      "salePercentage": 0
+    },
+    "shipping": {
+      "freeThreshold": 75,
+      "domesticStd": 8.99,
+      "domesticExp": 14.99
+    },
+    "meta": {
+      "slug": "4-elder-scrolls-skyrim-zippo-flip-lighter"
+    }
+  },
+  {
+    "id": 5,
+    "sku": "EXT-005",
+    "title": "Elder Scrolls Oblivion Zippo Flip Lighter",
+    "description": "A sleek tribute to Elder Scrolls IV: Oblivion featuring the game's distinctive logo in a clean, minimalist design. This high-quality lighter showcases the iconic Oblivion emblem without unnecessary clutter, letting the legendary symbol speak for itself. While not a Zippo brand lighter, this exceptional quality alternative offers the same reliable windproof performance and durable construction. Perfect for fans who appreciate understated elegance and the timeless appeal of one of gaming's most beloved RPGs.",
+    "price": 25,
+    "currency": "USD",
+    "quantity": 5,
+    "images": [
+      "images/005_elder_scrolls_oblivion_zippo_lighter_1.webp",
+      "images/005_elder_scrolls_oblivion_zippo_lighter_2.webp",
+      "images/005_elder_scrolls_oblivion_zippo_lighter_3.webp"
+    ],
+    "barcodeImage": "images/barcodes/005.jpeg",
+    "attributes": {
+      "category": "gaming",
+      "color": "black",
+      "theme": "fantasy",
+      "type": "lighter",
+      "onSale": false,
+      "salePercentage": 0
+    },
+    "shipping": {
+      "freeThreshold": 75,
+      "domesticStd": 8.99,
+      "domesticExp": 14.99
+    },
+    "meta": {
+      "slug": "5-elder-scrolls-oblivion-zippo-flip-lighter"
+    }
+  },
+  {
+    "id": 7,
+    "sku": "EXT-007",
+    "title": "Need Head Blown Off Stick Figure Zippo Flip Lighter",
+    "description": "Make a bold statement with this striking stick figure-themed lighter. Featuring provocative artwork and edgy design elements, this lighter is perfect for those who appreciate darker aesthetic themes and aren't afraid to stand out. The detailed graphics showcase goofy, nostalgic stick figure imagery with bold typography that demands attention. While not a Zippo brand lighter, this exceptional quality alternative offers the same reliable windproof performance and durable construction, combining rebellious style with dependable performance.",
+    "price": 25,
+    "currency": "USD",
+    "quantity": 5,
+    "images": [
+      "images/007_need_head_blown_off_zippo_lighter_1.webp",
+      "images/007_need_head_blown_off_zippo_lighter_2.webp",
+      "images/007_need_head_blown_off_zippo_lighter_3.webp"
+    ],
+    "barcodeImage": "images/barcodes/007.jpg",
+    "attributes": {
+      "category": "original",
+      "color": "black",
+      "theme": "funny",
+      "type": "lighter",
+      "onSale": false,
+      "salePercentage": 0
+    },
+    "shipping": {
+      "freeThreshold": 75,
+      "domesticStd": 8.99,
+      "domesticExp": 14.99
+    },
+    "meta": {
+      "slug": "7-need-head-blown-off-stick-figure-zippo-flip-lighter"
+    }
+  }
+]

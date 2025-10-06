@@ -24,6 +24,7 @@ shipping-test.html
 *-summary.md
 test-functionality.md
 security-audit-report.md
+notion_exports/
 
 # editor
 .vscode/

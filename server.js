@@ -4,10 +4,20 @@ const path = require('path');
 const helmet = require('helmet');
 const rateLimit = require('express-rate-limit');
 const ShippingCalculator = require('./shipping-calculator');
+const nodemailer = require('nodemailer');
 
 require('dotenv').config();
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 const shippingCalculator = new ShippingCalculator();
+
+// Email transporter setup
+const emailTransporter = nodemailer.createTransport({
+    service: 'gmail',
+    auth: {
+        user: process.env.GMAIL_USER,
+        pass: process.env.GMAIL_APP_PASSWORD
+    }
+});
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -77,6 +87,113 @@ app.use(cors({
     origin: ['http://localhost:3000', 'http://127.0.0.1:5500', 'http://localhost:5500'],
     credentials: true
 }));
+
+// Webhook endpoint MUST come before express.json() to get raw body
+app.post('/webhook', express.raw({type: 'application/json'}), async (req, res) => {
+    const sig = req.headers['stripe-signature'];
+    const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
+
+    let event;
+
+    try {
+        if (webhookSecret) {
+            event = stripe.webhooks.constructEvent(req.body, sig, webhookSecret);
+        } else {
+            event = JSON.parse(req.body);
+        }
+    } catch (err) {
+        console.log(`⚠️  Webhook signature verification failed.`, err.message);
+        return res.status(400).send(`Webhook Error: ${err.message}`);
+    }
+
+    // Handle the checkout.session.completed event
+    if (event.type === 'checkout.session.completed') {
+        const session = event.data.object;
+
+        try {
+            // Parse cart metadata
+            const cartData = session.metadata?.cartData ? JSON.parse(session.metadata.cartData) : [];
+            
+            // Build email content
+            let itemsText = '';
+            cartData.forEach((item, index) => {
+                itemsText += `\n${index + 1}. ${item.name}`;
+                if (item.variantId) itemsText += ` (Variant: ${item.variantId})`;
+                
+                if (item.sideEngraving) {
+                    itemsText += `\n   🔥 SIDE ENGRAVING: "${item.sideEngraving}"`;
+                }
+                if (item.backEngraving) {
+                    itemsText += `\n   🔥 BACK ENGRAVING: "${item.backEngraving}"`;
+                }
+                if (item.butaneInsert === 'Yes') {
+                    itemsText += `\n   ⛽ BUTANE INSERT: Yes`;
+                }
+                itemsText += '\n';
+            });
+
+            const emailContent = `
+🎉 NEW ORDER RECEIVED!
+
+Order ID: ${session.id}
+Payment Status: ${session.payment_status}
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+👤 CUSTOMER INFORMATION:
+Name: ${session.customer_details?.name || 'N/A'}
+Email: ${session.customer_details?.email || 'N/A'}
+Phone: ${session.customer_details?.phone || 'N/A'}
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+📦 ORDER DETAILS:
+${itemsText}
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+💰 PAYMENT:
+Subtotal: $${((session.amount_subtotal || 0) / 100).toFixed(2)}
+Shipping: $${((session.total_details?.amount_shipping || 0) / 100).toFixed(2)}
+Tax: $${((session.total_details?.amount_tax || 0) / 100).toFixed(2)}
+TOTAL: $${((session.amount_total || 0) / 100).toFixed(2)}
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+🚚 SHIPPING ADDRESS:
+${session.shipping?.name || session.customer_details?.name || 'N/A'}
+${session.shipping?.address?.line1 || 'N/A'}
+${session.shipping?.address?.line2 ? session.shipping.address.line2 + '\n' : ''}${session.shipping?.address?.city || ''}, ${session.shipping?.address?.state || ''} ${session.shipping?.address?.postal_code || ''}
+${session.shipping?.address?.country || 'N/A'}
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+View full details in Stripe Dashboard:
+https://dashboard.stripe.com/payments/${session.payment_intent}
+            `.trim();
+
+            // Send email notification
+            if (process.env.GMAIL_USER && process.env.GMAIL_APP_PASSWORD) {
+                await emailTransporter.sendMail({
+                    from: process.env.GMAIL_USER,
+                    to: process.env.NOTIFICATION_EMAIL || 'pqueue001@gmail.com',
+                    subject: `🔥 New Order: ${session.id.substring(0, 15)}... - $${((session.amount_total || 0) / 100).toFixed(2)}`,
+                    text: emailContent
+                });
+                console.log(`✅ Order notification email sent for session ${session.id}`);
+            } else {
+                console.log('⚠️  Email not configured - order details:', emailContent);
+            }
+
+        } catch (error) {
+            console.error('Error processing webhook:', error);
+        }
+    }
+
+    res.json({received: true});
+});
+
+// Apply JSON parser to all other routes
 app.use(express.json({ limit: '10mb' }));
 app.use(express.static('.'));
 
@@ -285,6 +402,20 @@ app.post('/create-checkout-session', checkoutLimiter, async (req, res) => {
 
         // create stripe checkout session
         const baseUrl = req.headers.origin || 'http://localhost:3000';
+        
+        // Prepare metadata with cart customizations
+        const cartMetadata = validatedItems.map((item, index) => {
+            const customizations = items[index].customizations || {};
+            return {
+                productId: items[index].productId || '',
+                variantId: items[index].variantId || '',
+                name: item.name,
+                sideEngraving: customizations.sideEngraving?.text || '',
+                backEngraving: customizations.backEngraving?.text || '',
+                butaneInsert: customizations.butaneInsert ? 'Yes' : 'No'
+            };
+        });
+        
         const session = await stripe.checkout.sessions.create({
             payment_method_types: ['card'],
             line_items: lineItems,
@@ -302,6 +433,9 @@ app.post('/create-checkout-session', checkoutLimiter, async (req, res) => {
                 ],
             },
             shipping_options: shippingOptions,
+            metadata: {
+                cartData: JSON.stringify(cartMetadata)
+            }
         });
 
         res.json({ url: session.url });
@@ -324,6 +458,54 @@ app.post('/create-checkout-session', checkoutLimiter, async (req, res) => {
         } else {
             res.status(500).json({ error: 'Unable to process checkout. Please try again.' });
         }
+    }
+});
+
+// Products API endpoint
+app.get('/api/products', (req, res) => {
+    try {
+        const fs = require('fs');
+        const productsData = JSON.parse(fs.readFileSync('./products.json', 'utf8'));
+
+        const normalizedProducts = (productsData.products || []).map(product => {
+            const variants = Array.isArray(product.variants) ? product.variants : [];
+            const availableVariants = variants.filter(variant => variant && typeof variant === 'object');
+            const defaultVariant = availableVariants.find(variant => variant.inStock) || availableVariants[0] || null;
+            const variantPrices = availableVariants
+                .map(variant => Number(variant.price))
+                .filter(price => !Number.isNaN(price));
+            const minPrice = variantPrices.length > 0 ? Math.min(...variantPrices) : Number(product.currentPrice || product.originalPrice || product.price || 0);
+            const maxPrice = variantPrices.length > 0 ? Math.max(...variantPrices) : minPrice;
+            const consolidatedImages = Array.isArray(product.images) && product.images.length > 0
+                ? product.images
+                : (defaultVariant && Array.isArray(defaultVariant.images) ? defaultVariant.images : []);
+            const colors = availableVariants
+                .map(variant => variant.color)
+                .filter(Boolean);
+            const uniqueColors = [...new Set(colors)];
+
+            return {
+                ...product,
+                images: consolidatedImages,
+                colors: uniqueColors,
+                color: defaultVariant?.color || product.color || uniqueColors[0] || null,
+                defaultVariantId: defaultVariant?.id || null,
+                basePrice: typeof product.basePrice === 'number' ? product.basePrice : minPrice,
+                highestVariantPrice: typeof product.highestVariantPrice === 'number' ? product.highestVariantPrice : maxPrice,
+                originalPrice: typeof product.originalPrice === 'number' ? product.originalPrice : minPrice,
+                currentPrice: typeof product.currentPrice === 'number' ? product.currentPrice : minPrice,
+                onSale: Boolean(product.onSale),
+                salePercentage: Number(product.salePercentage || 0)
+            };
+        });
+
+        res.json({
+            ...productsData,
+            products: normalizedProducts
+        });
+    } catch (error) {
+        console.error('Error loading products:', error);
+        res.status(500).json({ error: 'Unable to load products' });
     }
 });
 

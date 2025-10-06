@@ -47,6 +47,7 @@
         </header>
 
         <div class="main-container">
+            <!-- Header Menu -->
             <aside class="sidebar">
                 <div class="categories-section">
                     <div class="category" onclick="goToPage('index.html')">Home</div>
@@ -73,6 +74,20 @@
                     </div>
                 </div>
             </aside>
+            
+            <!-- GIF Gallery Section -->
+            <div class="gif-gallery-section">
+                <h2>Our Zippo Collection</h2>
+                <div class="variant-selector">
+                    <button class="variant-btn active" data-variant="chrome">Chrome</button>
+                    <button class="variant-btn" data-variant="black">Black</button>
+                </div>
+                <div class="gif-gallery-container">
+                    <div class="gif-gallery" id="gif-gallery">
+                        <!-- GIFs will be loaded here by JavaScript -->
+                    </div>
+                </div>
+            </div>
 
             <main class="lighters-content">
                 <div class="lighters-section">
@@ -364,6 +379,165 @@
 
         function goToPage(url) {
             window.location.href = url;
+        }
+
+        // GIF Gallery functionality
+        const productGifs = {
+            chrome: [
+                {
+                    gif: 'images/gifs/SH2_PYRAMIDHEAD_LIGHTER_CHROME.gif',
+                    name: 'Silent Hill 2 Zippo Flip Lighter',
+                    price: '$30',
+                    id: 1
+                },
+                {
+                    gif: 'images/gifs/AFX_LIGHTER_CHROME.gif', 
+                    name: 'Aphex Twin Logo Zippo Flip Lighter',
+                    price: '$30',
+                    id: 2
+                },
+                {
+                    gif: 'images/gifs/SH3_ROBBIE_LIGHTER_CHROME.gif',
+                    name: 'Silent Hill 3 Zippo Flip Lighter',
+                    price: '$30',
+                    id: 3
+                },
+                {
+                    gif: 'images/gifs/DS_ARTORIOS_LIGHTER_CHROME.gif',
+                    name: 'Dark Souls Artorias Zippo Flip Lighter',
+                    price: '$30',
+                    id: 7
+                },
+                {
+                    gif: 'images/gifs/DS_SIF_LIGHTER_CHROME.gif',
+                    name: 'Dark Souls Sif Zippo Flip Lighter',
+                    price: '$30',
+                    id: 8
+                },
+                {
+                    gif: 'images/gifs/RE3_JILL_LIGHTER_CHROME.gif',
+                    name: 'Resident Evil 3 Jill Valentine Zippo Flip Lighter',
+                    price: '$30',
+                    id: 9
+                },
+                {
+                    gif: 'images/gifs/RE4_LEON_LIGHTER_CHROME.gif',
+                    name: 'Resident Evil 4 Leon Kennedy Zippo Flip Lighter',
+                    price: '$30',
+                    id: 10
+                },
+                {
+                    gif: 'images/gifs/RE4_ADA_LIGHTER_CHROME.gif',
+                    name: 'Resident Evil 4 Ada Wong Zippo Flip Lighter',
+                    price: '$30',
+                    id: 11
+                }
+            ],
+            black: [
+                {
+                    gif: 'images/gifs/SH2_PYRAMIDHEAD_LIGHTER_BLACK.gif',
+                    name: 'Silent Hill 2 Zippo Flip Lighter',
+                    price: '$25',
+                    id: 1
+                },
+                {
+                    gif: 'images/gifs/AFX_LIGHTER_BLACK.gif',
+                    name: 'Aphex Twin Logo Zippo Flip Lighter',
+                    price: '$25',
+                    id: 2
+                },
+                {
+                    gif: 'images/gifs/SH3_ROBBIE_LIGHTER_BLACK.gif',
+                    name: 'Silent Hill 3 Zippo Flip Lighter',
+                    price: '$25',
+                    id: 3
+                }
+            ]
+        };
+
+        function loadGifGallery(variant = 'chrome') {
+            const gallery = document.getElementById('gif-gallery');
+            gallery.innerHTML = '';
+
+            const gifs = productGifs[variant] || [];
+            
+            gifs.forEach(product => {
+                const gifItem = document.createElement('div');
+                gifItem.className = 'gif-item';
+                
+                const link = document.createElement('a');
+                link.href = `product.html?id=${product.id}`;
+                link.className = 'gif-item-link';
+
+                link.innerHTML = `
+                    <img src="${product.gif}" alt="${product.name}" onerror="this.style.display='none'" 
+                         onmouseover="resetGif(this)" onmouseout="restoreGif(this)">
+                    <div class="gif-item-text">
+                        <div class="product-name">${product.name}</div>
+                        <div class="product-price">${product.price}</div>
+                    </div>
+                `;
+
+                gifItem.appendChild(link);
+                gallery.appendChild(gifItem);
+            });
+        }
+
+        // Initialize gallery on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            loadGifGallery('chrome');
+            
+            // Setup variant button functionality
+            const variantBtns = document.querySelectorAll('.variant-btn');
+            variantBtns.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    // Remove active class from all buttons
+                    variantBtns.forEach(b => b.classList.remove('active'));
+                    // Add active class to clicked button
+                    this.classList.add('active');
+                    // Load gallery for selected variant
+                    loadGifGallery(this.dataset.variant);
+                });
+            });
+        });
+
+        // GIF hover effects
+        let gifTimeouts = new Map();
+        
+        function resetGif(img) {
+            const originalSrc = img.src.split('?')[0]; // Remove any query parameters
+            
+            // Clear any existing timeout for this image
+            if (gifTimeouts.has(img)) {
+                clearTimeout(gifTimeouts.get(img));
+            }
+            
+            // Create a static version (first frame) by adding a timestamp
+            const staticSrc = originalSrc + '?static=' + Date.now();
+            img.src = staticSrc;
+            
+            // Keep refreshing to stay at frame 1 while hovering
+            const timeout = setTimeout(() => {
+                if (img.matches(':hover')) {
+                    resetGif(img); // Keep refreshing if still hovering
+                }
+            }, 100); // Refresh every 100ms to keep it at frame 1
+            
+            gifTimeouts.set(img, timeout);
+        }
+
+        function restoreGif(img) {
+            // Clear the timeout
+            if (gifTimeouts.has(img)) {
+                clearTimeout(gifTimeouts.get(img));
+                gifTimeouts.delete(img);
+            }
+            
+            // Wait a bit before restoring to make the transition slower
+            setTimeout(() => {
+                const originalSrc = img.src.split('?')[0]; // Remove query parameters
+                img.src = originalSrc + '?restore=' + Date.now();
+            }, 200); // 200ms delay for slower transition
         }
     </script>
 </body>

@@ -125,13 +125,30 @@
         let cartCount = cart.length;
         let cartTotal = cart.reduce((sum, item) => sum + item.price, 0);
         let currentProduct = null;
+        let currentVariant = null;
         let currentImageIndex = 0;
         let products = [];
         let sales = [];
+        let selectedCustomizations = {
+            sideEngraving: { enabled: false, text: '' },
+            backEngraving: { enabled: false, text: '' },
+            butaneInsert: false
+        };
         
         // Sales tax configuration
         const SALES_TAX_RATE = 0.085; // 8.5%
         let cartTax = cartTotal * SALES_TAX_RATE;
+
+        function escapeHTML(str) {
+            const map = {
+                '&': '&amp;',
+                '<': '&lt;',
+                '>': '&gt;',
+                '"': '&quot;',
+                "'": '&#39;'
+            };
+            return String(str ?? '').replace(/[&<>"']/g, char => map[char]);
+        }
 
         document.addEventListener('DOMContentLoaded', function() {
             loadProductFromURL();
@@ -151,18 +168,21 @@
 
         async function loadProduct(productId) {
             try {
-                const response = await fetch('products.json');
+                const response = await fetch('/api/products');
                 const data = await response.json();
                 products = data.products;
                 sales = data.sales || [];
-                
-                // Apply sales to products
                 applyActiveSales();
                 
                 const product = products.find(p => p.id == productId);
                 
                 if (product) {
                     currentProduct = product;
+                    const variants = Array.isArray(product.variants) ? product.variants : [];
+                    currentVariant = variants.find(v => v.id === product.defaultVariantId) ||
+                                     variants.find(v => v.color === 'chrome') ||
+                                     variants[0] || null;
+                    currentImageIndex = 0;
                     renderProductPage(product);
                     document.getElementById('page-title').textContent = `${product.name} - Extantra Net`;
                 } else {
@@ -210,44 +230,56 @@
             document.getElementById('page-title').textContent = title;
             
             // Update meta description
-            const description = `${product.description} Shop this premium ${product.category} themed Zippo lighter at EXTANTRA. $${product.currentPrice.toFixed(2)} with free shipping on orders over $75.`;
+            const description = `${product.description} Shop this premium ${product.category} themed Zippo lighter at EXTANTRA. Starting at $${Math.min(...product.variants.map(v => v.price)).toFixed(2)} with free shipping on orders over $75.`;
             document.getElementById('page-description').setAttribute('content', description);
             
             // Update keywords
-            const keywords = `${product.name}, ${product.category} zippo, ${product.theme} lighter, collectible zippo, premium zippo, gaming merchandise, ${product.color} zippo`;
+            const keywords = `${product.name}, ${product.category} zippo, ${product.theme} lighter, collectible zippo, premium zippo, gaming merchandise, zippo variants`;
             document.getElementById('page-keywords').setAttribute('content', keywords);
             
             // Update Open Graph meta tags
             document.getElementById('og-title').setAttribute('content', title);
             document.getElementById('og-description').setAttribute('content', description);
             document.getElementById('og-url').setAttribute('content', `https://store.extantra.net/product.html?id=${product.id}`);
-            document.getElementById('og-image').setAttribute('content', `https://store.extantra.net/${product.images[0]}`);
+            const primaryMedia = (Array.isArray(currentProduct?.images) && currentProduct.images.length > 0)
+                ? currentProduct.images[0]
+                : (Array.isArray(currentVariant?.images) && currentVariant.images.length > 0 ? currentVariant.images[0] : 'images/extantralogo.webp');
+            const absolutePrimaryMedia = primaryMedia.startsWith('http') ? primaryMedia : `https://store.extantra.net/${primaryMedia}`;
+            document.getElementById('og-image').setAttribute('content', absolutePrimaryMedia);
             
             // Update Twitter Card meta tags
             document.getElementById('twitter-title').setAttribute('content', title);
             document.getElementById('twitter-description').setAttribute('content', description);
-            document.getElementById('twitter-image').setAttribute('content', `https://store.extantra.net/${product.images[0]}`);
+            document.getElementById('twitter-image').setAttribute('content', absolutePrimaryMedia);
             
             // Update canonical URL
             document.getElementById('canonical-url').setAttribute('href', `https://store.extantra.net/product.html?id=${product.id}`);
             
             // Update structured data
+            updateStructuredData(product);
+        }
+
+        function updateStructuredData(product) {
+            const imageList = (Array.isArray(currentProduct?.images) && currentProduct.images.length > 0
+                ? currentProduct.images
+                : (Array.isArray(currentVariant?.images) && currentVariant.images.length > 0 ? currentVariant.images : ['images/extantralogo.webp']))
+                .map(image => image.startsWith('http') ? image : `https://store.extantra.net/${image}`);
+
             const structuredData = {
                 "@context": "https://schema.org",
                 "@type": "Product",
                 "name": product.name,
                 "description": product.longDescription || product.description,
-                "image": product.images.map(img => `https://store.extantra.net/${img}`),
+                "image": imageList,
                 "brand": {
                     "@type": "Brand",
                     "name": "EXTANTRA"
                 },
                 "category": product.category,
-                "color": product.color,
                 "offers": {
                     "@type": "Offer",
                     "priceCurrency": "USD",
-                    "price": product.currentPrice.toFixed(2),
+                    "price": currentVariant.price.toFixed(2),
                     "availability": product.inStock ? "https://schema.org/InStock" : "https://schema.org/OutOfStock",
                     "seller": {
                         "@type": "Organization",
@@ -295,6 +327,122 @@
 
         function renderProductPage(product) {
             const contentElement = document.getElementById('product-content');
+            currentProduct = product;
+            
+            const variants = Array.isArray(product.variants) ? product.variants : [];
+            if (!currentVariant || !variants.some(variant => variant.id === currentVariant.id)) {
+                currentVariant = variants.find(variant => variant.id === product.defaultVariantId) ||
+                                 variants.find(variant => variant.color === 'chrome') ||
+                                 variants[0] || null;
+            }
+            
+            if (!currentVariant) {
+                showError('Product variant unavailable');
+                return;
+            }
+            
+            selectedCustomizations = {
+                sideEngraving: { enabled: false, text: '' },
+                backEngraving: { enabled: false, text: '' },
+                butaneInsert: false
+            };
+            
+            const variantImages = Array.isArray(currentVariant.images) ? currentVariant.images.filter(Boolean) : [];
+            const fallbackImage = 'images/extantralogo.webp';
+            const gifSource = currentVariant.gif || '';
+            const mediaSources = [...variantImages];
+            let gifIndex = -1;
+            if (gifSource) {
+                mediaSources.push(gifSource);
+                gifIndex = mediaSources.length - 1;
+            }
+            const hasMedia = mediaSources.length > 0;
+            const displaySources = hasMedia ? mediaSources : [fallbackImage];
+            currentProduct.images = [...displaySources];
+            currentProduct.hasMedia = hasMedia;
+            currentProduct.gifIndex = hasMedia ? gifIndex : -1;
+            currentImageIndex = 0;
+            
+            const safeName = escapeHTML(product.name);
+            const safeDescription = escapeHTML(product.description);
+            const mainImageSrc = escapeHTML(displaySources[0] || fallbackImage);
+            const mainImageAlt = escapeHTML((hasMedia && currentProduct.gifIndex === 0) ? `${product.name} animated view` : product.name);
+            const showNavigation = hasMedia && displaySources.length > 1;
+            const thumbnailsHTML = hasMedia
+                ? displaySources.map((src, index) => {
+                    const isGif = index === currentProduct.gifIndex;
+                    const altText = isGif ? `${product.name} animated view` : `${product.name} image ${index + 1}`;
+                    return `<img src="${escapeHTML(src)}" alt="${escapeHTML(altText)}" class="thumbnail ${index === 0 ? 'active' : ''} ${isGif ? 'gif-thumbnail' : ''}" data-media-index="${index}" onclick="selectImage(${index})">`;
+                }).join('')
+                : `<div class="thumbnail placeholder">Media coming soon</div>`;
+            const themeLabel = escapeHTML(product.theme ? product.theme.charAt(0).toUpperCase() + product.theme.slice(1) : '—');
+            const categoryLabel = escapeHTML(product.category ? product.category.charAt(0).toUpperCase() + product.category.slice(1) : '—');
+            const availabilityText = escapeHTML(product.inStock ? 'In Stock' : 'Preorder');
+            const variantColorNames = variants.map(variant => variant.colorName).filter(Boolean);
+            const colorLabel = escapeHTML(variantColorNames.length > 0 ? variantColorNames.join(', ') : (currentVariant.colorName || ''));
+            const barcodeSrc = escapeHTML(product.barcode || '');
+            const basePrice = Number(currentVariant.price || product.basePrice || 0);
+            const highestPrice = Number(product.highestVariantPrice || basePrice);
+            const priceRangeCopy = highestPrice > basePrice
+                ? `Variants from $${basePrice.toFixed(2)} to $${highestPrice.toFixed(2)}`
+                : `Base price $${basePrice.toFixed(2)}`;
+            const priceRangeText = escapeHTML(priceRangeCopy);
+            const customizationData = product.customization || {};
+            currentProduct.customization = customizationData;
+            const hasSideEngraving = Boolean(customizationData.sideEngraving);
+            const hasBackEngraving = Boolean(customizationData.backEngraving);
+            const sideEngravingPrice = hasSideEngraving ? Number(customizationData.sideEngraving.price || 0) : 0;
+            const backEngravingPrice = hasBackEngraving ? Number(customizationData.backEngraving.price || 0) : 0;
+            const customizationAvailable = hasSideEngraving || hasBackEngraving;
+            const sideMaxCharacters = customizationData.sideEngraving?.maxCharacters || 50;
+            const backMaxCharacters = customizationData.backEngraving?.maxCharacters || 50;
+            const sideEngravingName = escapeHTML(customizationData.sideEngraving?.name || 'Side Engraving');
+            const backEngravingName = escapeHTML(customizationData.backEngraving?.name || 'Back Engraving');
+            const sideEngravingDescription = escapeHTML(customizationData.sideEngraving?.description || 'Add custom text to the side');
+            const backEngravingDescription = escapeHTML(customizationData.backEngraving?.description || 'Add custom text to the back');
+            const butaneInsertPrice = Number(currentVariant.premiumOptions?.butaneInsert?.price ?? 25);
+            const initialTotal = calculateTotalPrice().toFixed(2);
+            const formattedBasePrice = basePrice.toFixed(2);
+            const longDescriptionParagraphs = String(product.longDescription || '').split('\n').map(paragraph => paragraph.trim()).filter(Boolean);
+            const longDescriptionHTML = longDescriptionParagraphs.map(paragraph => `<p class="long-description">${escapeHTML(paragraph)}</p>`).join('');
+            const stockStatusText = escapeHTML(currentVariant.inStock ? '✓ In Stock' : '✗ Out of Stock');
+            const stockStatusClass = currentVariant.inStock ? 'in-stock' : 'out-of-stock';
+            const customizationSectionHTML = customizationAvailable ? `
+                <div class="info-card customization-section">
+                    <h3>Custom Engraving</h3>
+                    ${hasSideEngraving ? `
+                    <label class="engraving-option">
+                        <span class="inline-control">
+                            <input type="checkbox" id="side-engraving" onchange="toggleSideEngraving()">
+                            <span class="engraving-name">${sideEngravingName}</span>
+                        </span>
+                        <span class="engraving-price">+$${sideEngravingPrice.toFixed(2)}</span>
+                    </label>
+                    <div class="engraving-input" id="side-engraving-input" style="display: none;">
+                        <input type="text" placeholder="Enter custom text (max ${sideMaxCharacters} characters)" maxlength="${sideMaxCharacters}" id="side-text" oninput="updatePricing()">
+                        <small>${sideEngravingDescription}</small>
+                    </div>
+                    ` : ''}
+                    ${hasBackEngraving ? `
+                    <label class="engraving-option">
+                        <span class="inline-control">
+                            <input type="checkbox" id="back-engraving" onchange="toggleBackEngraving()">
+                            <span class="engraving-name">${backEngravingName}</span>
+                        </span>
+                        <span class="engraving-price">+$${backEngravingPrice.toFixed(2)}</span>
+                    </label>
+                    <div class="engraving-input" id="back-engraving-input" style="display: none;">
+                        <input type="text" placeholder="Enter custom text (max ${backMaxCharacters} characters)" maxlength="${backMaxCharacters}" id="back-text" oninput="updatePricing()">
+                        <small>${backEngravingDescription}</small>
+                    </div>
+                    ` : ''}
+                </div>
+            ` : `
+                <div class="info-card customization-section disabled">
+                    <h3>Custom Engraving</h3>
+                    <p class="customization-unavailable">Custom engraving isn’t offered for this variant.</p>
+                </div>
+            `;
             
             // Update SEO metadata
             updateSEOMetadata(product);
@@ -305,65 +453,83 @@
                     
                     <div class="product-detail-grid">
                         <div class="product-images-section">
-                            <div class="main-product-image" onclick="enlargeImage()">
-                                <img src="${product.images[0]}" alt="${product.name}" class="main-product-img" id="main-image">
-                                ${product.images.length > 1 ? `
-                                    <div class="image-nav image-nav-left">
-                                        <button class="nav-button" onclick="event.stopPropagation(); previousImage()">&lt;</button>
-                                    </div>
-                                    <div class="image-nav image-nav-right">
-                                        <button class="nav-button" onclick="event.stopPropagation(); nextImage()">&gt;</button>
-                                    </div>
-                                ` : ''}
-                            </div>
-                            ${product.images.length > 1 ? `
-                                <div class="image-thumbnails">
-                                    ${product.images.map((img, index) => 
-                                        `<img src="${img}" alt="${product.name} ${index + 1}" class="thumbnail ${index === 0 ? 'active' : ''}" onclick="selectImage(${index})">`
-                                    ).join('')}
+                            <div class="main-product-image media-card" onclick="enlargeImage()">
+                                <img src="${mainImageSrc}" alt="${mainImageAlt}" class="main-product-img" id="main-image">
+                                <div class="image-nav image-nav-left" ${showNavigation ? '' : 'style="display: none;"'}>
+                                    <button class="nav-button" onclick="event.stopPropagation(); previousImage()">&lt;</button>
                                 </div>
-                            ` : ''}
+                                <div class="image-nav image-nav-right" ${showNavigation ? '' : 'style="display: none;"'}>
+                                    <button class="nav-button" onclick="event.stopPropagation(); nextImage()">&gt;</button>
+                                </div>
+                            </div>
+                            <div class="image-thumbnails media-card" id="image-thumbnails">
+                                ${thumbnailsHTML}
+                            </div>
                         </div>
                         
                         <div class="product-info-section">
-                            <h1 class="product-page-title">${product.name}</h1>
-                            ${product.onSale ? `
-                                <div class="product-sale-info">
-                                    <div class="sale-badge-large">${product.salePercentage}% OFF</div>
-                                    <div class="product-page-sale-price">$${product.currentPrice.toFixed(2)}</div>
-                                    <div class="product-page-original-price">$${product.originalPrice.toFixed(2)}</div>
+                            <div class="info-card info-header">
+                                <h1 class="product-page-title">${safeName}</h1>
+                                <p class="short-description">${safeDescription}</p>
+                                <div class="product-meta-grid">
+                                    <div><span>Theme:</span> ${themeLabel}</div>
+                                    <div><span>Category:</span> ${categoryLabel}</div>
+                                    <div><span>Colors:</span> ${colorLabel}</div>
+                                    <div><span>Availability:</span> ${availabilityText}</div>
                                 </div>
-                            ` : `
-                                <div class="product-page-price">$${product.currentPrice.toFixed(2)}</div>
-                            `}
-                            <div class="product-barcode">
-                                <img src="${product.barcode}" alt="Product barcode" class="barcode-image">
+                                <div class="product-range-note">${priceRangeText}</div>
+                                ${barcodeSrc ? `<div class="product-barcode"><img src="${barcodeSrc}" alt="Product barcode" class="barcode-image"></div>` : ''}
                             </div>
                             
-                            <div class="product-description-section">
+                            <div class="info-card variant-selection">
+                                <h3>Color</h3>
+                                <div class="color-options">
+                                    ${variants.map(variant => `
+                                        <label class="color-option ${variant.id === currentVariant.id ? 'selected' : ''}">
+                                            <input type="radio" name="color" value="${variant.id}" ${variant.id === currentVariant.id ? 'checked' : ''} onchange="selectVariant('${variant.id}')">
+                                            <span class="color-name">${escapeHTML(variant.colorName)}</span>
+                                            <span class="color-price">$${Number(variant.price || 0).toFixed(2)}</span>
+                                        </label>
+                                    `).join('')}
+                                </div>
+                                <div class="variant-disclaimer" id="variant-disclaimer" style="display: none;">
+                                    <small class="disclaimer-text"></small>
+                                </div>
+                            </div>
+                            
+                            <div class="info-card pricing-section">
+                                <h3>Pricing</h3>
+                                <div class="product-page-price" id="total-price">$${initialTotal}</div>
+                                <div class="price-breakdown" id="price-breakdown">
+                                    <div>Base Price: $${formattedBasePrice}</div>
+                                </div>
+                            </div>
+                            
+                            <div class="info-card premium-options" id="premium-options" style="display: ${currentVariant.premiumOptions ? 'flex' : 'none'};">
+                                <h3>Premium Upgrades</h3>
+                                <label class="upgrade-option">
+                                    <span class="inline-control">
+                                        <input type="checkbox" id="butane-insert" onchange="toggleButaneInsert()">
+                                        <span class="upgrade-name">Butane Torch Insert</span>
+                                    </span>
+                                    <span class="upgrade-price">+$${butaneInsertPrice.toFixed(2)}</span>
+                                    <div class="upgrade-description">Upgrade to butane torch insert for reliable wind-resistant flame</div>
+                                </label>
+                            </div>
+                            
+                            ${customizationSectionHTML}
+                            
+                            <div class="info-card product-description-section">
                                 <h3>Description</h3>
-                                <p class="short-description">${product.description}</p>
-                                ${product.longDescription ? `<p class="long-description">${product.longDescription}</p>` : ''}
+                                <p class="short-description">${safeDescription}</p>
+                                ${longDescriptionHTML}
                             </div>
                             
-                            ${product.specifications ? `
-                                <div class="specifications-section">
-                                    <h3>Specifications</h3>
-                                    <div class="specs-grid">
-                                        ${Object.entries(product.specifications).map(([key, value]) => 
-                                            `<div class="spec-item">
-                                                <span class="spec-label">${key.charAt(0).toUpperCase() + key.slice(1)}:</span>
-                                                <span class="spec-value">${value}</span>
-                                            </div>`
-                                        ).join('')}
-                                    </div>
-                                </div>
-                            ` : ''}
-                            
-                            <div class="purchase-section">
-                                <button class="add-to-cart-button" onclick="addToCart()">Add to Cart - $${product.currentPrice.toFixed(2)}</button>
-                                <div class="stock-status ${product.inStock ? 'in-stock' : 'out-of-stock'}">
-                                    ${product.inStock ? '✓ In Stock' : '✗ Out of Stock'}
+                            <div class="info-card purchase-card">
+                                <div class="purchase-section">
+                                    <button class="add-to-cart-button" onclick="addToCart()" id="add-to-cart-btn">Add to Cart - $${initialTotal}</button>
+                                    <div class="stock-status ${stockStatusClass}">${stockStatusText}</div>
+                                    <div class="purchase-note">All lighters ship from Bradford, PA with tracking in under 48 hours.</div>
                                 </div>
                             </div>
                         </div>
@@ -415,6 +581,9 @@
             
             // Load reviews after rendering the product
             loadProductReviews(product.id);
+            
+            // Update disclaimer visibility for initial variant
+            updateDisclaimerVisibility();
         }
 
         function showError(message) {
@@ -428,65 +597,304 @@
             `;
         }
 
-        function selectImage(index) {
-            if (!currentProduct || !currentProduct.images) return;
+        // New variant and customization functions
+        function selectVariant(variantId) {
+            currentVariant = currentProduct.variants.find(v => v.id === variantId);
+            if (!currentVariant) return;
             
-            currentImageIndex = index;
+            // Update images and GIF
+            updateProductImages();
+            
+            // Update color selection UI
+            document.querySelectorAll('.color-option').forEach(option => {
+                option.classList.remove('selected');
+            });
+            const selectedInput = document.querySelector(`input[name="color"][value="${variantId}"]`);
+            if (selectedInput) {
+                const option = selectedInput.closest('.color-option');
+                if (option) {
+                    option.classList.add('selected');
+                }
+            }
+            
+            // Show/hide premium options
+            const premiumSection = document.getElementById('premium-options');
+            if (premiumSection) {
+                const butaneInput = document.getElementById('butane-insert');
+                const priceLabel = premiumSection.querySelector('.upgrade-price');
+                if (currentVariant.premiumOptions?.butaneInsert) {
+                    premiumSection.style.display = 'flex';
+                    if (priceLabel) {
+                        priceLabel.textContent = `+$${Number(currentVariant.premiumOptions.butaneInsert.price || 0).toFixed(2)}`;
+                    }
+                } else {
+                    premiumSection.style.display = 'none';
+                    selectedCustomizations.butaneInsert = false;
+                    if (butaneInput) {
+                        butaneInput.checked = false;
+                    }
+                }
+            }
+
+            // Reset customization toggles when switching variants
+            const sideCheckbox = document.getElementById('side-engraving');
+            const sideInputDiv = document.getElementById('side-engraving-input');
+            const sideInput = document.getElementById('side-text');
+            if (sideCheckbox) {
+                sideCheckbox.checked = false;
+                selectedCustomizations.sideEngraving = { enabled: false, text: '' };
+            }
+            if (sideInputDiv) {
+                sideInputDiv.style.display = 'none';
+            }
+            if (sideInput) {
+                sideInput.value = '';
+            }
+
+            const backCheckbox = document.getElementById('back-engraving');
+            const backInputDiv = document.getElementById('back-engraving-input');
+            const backInput = document.getElementById('back-text');
+            if (backCheckbox) {
+                backCheckbox.checked = false;
+                selectedCustomizations.backEngraving = { enabled: false, text: '' };
+            }
+            if (backInputDiv) {
+                backInputDiv.style.display = 'none';
+            }
+            if (backInput) {
+                backInput.value = '';
+            }
+            
+            // Update disclaimer visibility
+            updateDisclaimerVisibility();
+            
+            // Update pricing
+            updatePricing();
+        }
+
+        function updateProductImages() {
+            const fallbackImage = 'images/extantralogo.webp';
+            const thumbnailsContainer = document.getElementById('image-thumbnails');
             const mainImage = document.getElementById('main-image');
-            mainImage.src = currentProduct.images[index];
+            const variantImages = Array.isArray(currentVariant?.images) ? currentVariant.images.filter(Boolean) : [];
+            const gifSource = currentVariant?.gif || '';
+            const mediaSources = [...variantImages];
+            let gifIndex = -1;
+            if (gifSource) {
+                mediaSources.push(gifSource);
+                gifIndex = mediaSources.length - 1;
+            }
+            const hasMedia = mediaSources.length > 0;
+            const displaySources = hasMedia ? mediaSources : [fallbackImage];
+
+            currentImageIndex = 0;
+            currentProduct.images = [...displaySources];
+            currentProduct.hasMedia = hasMedia;
+            currentProduct.gifIndex = hasMedia ? gifIndex : -1;
+
+            if (mainImage) {
+                const isGif = currentProduct.gifIndex === 0 && hasMedia;
+                mainImage.src = displaySources[0] || fallbackImage;
+                mainImage.alt = isGif ? `${currentProduct.name} animated view` : (hasMedia ? currentProduct.name : 'Product image coming soon');
+            }
+
+            if (thumbnailsContainer) {
+                if (hasMedia) {
+                    const safeName = escapeHTML(currentProduct.name);
+                    thumbnailsContainer.innerHTML = displaySources.map((src, index) => {
+                        const isGif = index === currentProduct.gifIndex;
+                        const altText = isGif ? `${currentProduct.name} animated view` : `${currentProduct.name} image ${index + 1}`;
+                        return `<img src="${escapeHTML(src)}" alt="${escapeHTML(altText)}" class="thumbnail ${index === 0 ? 'active' : ''} ${isGif ? 'gif-thumbnail' : ''}" data-media-index="${index}" onclick="selectImage(${index})">`;
+                    }).join('');
+                } else {
+                    thumbnailsContainer.innerHTML = `<div class="thumbnail placeholder">Media coming soon</div>`;
+                }
+            }
+
+            document.querySelectorAll('.image-nav').forEach(nav => {
+                nav.style.display = hasMedia && displaySources.length > 1 ? 'flex' : 'none';
+            });
+        }
+
+        function updateDisclaimerVisibility() {
+            const disclaimerDiv = document.getElementById('variant-disclaimer');
+            const disclaimerText = disclaimerDiv.querySelector('.disclaimer-text');
             
-            // Update thumbnail active state
+            if (currentVariant.disclaimer) {
+                disclaimerText.textContent = currentVariant.disclaimer;
+                disclaimerDiv.style.display = 'block';
+            } else {
+                disclaimerDiv.style.display = 'none';
+            }
+        }
+
+        function toggleButaneInsert() {
+            const checkbox = document.getElementById('butane-insert');
+            if (!checkbox) return;
+            selectedCustomizations.butaneInsert = checkbox.checked;
+            updatePricing();
+        }
+
+        function toggleSideEngraving() {
+            const checkbox = document.getElementById('side-engraving');
+            const inputDiv = document.getElementById('side-engraving-input');
+            if (!checkbox || !inputDiv) return;
+            
+            selectedCustomizations.sideEngraving.enabled = checkbox.checked;
+            inputDiv.style.display = checkbox.checked ? 'block' : 'none';
+            
+            if (!checkbox.checked) {
+                selectedCustomizations.sideEngraving.text = '';
+                document.getElementById('side-text').value = '';
+            }
+            
+            updatePricing();
+        }
+
+        function toggleBackEngraving() {
+            const checkbox = document.getElementById('back-engraving');
+            const inputDiv = document.getElementById('back-engraving-input');
+            if (!checkbox || !inputDiv) return;
+            
+            selectedCustomizations.backEngraving.enabled = checkbox.checked;
+            inputDiv.style.display = checkbox.checked ? 'block' : 'none';
+            
+            if (!checkbox.checked) {
+                selectedCustomizations.backEngraving.text = '';
+                document.getElementById('back-text').value = '';
+            }
+            
+            updatePricing();
+        }
+
+        function calculateTotalPrice() {
+            const basePrice = Number(currentVariant?.price || 0);
+            let total = basePrice;
+            
+            if (selectedCustomizations.sideEngraving.enabled && currentProduct.customization?.sideEngraving) {
+                total += Number(currentProduct.customization.sideEngraving.price || 0);
+            }
+            
+            if (selectedCustomizations.backEngraving.enabled && currentProduct.customization?.backEngraving) {
+                total += Number(currentProduct.customization.backEngraving.price || 0);
+            }
+            
+            if (selectedCustomizations.butaneInsert && currentVariant.premiumOptions?.butaneInsert) {
+                total += Number(currentVariant.premiumOptions.butaneInsert.price || 0);
+            }
+            
+            return Number(total.toFixed(2));
+        }
+
+        function updatePricing() {
+            // Update customization text
+            selectedCustomizations.sideEngraving.text = document.getElementById('side-text')?.value || '';
+            selectedCustomizations.backEngraving.text = document.getElementById('back-text')?.value || '';
+            
+            const total = calculateTotalPrice();
+            
+            // Update price display
+            const formattedTotal = total.toFixed(2);
+            document.getElementById('total-price').textContent = `$${formattedTotal}`;
+            document.getElementById('add-to-cart-btn').textContent = `Add to Cart - $${formattedTotal}`;
+            
+            // Update price breakdown
+            const breakdown = [`Base Price: $${Number(currentVariant?.price || 0).toFixed(2)}`];
+            
+            if (selectedCustomizations.sideEngraving.enabled) {
+                breakdown.push(`Side Engraving: +$${Number(currentProduct.customization?.sideEngraving?.price || 0).toFixed(2)}`);
+            }
+            
+            if (selectedCustomizations.backEngraving.enabled) {
+                breakdown.push(`Back Engraving: +$${Number(currentProduct.customization?.backEngraving?.price || 0).toFixed(2)}`);
+            }
+            
+            if (selectedCustomizations.butaneInsert && currentVariant.premiumOptions?.butaneInsert) {
+                breakdown.push(`Butane Insert: +$${Number(currentVariant.premiumOptions.butaneInsert.price || 0).toFixed(2)}`);
+            }
+            
+            document.getElementById('price-breakdown').innerHTML = breakdown.map(item => `<div>${item}</div>`).join('');
+        }
+
+        function selectImage(index) {
+            const media = Array.isArray(currentProduct?.images) ? currentProduct.images : [];
+            if (media.length === 0) return;
+            
+            const total = media.length;
+            currentImageIndex = (index + total) % total;
+            const mainImage = document.getElementById('main-image');
+            if (mainImage) {
+                const isGif = currentProduct.gifIndex === currentImageIndex;
+                mainImage.src = media[currentImageIndex];
+                mainImage.alt = isGif ? `${currentProduct.name} animated view` : currentProduct.name;
+            }
+            
             const thumbnails = document.querySelectorAll('.thumbnail');
             thumbnails.forEach((thumb, i) => {
-                thumb.classList.toggle('active', i === index);
+                thumb.classList.toggle('active', i === currentImageIndex);
             });
         }
 
         function previousImage() {
-            if (!currentProduct || !currentProduct.images || currentProduct.images.length <= 1) return;
-            
-            currentImageIndex = (currentImageIndex - 1 + currentProduct.images.length) % currentProduct.images.length;
-            selectImage(currentImageIndex);
+            const media = Array.isArray(currentProduct?.images) ? currentProduct.images : [];
+            if (media.length <= 1) return;
+            selectImage(currentImageIndex - 1);
         }
 
         function nextImage() {
-            if (!currentProduct || !currentProduct.images || currentProduct.images.length <= 1) return;
-            
-            currentImageIndex = (currentImageIndex + 1) % currentProduct.images.length;
-            selectImage(currentImageIndex);
+            const media = Array.isArray(currentProduct?.images) ? currentProduct.images : [];
+            if (media.length <= 1) return;
+            selectImage(currentImageIndex + 1);
         }
 
         function enlargeImage() {
-            if (!currentProduct || !currentProduct.images) return;
-            
-            const modal = document.getElementById('image-modal');
-            const modalImage = document.getElementById('modal-image');
-            
-            const currentImage = currentProduct.images[currentImageIndex];
-            modalImage.innerHTML = `<img src="${currentImage}" alt="${currentProduct.name}">`;
-            modal.classList.add('show');
-            
-            document.body.style.overflow = 'hidden';
-        }
-
-        function closeModal() {
-            const modal = document.getElementById('image-modal');
-            modal.classList.remove('show');
-            document.body.style.overflow = 'auto';
+            const media = Array.isArray(currentProduct?.images) ? currentProduct.images : [];
+            if (media.length === 0) return;
+            const currentImage = media[currentImageIndex] || media[0];
+            openImageModal(currentImage);
         }
 
         function addToCart() {
-            if (!currentProduct) return;
+            if (!currentProduct || !currentVariant) return;
+            
+            // Validate engraving text if enabled
+            if (selectedCustomizations.sideEngraving.enabled && !selectedCustomizations.sideEngraving.text.trim()) {
+                alert('Please enter text for side engraving or disable the option.');
+                return;
+            }
+            
+            if (selectedCustomizations.backEngraving.enabled && !selectedCustomizations.backEngraving.text.trim()) {
+                alert('Please enter text for back engraving or disable the option.');
+                return;
+            }
             
             const cartItem = {
-                ...currentProduct,
-                price: currentProduct.currentPrice, // Use current price (sale or original)
-                id: Date.now() + Math.random()
+                id: Date.now() + Math.random(),
+                productId: currentProduct.id,
+                variantId: currentVariant.id,
+                name: currentProduct.name,
+                variantName: currentVariant.colorName,
+                price: calculateTotalPrice(),
+                basePrice: currentVariant.price,
+                image: (Array.isArray(currentVariant.images) && currentVariant.images[0]) || '',
+                customizations: {
+                    sideEngraving: selectedCustomizations.sideEngraving.enabled && currentProduct.customization?.sideEngraving ? {
+                        text: selectedCustomizations.sideEngraving.text,
+                        price: Number(currentProduct.customization.sideEngraving.price || 0)
+                    } : null,
+                    backEngraving: selectedCustomizations.backEngraving.enabled && currentProduct.customization?.backEngraving ? {
+                        text: selectedCustomizations.backEngraving.text,
+                        price: Number(currentProduct.customization.backEngraving.price || 0)
+                    } : null,
+                    butaneInsert: selectedCustomizations.butaneInsert && currentVariant.premiumOptions?.butaneInsert ? {
+                        price: Number(currentVariant.premiumOptions.butaneInsert.price || 0)
+                    } : null
+                }
             };
             
             cart.push(cartItem);
             cartCount++;
-            cartTotal += currentProduct.currentPrice;
+            cartTotal += cartItem.price;
             cartTax = cartTotal * SALES_TAX_RATE;
             
             // Save to localStorage
@@ -495,7 +903,7 @@
             updateCartDisplay();
             
             // Show feedback
-            const button = document.querySelector('.add-to-cart-button');
+            const button = document.getElementById('add-to-cart-btn');
             const originalText = button.textContent;
             button.textContent = 'Added to Cart!';
             button.style.backgroundColor = '#4CAF50';
@@ -590,7 +998,7 @@
             const isModalOpen = modal.classList.contains('show');
             
             if (event.key === 'Escape' && isModalOpen) {
-                closeModal();
+                closeImageModal();
             } else if (isModalOpen && currentProduct && currentProduct.images && currentProduct.images.length > 1) {
                 if (event.key === 'ArrowLeft') {
                     event.preventDefault();
@@ -605,7 +1013,7 @@
         // Close modal when clicking outside the image
         document.getElementById('image-modal').addEventListener('click', function(event) {
             if (event.target === this) {
-                closeModal();
+                closeImageModal();
             }
         });
 
@@ -751,6 +1159,13 @@
             const modal = document.getElementById('image-modal');
             const modalImg = document.getElementById('modal-image');
             modalImg.src = imageSrc;
+            if (currentProduct) {
+                const mediaIndex = Array.isArray(currentProduct.images) ? currentProduct.images.indexOf(imageSrc) : -1;
+                const isGif = mediaIndex > -1 && mediaIndex === currentProduct.gifIndex;
+                modalImg.alt = isGif ? `${currentProduct.name} animated view` : `${currentProduct.name}`;
+            } else {
+                modalImg.alt = 'Enlarged product image';
+            }
             modal.classList.add('show');
             document.body.style.overflow = 'hidden';
         }
