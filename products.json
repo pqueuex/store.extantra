@@ -600,6 +600,194 @@
           "description": "Add custom text to the back"
         }
       }
+    },
+    {
+      "id": 12,
+      "name": "Call of Duty Prestige Zippo Flip Lighter",
+      "description": "Standard-size COD Prestige emblem themed Zippo lighter. Chrome finish with iconic prestige artwork.",
+      "longDescription": "Show off your Call of Duty dedication with this exclusive Prestige emblem lighter. Featuring the iconic prestige symbol that represents countless hours of multiplayer domination, this lighter is perfect for COD fans and FPS enthusiasts. A must-have for collectors of gaming memorabilia and Call of Duty veterans. This is a standard Zippo size lighter. Ships without lighter fluid - use standard Zippo lighter fluid or Ronsonol fluid for traditional wick operation (or upgrade to butane/electric insert).",
+      "category": "gaming",
+      "type": "lighter",
+      "theme": "fps",
+      "inStock": true,
+      "barcode": "images/barcodes/012.jpeg",
+      "variants": [
+        {
+          "id": "012-chrome",
+          "color": "chrome",
+          "colorName": "Street Chrome",
+          "price": 35,
+          "images": [
+            "images/variants/chrome/012_chrome_1.webp",
+            "images/variants/chrome/012_chrome_2.webp",
+            "images/variants/chrome/012_chrome_3.webp"
+          ],
+          "gif": "images/gifs/012_chrome.gif",
+          "inStock": true,
+          "premiumOptions": {
+            "butaneInsert": {
+              "available": true,
+              "price": 25,
+              "description": "Upgrade to butane torch insert for reliable wind-resistant flame"
+            }
+          }
+        }
+      ],
+      "customization": {
+        "sideEngraving": {
+          "available": true,
+          "price": 10,
+          "maxCharacters": 50,
+          "description": "Add custom text to the side"
+        },
+        "backEngraving": {
+          "available": true,
+          "price": 10,
+          "maxCharacters": 50,
+          "description": "Add custom text to the back"
+        }
+      }
+    },
+    {
+      "id": 13,
+      "name": "Trollface Meme Zippo Flip Lighter",
+      "description": "Standard-size Trollface meme lighter with classic internet culture artwork. Chrome finish featuring the iconic troll face.",
+      "longDescription": "Embrace the chaos with this legendary Trollface meme lighter. Featuring the iconic rage comic character that defined an era of internet culture, this lighter is perfect for meme enthusiasts and anyone who appreciates classic internet humor. A conversation starter and nostalgic throwback to the golden age of trolling. This is a standard Zippo size lighter. Ships without lighter fluid - use standard Zippo lighter fluid or Ronsonol fluid for traditional wick operation (or upgrade to butane/electric insert).",
+      "category": "original",
+      "type": "lighter",
+      "theme": "meme",
+      "inStock": true,
+      "barcode": "images/barcodes/013.jpeg",
+      "variants": [
+        {
+          "id": "013-chrome",
+          "color": "chrome",
+          "colorName": "Street Chrome",
+          "price": 35,
+          "images": [
+            "images/variants/chrome/013_chrome_1.webp",
+            "images/variants/chrome/013_chrome_2.webp",
+            "images/variants/chrome/013_chrome_3.webp"
+          ],
+          "gif": "images/gifs/013_chrome.gif",
+          "inStock": true,
+          "premiumOptions": {
+            "butaneInsert": {
+              "available": true,
+              "price": 25,
+              "description": "Upgrade to butane torch insert for reliable wind-resistant flame"
+            }
+          }
+        }
+      ],
+      "customization": {
+        "sideEngraving": {
+          "available": true,
+          "price": 10,
+          "maxCharacters": 50,
+          "description": "Add custom text to the side"
+        },
+        "backEngraving": {
+          "available": true,
+          "price": 10,
+          "maxCharacters": 50,
+          "description": "Add custom text to the back"
+        }
+      }
+    },
+    {
+      "id": 14,
+      "name": "I Feel Fantastic Creepy Robot Zippo Flip Lighter",
+      "description": "Standard-size I Feel Fantastic themed lighter featuring the iconic creepy robot. Chrome finish with unsettling artwork.",
+      "longDescription": "Experience the unsettling charm of the internet's most infamous singing robot with this I Feel Fantastic lighter. Featuring Tara the Android from the viral video that haunted a generation, this lighter captures the eerie aesthetic of early internet creepypasta culture. Perfect for fans of internet horror, creepy content, and nostalgic viral videos. This is a standard Zippo size lighter. Ships without lighter fluid - use standard Zippo lighter fluid or Ronsonol fluid for traditional wick operation (or upgrade to butane/electric insert).",
+      "category": "original",
+      "type": "lighter",
+      "theme": "creepy",
+      "inStock": true,
+      "barcode": "images/barcodes/014.jpeg",
+      "variants": [
+        {
+          "id": "014-chrome",
+          "color": "chrome",
+          "colorName": "Street Chrome",
+          "price": 35,
+          "images": [
+            "images/variants/chrome/014_chrome_1.webp",
+            "images/variants/chrome/014_chrome_2.webp",
+            "images/variants/chrome/014_chrome_3.webp"
+          ],
+          "gif": "images/gifs/014_chrome.gif",
+          "inStock": true,
+          "premiumOptions": {
+            "butaneInsert": {
+              "available": true,
+              "price": 25,
+              "description": "Upgrade to butane torch insert for reliable wind-resistant flame"
+            }
+          }
+        }
+      ],
+      "customization": {
+        "sideEngraving": {
+          "available": true,
+          "price": 10,
+          "maxCharacters": 50,
+          "description": "Add custom text to the side"
+        },
+        "backEngraving": {
+          "available": true,
+          "price": 10,
+          "maxCharacters": 50,
+          "description": "Add custom text to the back"
+        }
+      }
+    },
+    {
+      "id": 15,
+      "name": "Skate Video Game Zippo Flip Lighter",
+      "description": "Standard-size Skate game themed lighter featuring iconic skateboarding culture artwork. Chrome finish for street style.",
+      "longDescription": "Celebrate the legendary Skate video game series with this exclusive lighter. Featuring artwork that captures the authentic skateboarding culture and rebellious spirit of the groundbreaking EA game that revolutionized skating simulations. Perfect for fans of the Skate franchise, skateboarding culture, and anyone who spent countless hours perfecting their digital kickflips. This is a standard Zippo size lighter. Ships without lighter fluid - use standard Zippo lighter fluid or Ronsonol fluid for traditional wick operation (or upgrade to butane/electric insert).",
+      "category": "gaming",
+      "type": "lighter",
+      "theme": "sports",
+      "inStock": true,
+      "barcode": "images/barcodes/015.jpeg",
+      "variants": [
+        {
+          "id": "015-chrome",
+          "color": "chrome",
+          "colorName": "Street Chrome",
+          "price": 35,
+          "images": [
+            "images/variants/chrome/015_chrome_1.webp",
+            "images/variants/chrome/015_chrome_2.webp",
+            "images/variants/chrome/015_chrome_3.webp"
+          ],
+          "gif": "images/gifs/015_chrome.gif",
+          "inStock": true,
+          "premiumOptions": {
+            "butaneInsert": {
+              "available": true,
+              "price": 25,
+              "description": "Upgrade to butane torch insert for reliable wind-resistant flame"
+            }
+          }
+        }
+      ],
+      "customization": {
+        "sideEngraving": {
+          "available": true,
+          "price": 10,
+          "maxCharacters": 50,
+          "description": "Add custom text to the side"
+        },
+        "backEngraving": {
+          "available": true,
+          "price": 10,
+          "maxCharacters": 50,
+          "description": "Add custom text to the back"
+        }
+      }
     }
   ],
   "sales": [
